@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-
+#include "shaderClass.h"
 
 
 // Notes
@@ -51,39 +51,27 @@ int main() {
 
 
     // Shader initialization
-    const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\n";
-    const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "    FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n" // Red color
-        "}\n\0";
-
+  
+  
 
 
 
     // Define vertex
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f,  // Vertex 0
-         0.5f, -0.5f, 0.0f,  // Vertex 1
-         0.0f,  0.5f, 0.0f,  // Vertex 2 (shared)
-         0.0f, -0.5f, 0.0f   // Vertex 3
+        -0.5f, -0.5f, 0.0f,  // Bottom left
+         0.5f, -0.5f, 0.0f,  // Bottom right
+         0.5f,  0.5f, 0.0f,  // Top right
+        -0.5f,  0.5f, 0.0f   // Top left
     };
 
 
     
      // Indices
-     GLuint indices[] = {    
+    GLuint indices[] = {
+         0, 1, 2,  // First triangle
+         2, 3, 0   // Second triangle
+    };
 
-         0, 2, 3,  // First triangle
-         1, 2, 3   // Second triangle
-    }; 
-    
 
     // Generate VAO , VBO and etc..
 
@@ -108,35 +96,25 @@ int main() {
     glEnableVertexAttribArray(0);
 
 
-    // Clean up after buffer setup
+    // Unbinding VBO and VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     // Shader setup
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
 
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
+    cout << "Well it worked!!" << endl;
     while (!glfwWindowShouldClose(window)) {
 
         // Clear the screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  //bg color
         glClear(GL_COLOR_BUFFER_BIT);
-            
+        
+
+        
         // Use the shader setup we have setup earlier
-        glUseProgram(shaderProgram);
+        shaderProgram.Activate();
 
 
         // Activates the setup of buffers
@@ -155,7 +133,7 @@ int main() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
+    shaderProgram.Delete();
 
     glfwDestroyWindow(window);
     glfwTerminate();

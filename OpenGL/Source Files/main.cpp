@@ -57,18 +57,20 @@ int main() {
 
 
     // Define vertex
-    GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f,  // Bottom left
-         0.5f, -0.5f, 0.0f,  // Bottom right
-         0.5f,  0.5f, 0.0f,  // Top right
-        -0.5f,  0.5f, 0.0f   // Top left
+    float vertices[] = {
+
+        // coordinates                               //colors
+        -0.5f, -0.5f, 0.0f,                        1.0f, 0.0f, 0.0f, 
+         0.5f, -0.5f, 0.0f,                        0.0f, 1.0f, 0.0f, 
+         0.5f,  0.5f, 0.0f,                        0.0f, 0.0f, 1.0f, 
+        -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f 
     };
 
 
     
      // Indices
-    GLuint indices[] = {
-         0, 1, 2,  // First triangle
+    unsigned int indices[] = {
+         1, 0, 2,  // First triangle
          2, 3, 0   // Second triangle
     };
 
@@ -92,9 +94,16 @@ int main() {
 
 
     // Set Vertex Attribute Pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    // Now, here color and positions from vertex  ( load out in the memory )
+   
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // Color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // Unbinding VBO and VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -104,7 +113,9 @@ int main() {
     Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
 
 
-    cout << "Well it worked!!" << endl;
+
+    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+    // =Render
     while (!glfwWindowShouldClose(window)) {
 
         // Clear the screen
@@ -116,6 +127,9 @@ int main() {
         // Use the shader setup we have setup earlier
         shaderProgram.Activate();
 
+
+        // scale
+        glUniform1f(uniID, 0.5f);
 
         // Activates the setup of buffers
         glBindVertexArray(VAO); 

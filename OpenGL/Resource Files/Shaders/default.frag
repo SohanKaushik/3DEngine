@@ -12,5 +12,6 @@ void main()
     vec4 texColor = texture(text, TexCoord);
     
     // Combine the sampled texture color with the vertex color
-    FragColor = texColor * vec4(color, 1.0);
+    //FragColor = texColor * vec4(color, 1.0);      // texture + color blend
+    FragColor = texColor;
 }

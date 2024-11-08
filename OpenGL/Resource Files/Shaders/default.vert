@@ -14,7 +14,7 @@ uniform sampler2D text;
 void main()
 {
     // Apply the scale to the position
-    gl_Position = vec4(aPos * scale, 1.0);
+    gl_Position = vec4(aPos * scale * 2, 1.0);
     
     // Pass the color to the fragment shader
     color = aColor;

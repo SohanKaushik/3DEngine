@@ -10,6 +10,7 @@ using namespace std;
 #include <Texture.h>
 
 
+
 // Notes
 /*
 
@@ -32,13 +33,15 @@ int main() {
     //opengl context
     glfwInit();
 
+
+
     //window context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Bindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 800, "Bindow", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -70,8 +73,6 @@ int main() {
         -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f,                    0.0f, 1.0f
     };
 
-
-
     // Indices
     unsigned int indices[] = {
          1, 0, 2,  // First triangle
@@ -79,23 +80,36 @@ int main() {
     };
 
 
-    // Buffers
+    float vertices2[] = {
+        // coordinates          
+        -0.8f, -0.8f, 0.0f,     
+         0.8f, -0.8f, 0.0f,     
+         0.8f,  0.8f, 0.0f,     
+        -0.8f,  0.8f, 0.0f,     
+    };
+
+
+
+    /////////////////////............................Buffers............................//////////////////////////
+
+
+
+    // First Buffer
     unsigned int vao;
     glGenVertexArrays(1, &vao);   //generate for gen
     glBindVertexArray(vao);
 
 
     IndexBuff iv(indices, 6);                  //count = 6 and size = 4 (row and column)
-    VertexBuff vb(vertices, 4 * 6 * 2  * sizeof(float));      // Vertex Buffer
-    glEnableVertexAttribArray(0);                        /// enable
+    VertexBuff vb(vertices, 4 * 6 * 2  * sizeof(float), 0);                     // Vertex Buffer
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);  
  
-
-  
 
     // Color attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);       //just comment when wanst without colors
+
+
 
 
     // Shader setup
@@ -115,8 +129,6 @@ int main() {
     GLuint uniID = glGetUniformLocation(shader.ID, "scale");
 
 
-
-
     // =Render
     Rend rend;
     while (!glfwWindowShouldClose(window)) {
@@ -125,7 +137,7 @@ int main() {
         rend.Clear();
 
         // scale
-        glUniform1f(uniID, 0.5f);
+        glUniform1f(uniID, .5f);
 
         // Activates the setup of buffers
         glBindVertexArray(vao);
@@ -145,5 +157,5 @@ int main() {
 
     glfwDestroyWindow(window);
     glfwTerminate();
-    return 0;
+    return NULL;
 }

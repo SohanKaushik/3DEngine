@@ -3,10 +3,12 @@
 
 
 
-VertexBuff::VertexBuff(const void* data, unsigned int size) {
+VertexBuff::VertexBuff(const void* data, unsigned int size, unsigned int vai) {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(vai);  //enable
+
 }
 
 

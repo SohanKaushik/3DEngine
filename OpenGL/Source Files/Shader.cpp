@@ -1,4 +1,4 @@
-#include "shaderClass.h"
+#include "Shader.h"
 #include <string>
 #include <cerrno>
 
@@ -30,6 +30,9 @@ std::string get_file_contents(const char* filename) {
 
 Shader::Shader(const char* vertexFile, const char* fragmentFile)
 {
+
+
+
 	// Read vertexFile and fragmentFile and store the strings
 	std::string vertexCode = get_file_contents(vertexFile);
 	std::string fragmentCode = get_file_contents(fragmentFile);
@@ -64,18 +67,32 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+
+
 }
 
 // Activates the Shader Program
-void Shader::Activate()
+void Shader::Bind() const
 {
 	glUseProgram(ID);
 }
 
 // Deletes the Shader Program
-void Shader::Delete()
+void Shader::Unbind() const
 {
-	glDeleteProgram(ID);
+	glUseProgram(ID);
 }
+
+
+void Shader::SetUniform1i(const std::string& name, int value) {
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	if (location == -1) {
+		std::cerr << "Uniform '" << name << "' not found in shader program.\n";
+	}
+	else {
+		glUniform1i(location, value);
+	}
+}
+
 
 

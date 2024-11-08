@@ -3,17 +3,21 @@
 #include <iostream>
 using namespace std;
 
-#include "shaderClass.h"
+#include "Shader.h"
+#include "VertexBuff.h"
+#include "Rend.h"
+#include "IndexBuff.h"
+#include <Texture.h>
 
 
 // Notes
-/* 
+/*
 
 1.  Initialize Opengl and window context
-2.  Shader Program of Vertex and Fragment 
+2.  Shader Program of Vertex and Fragment
 3.  Define vertex data
-4.  Generate and Bind VAO 
-5.  Generate and Bind VBO 
+4.  Generate and Bind VAO
+5.  Generate and Bind VBO
 6.  Set Vertex Attribute Pointers
 7.  Generate & Bind EBO (If needed)
 8.  Unbind VAO and VBO
@@ -27,12 +31,12 @@ int main() {
 
     //opengl context
     glfwInit();
-    
+
     //window context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
+
     // Create a GLFW window
     GLFWwindow* window = glfwCreateWindow(800, 600, "Bindow", NULL, NULL);
     if (window == NULL) {
@@ -51,103 +55,93 @@ int main() {
 
 
     // Shader initialization
-  
-  
+
+
 
 
 
     // Define vertex
     float vertices[] = {
 
-        // coordinates                               //colors
-        -0.5f, -0.5f, 0.0f,                        1.0f, 0.0f, 0.0f, 
-         0.5f, -0.5f, 0.0f,                        0.0f, 1.0f, 0.0f, 
-         0.5f,  0.5f, 0.0f,                        0.0f, 0.0f, 1.0f, 
-        -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f 
+        // coordinates                               //colors                            // Text Co_ordinates
+        -0.5f, -0.5f, 0.0f,                        1.0f, 0.0f, 0.0f,                    0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,                        0.0f, 1.0f, 0.0f,                    1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,                        0.0f, 0.0f, 1.0f,                    1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f,                    0.0f, 1.0f
     };
 
 
-    
-     // Indices
+
+    // Indices
     unsigned int indices[] = {
          1, 0, 2,  // First triangle
          2, 3, 0   // Second triangle
     };
 
 
-    // Generate VAO , VBO and etc..
-
-    GLuint VAO, VBO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    // Buffers
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);   //generate for gen
+    glBindVertexArray(vao);
 
 
-    // Binding
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    IndexBuff iv(indices, 6);                  //count = 6 and size = 4 (row and column)
+    VertexBuff vb(vertices, 4 * 6 * 2  * sizeof(float));      // Vertex Buffer
+    glEnableVertexAttribArray(0);                        /// enable
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);  
+ 
 
-
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-
-    // Set Vertex Attribute Pointers
-
-    // Now, here color and positions from vertex  ( load out in the memory )
-   
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+  
 
     // Color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);       //just comment when wanst without colors
 
-    // Unbinding VBO and VAO
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 
     // Shader setup
-    Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
+    Shader shader("shaders/default.vert", "shaders/default.frag");
+
+
+    //Texture setup
+    Texture texture("Textures/image.jpg");
+    texture.Bind();
+    shader.SetUniform1i("text", 0);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 
 
-    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+    // Scale
+    GLuint uniID = glGetUniformLocation(shader.ID, "scale");
+
+
+
+
     // =Render
+    Rend rend;
     while (!glfwWindowShouldClose(window)) {
 
         // Clear the screen
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  //bg color
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-
-        
-        // Use the shader setup we have setup earlier
-        shaderProgram.Activate();
-
+        rend.Clear();
 
         // scale
         glUniform1f(uniID, 0.5f);
 
         // Activates the setup of buffers
-        glBindVertexArray(VAO); 
-
+        glBindVertexArray(vao);
+        iv.Bind();
 
         // draws
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        rend.Draw(vb, iv, shader);
         //glDrawArrays(GL_TRIANGLES, 3, 3); // Draw inner triangle
-
+                 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // Clean up
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    shaderProgram.Delete();
+    glDeleteVertexArrays(1, &vao);
+    shader.Unbind();
 
     glfwDestroyWindow(window);
     glfwTerminate();

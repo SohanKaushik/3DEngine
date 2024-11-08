@@ -19,9 +19,17 @@ public:
 	Shader(const char* vertexFile, const char* fragmentFile);
 
 	// Activates the Shader Program
-	void Activate();
+	void Bind() const;
 	// Deletes the Shader Program
-	void Delete();
+	void Unbind() const;
+
+	//Set Uniforms
+	void SetUniform1i(const std::string& name, int value);
+	//void SetUnifrom1f(const std::string& name, float value);
+	//void SetUnifrom4i(const std::string& name, float v0, float v1, float v2, float v3);
+
+	//int GetUniformLocation(const std::string& name);
+
 };
 
 #endif

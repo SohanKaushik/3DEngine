@@ -8,14 +8,17 @@ out vec2 TexCoord;      // Passes the texture coordinate to the fragment shader
 
 uniform float scale; 
 uniform sampler2D text;
+uniform mat4 u_MVP = mat4(1.0);             // model view projection matrix
 
 
 
 void main()
 {
     // Apply the scale to the position
-    gl_Position = vec4(aPos * scale * 2, 1.0);
-    
+    // gl_Position = vec4(aPos * scale , 1.0);
+       gl_Position = u_MVP * vec4(aPos * scale, 1.0);
+
+
     // Pass the color to the fragment shader
     color = aColor;
 

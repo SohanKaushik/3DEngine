@@ -25,5 +25,5 @@ void IndexBuff::Bind() const {
 }
 
 void IndexBuff::Unbind() const {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);           // Unbind the buffer (make none active)
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);           // Unbind the buffer (make none active) 0
 }

@@ -8,8 +8,8 @@ using namespace std;
 #include "Rend.h"
 #include "IndexBuff.h"
 #include <Texture.h>
-
-
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 
 // Notes
 /*
@@ -30,6 +30,8 @@ using namespace std;
 */
 int main() {
 
+    Rend rend;
+
     //opengl context
     glfwInit();
 
@@ -41,7 +43,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 800, "Bindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow ( 3840.0f , 2160.0f, "Bindow", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -55,11 +57,6 @@ int main() {
         cerr << "Failed to initialize GLAD" << endl;
         return -1;
     }
-
-
-    // Shader initialization
-
-
 
 
 
@@ -92,18 +89,17 @@ int main() {
 
     /////////////////////............................Buffers............................//////////////////////////
 
-
-
     // First Buffer
-    unsigned int vao;
+    unsigned int vao;             // vertex array object
     glGenVertexArrays(1, &vao);   //generate for gen
     glBindVertexArray(vao);
 
 
-    IndexBuff iv(indices, 6);                  //count = 6 and size = 4 (row and column)
+    IndexBuff iv(indices, 6);                                                   //count = 6 and size = 4 (row and column)
     VertexBuff vb(vertices, 4 * 6 * 2  * sizeof(float), 0);                     // Vertex Buffer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);  
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);  
  
+  
 
     // Color attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -124,17 +120,30 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 
+    // Blend
+    rend.Blend();
 
     // Scale
     GLuint uniID = glGetUniformLocation(shader.ID, "scale");
 
+    //Unbinding 
+    iv.Unbind();
+    vb.Unbind();
+    shader.Unbind();
+
 
     // =Render
-    Rend rend;
     while (!glfwWindowShouldClose(window)) {
+
+        //glViewport(0, 0, 3840.0f, 2160.0f);
+    
+        // Aspect Ratio
+        rend.UpdadeProjections(window,shader,"u_MVP");
+
 
         // Clear the screen
         rend.Clear();
+
 
         // scale
         glUniform1f(uniID, .5f);

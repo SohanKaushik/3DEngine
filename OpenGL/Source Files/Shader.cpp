@@ -84,14 +84,29 @@ void Shader::Unbind() const
 }
 
 
+// Ratio Management          
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
+	
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+} 
+
+
+
+int Shader::GetUniformLocation(const std::string& name) {
+
+	if(m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+		return m_UniformLocationCache[name];
+
+	int location = glGetUniformLocation(ID, name.c_str());
+	if (location == -1)
+			std::cout << "Warning: uniform " << name << "doesn't exist!" << std::endl;
+
+	m_UniformLocationCache[name] = location;
+	return location;
+} 
+ 
 void Shader::SetUniform1i(const std::string& name, int value) {
-	GLint location = glGetUniformLocation(ID, name.c_str());
-	if (location == -1) {
-		std::cerr << "Uniform '" << name << "' not found in shader program.\n";
-	}
-	else {
-		glUniform1i(location, value);
-	}
+	glUniform1i(GetUniformLocation(name), value);
 }
 
 

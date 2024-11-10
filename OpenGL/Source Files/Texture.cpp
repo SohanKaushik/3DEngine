@@ -6,7 +6,7 @@ Texture::Texture(const std::string& path)
 	: m_rendID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_width(0), m_height(0) , m_BPP(0)
 {
 
-	stbi_set_flip_vertically_on_load(1);   //image load from bottom to up
+	stbi_set_flip_vertically_on_load(false);   //image load from bottom to up
 	m_LocalBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4);
 	glGenTextures(1, &m_rendID);
 	glBindTexture(GL_TEXTURE_2D, m_rendID);

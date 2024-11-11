@@ -49,8 +49,8 @@ void Rend::Camera(float x, float y, float  z, Shader& shader, const std::string&
 
 
 // Model Matrix
-void Rend::Transform(float x, float y, float  z, Shader& shader, const std::string& unformName) {
-	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+void Rend::Transform(glm::vec3 translation, Shader& shader, const std::string& unformName) {
+	glm::mat4 model = glm::translate(glm::mat4(1.0), translation);
 	glm::mat4 mvp = proj * view * model;
 	shader.SetUniformMat4f(unformName, mvp);
 };

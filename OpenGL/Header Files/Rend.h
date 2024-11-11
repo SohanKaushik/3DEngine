@@ -22,7 +22,7 @@ public:
 	void Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader) const;
 	void UpdadeProjections(GLFWwindow* window, Shader& shader, const std::string& unformName);
 	void Camera(float x, float y, float z, Shader& shader, const std::string& unformName);
-	void Transform(float x, float y, float  z, Shader& shader, const std::string& unformName);
+	void Transform(glm::vec3 translation, Shader& shader, const std::string& unformName);
 	void Clear() const;
 	void Blend();
 };

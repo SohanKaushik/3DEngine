@@ -43,7 +43,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow ( 3840.0f , 2160.0f, "Bindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow ( 800.0f , 600.0f, "Bindow", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -141,12 +141,18 @@ int main() {
         rend.UpdadeProjections(window,shader,"u_MVP");
 
 
+        //Camera
+        rend.Camera(-0.4f, 0.0f, 0, shader, "u_MVP");   
+
+        //Transform
+        rend.Transform(0.4, 0, 0, shader, "u_MVP");
+
         // Clear the screen
         rend.Clear();
 
 
         // scale
-        glUniform1f(uniID, .5f);
+        glUniform1f(uniID, 0.8f);
 
         // Activates the setup of buffers
         glBindVertexArray(vao);

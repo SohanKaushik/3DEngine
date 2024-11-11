@@ -35,6 +35,23 @@ void Rend::UpdadeProjections(GLFWwindow* window, Shader& shader, const std::stri
 
 	if (height == 0) height = 1;
 	float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-	glm::mat4 proj = glm::ortho(-aspectRatio, aspectRatio, 1.0f, -1.0f);
+	proj = glm::ortho(-aspectRatio , aspectRatio, 1.0f, -1.0f);
 	shader.SetUniformMat4f(unformName, proj);
+};
+
+
+//Warning: Use a Model Matrix to move objects.The View matrix only moves the camera.	
+
+void Rend::Camera(float x, float y, float  z, Shader& shader, const std::string& unformName) {
+	view = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+	glm::mat4 mvp = proj * view;
+	shader.SetUniformMat4f(unformName, mvp);
+};
+
+
+// Model Matrix
+void Rend::Transform(float x, float y, float  z, Shader& shader, const std::string& unformName) {
+	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+	glm::mat4 mvp = proj * view * model;
+	shader.SetUniformMat4f(unformName, mvp);
 };

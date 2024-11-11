@@ -11,6 +11,12 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
+
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 // Notes
 /*
 
@@ -43,7 +49,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow ( 800.0f , 600.0f, "Bindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800.0f, 600.0f, "Bindow", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -79,10 +85,10 @@ int main() {
 
     float vertices2[] = {
         // coordinates          
-        -0.8f, -0.8f, 0.0f,     
-         0.8f, -0.8f, 0.0f,     
-         0.8f,  0.8f, 0.0f,     
-        -0.8f,  0.8f, 0.0f,     
+        -0.8f, -0.8f, 0.0f,
+         0.8f, -0.8f, 0.0f,
+         0.8f,  0.8f, 0.0f,
+        -0.8f,  0.8f, 0.0f,
     };
 
 
@@ -96,10 +102,10 @@ int main() {
 
 
     IndexBuff iv(indices, 6);                                                   //count = 6 and size = 4 (row and column)
-    VertexBuff vb(vertices, 4 * 6 * 2  * sizeof(float), 0);                     // Vertex Buffer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);  
- 
-  
+    VertexBuff vb(vertices, 4 * 6 * 2 * sizeof(float), 0);                     // Vertex Buffer
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+
+
 
     // Color attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -132,17 +138,42 @@ int main() {
     shader.Unbind();
 
 
+
+    // ImGUI
+    ImGui::CreateContext();
+
+    // Initialize ImGui for GLFW and OpenGL3
+    ImGui_ImplGlfw_InitForOpenGL(window, true);  // This should be called only once
+    ImGui_ImplOpenGL3_Init("#version 130"); // OpenGL 3.3 shader version
+
+    // Set up ImGui style
+    ImGui::StyleColorsDark();
+
+
+    // Our state
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+
+
     // =Render
     while (!glfwWindowShouldClose(window)) {
 
+        //GUI Start
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
         //glViewport(0, 0, 3840.0f, 2160.0f);
-    
+
         // Aspect Ratio
-        rend.UpdadeProjections(window,shader,"u_MVP");
+        rend.UpdadeProjections(window, shader, "u_MVP");
 
 
         //Camera
-        rend.Camera(-0.4f, 0.0f, 0, shader, "u_MVP");   
+        rend.Camera(-0.4f, 0.0f, 0, shader, "u_MVP");
 
         //Transform
         rend.Transform(0.4, 0, 0, shader, "u_MVP");
@@ -161,16 +192,54 @@ int main() {
         // draws
         rend.Draw(vb, iv, shader);
         //glDrawArrays(GL_TRIANGLES, 3, 3); // Draw inner triangle
-                 
+
+
+
+
+        //   // GUI: Create window and UI elements
+        {
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            ImGui::End();
+        }
+
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        //GUI END
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
-    // Clean up
-    glDeleteVertexArrays(1, &vao);
-    shader.Unbind();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return NULL;
+        // Clean up
+        glDeleteVertexArrays(1, &vao);
+        shader.Unbind();
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return NULL;
 }

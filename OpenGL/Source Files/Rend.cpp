@@ -4,7 +4,6 @@
 
 
 
-
 void Rend::Clear() const {
 
 	// Clear the screen

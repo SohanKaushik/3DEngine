@@ -23,5 +23,5 @@ void main()
     color = aColor;
 
     // Pass the texture coordinates to the fragment shader
-    TexCoord = aTexCoord;
+    //TexCoord = aTexCoord;
 }

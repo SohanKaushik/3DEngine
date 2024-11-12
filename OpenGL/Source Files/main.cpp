@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 using namespace std;
-
 #include "Shader.h"
 #include "VertexBuff.h"
 #include "Rend.h"
@@ -16,6 +15,9 @@ using namespace std;
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
+
+#define WIDHT 800.0f
+#define HEIGHT 600.0f
 
 // Notes
 /*
@@ -49,7 +51,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800.0f, 600.0f, "Bindow", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDHT, HEIGHT, "Window", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -75,6 +77,26 @@ int main() {
          0.5f,  0.5f, 0.0f,                        0.0f, 0.0f, 1.0f,                    1.0f, 1.0f,
         -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f,                    0.0f, 1.0f
     };
+    
+ 
+ float vertices2[] =
+{
+     // Positions          Color (RGB)
+      -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,  // TLF (Red)
+       0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,  // TRF (Green)
+       0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,  // BRF (Blue)
+      -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,  // BLF (Yellow)
+
+      -0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f,  // TLB (Cyan)
+       0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f,  // TRB (Magenta)
+       0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f,  // BRB (Gray)
+      -0.5f,  0.5f, -0.5f,   0.5f, 1.0f, 0.5f   // BLB (Lime)
+
+};
+
+
+
+
 
     // Indices
     unsigned int indices[] = {
@@ -83,13 +105,26 @@ int main() {
     };
 
 
-    float vertices2[] = {
-        // coordinates          
-        -0.8f, -0.8f, 0.0f,
-         0.8f, -0.8f, 0.0f,
-         0.8f,  0.8f, 0.0f,
-        -0.8f,  0.8f, 0.0f,
+    // 6 faces , 2 triangles per face, 12 triangles
+    unsigned int indices2[] =
+    {
+        // Front face (TRF, TLF, BLF, BRF)
+        0, 1, 2, 2, 3, 0,
+        // Back face (TLB, TRB, BRB, BLB)
+        4, 5, 6, 6, 7, 4,
+        // Top face (TLF, TRF, TRB, TLB)
+        0, 1, 5, 5, 4, 0,
+        // Bottom face (BRF, BLF, BLB, BRB)
+        2, 3, 7, 7, 6, 2,
+        // Left face (TLF, BLF, BLB, TLB)
+        0, 3, 7, 7, 4, 0,
+        // Right face (TRF, BRF, BRB, TRB)
+        1, 2, 6, 6, 5, 1
     };
+
+
+
+
 
 
 
@@ -101,21 +136,19 @@ int main() {
     glBindVertexArray(vao);
 
 
-    IndexBuff iv(indices, 6);                                                   //count = 6 and size = 4 (row and column)
-    VertexBuff vb(vertices, 4 * 6 * 2 * sizeof(float), 0);                     // Vertex Buffer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
-
+    IndexBuff iv(indices2, 36);                           //  (6 column) * (36 row)
+    VertexBuff vb(vertices2, 8 * 6 * sizeof(float), 0);   // 8 vertices, each with 6 floats (3 for position, 3 for color)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr); // Position: first 3 floats
 
 
     // Color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);       //just comment when wanst without colors
-
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Color: next 3 floats
+    glEnableVertexAttribArray(1);
 
 
 
     // Shader setup
-    Shader shader("shaders/default.vert", "shaders/default.frag");
+    Shader shader("shaders/default.vert", "shaders/default.frag"); 
 
 
     //Texture setup
@@ -150,10 +183,20 @@ int main() {
     ImGui::StyleColorsDark();
 
 
-    glm::vec3 translation(0.0f, 0.0f, 0);
+
+
+
+
+    glm::vec3 translateModel(0.0f, 0.0f, -1.0f);
+    glm::vec3 rotateModel(0.1f, 0.1f, 0.1f);
+
+    glfwSwapInterval(0);
+    glDisable(GL_CULL_FACE);  // Disable face culling to see both sides
+
 
     // =Render
     while (!glfwWindowShouldClose(window)) {
+
 
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
@@ -164,21 +207,27 @@ int main() {
         //glViewport(0, 0, 3840.0f, 2160.0f);
 
         // Aspect Ratio
-        rend.UpdadeProjections(window, shader, "u_MVP");
+        rend.Projections(window, shader, "u_MVP");
 
 
         //Camera
-        rend.Camera(0.0f, 0.0f, 0, shader, "u_MVP");
+        //rend.Camera(glm::vec3(0.0f,0.0f,0.0f), shader, "u_MVP");
 
-        //Transform
-        rend.Transform(translation, shader, "u_MVP");
+        //Model 
+        rend.ModelTransform(translateModel);
+        rend.ModelScale();
+        rend.ModelRotate(rotateModel);
+
+
+        //All Transformation 
+        rend.Transform(shader, "u_MVP");
 
         // Clear the screen
         rend.Clear();
 
 
         // scale
-        glUniform1f(uniID, 0.8f);
+        glUniform1f(uniID, 2.0f);
 
         // Activates the setup of buffers
         glBindVertexArray(vao);
@@ -193,16 +242,19 @@ int main() {
 
         //   // GUI: Create window and UI elements
         {
-            static float f = 0.0f;
-            static int counter = 0;
 
             ImGui::Begin("Dialog!");                       
             ImGuiIO& io = ImGui::GetIO();
             ImGui::Text("Translations");               
-            ImGui::SliderFloat("x", &translation.x, -1.0f, 1.0f);     
-            ImGui::SliderFloat("y", &translation.y, -1.0f, 1.0f);
+            ImGui::SliderFloat("x", &translateModel.x, -1.0f, 1.0f);     
+            ImGui::SliderFloat("y", &translateModel.y, -1.0f, 1.0f);
+            ImGui::SliderFloat("z", &translateModel.z, -1.0f, -0.44f);
+            ImGui::Dummy(ImVec2(0.0f,20.0f));
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+            ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 1.0f);
+            
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 0 , rend.FpsCount());
             ImGui::End();
         }
 

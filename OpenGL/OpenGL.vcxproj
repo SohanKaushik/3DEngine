@@ -465,6 +465,7 @@
     <ClInclude Include="Header Files\Texture.h" />
     <ClInclude Include="Header Files\VertexBuff.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source Files\Framework\Base.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc" />

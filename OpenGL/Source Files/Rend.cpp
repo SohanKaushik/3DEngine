@@ -1,7 +1,7 @@
 
 #include <glm/glm.hpp>
 #include "Rend.h"
-
+#include "Camera.h"
 
 
 
@@ -9,10 +9,8 @@ void Rend::Clear() const {
 
 	// Clear the screen
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  //bg color
-
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glClear(GL_COLOR_BUFFER_BIT);
 };
 
 
@@ -30,27 +28,6 @@ void Rend::Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader)
 };
 
 
-void Rend::Projections(GLFWwindow* window, Shader& shader, const std::string& unformName) {
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-
-
-	if (height == 0) height = 1;
-	float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-	//proj = glm::ortho(-aspectRatio , aspectRatio, 1.0f, -1.0f);
-	proj = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 1000.0f);
-	shader.SetUniformMat4f(unformName, proj);
-};
-
-
-//Warning: Use a Model Matrix to move objects.The View matrix only moves the camera.	
-void Rend::Camera(glm::vec3 positions , Shader& shader, const std::string& unformName) {
-	view = glm::translate(glm::mat4(1.0), positions);
-	glm::mat4 mvp = proj * view;
-	shader.SetUniformMat4f(unformName, mvp);
-};
-
-
 // Model Matrix
 void Rend::ModelTransform(glm::vec3 translation) {
 	model = glm::translate(glm::mat4(1.0), translation); 
@@ -64,11 +41,14 @@ void Rend::ModelRotate(glm::vec3 axis){
 	model = glm::rotate(model, glm::radians(45.0f), axis);
 };
 
-
-void Rend::Transform(Shader& shader, const std::string& unformName) {
-	glm::mat4 mvp = proj * view * model;
+// All Matrix Transform
+void Rend::UpdateMatrix(Shader& shader, const std::string& unformName, Camera& cam) {
+	glm::mat4 mvp = cam.GetProjectionMatrix() * cam.GetViewMatrix() * model;
 	shader.SetUniformMat4f(unformName, mvp);
 };
+
+
+
 
 double Rend::FpsCount() {
 	currentTime = glfwGetTime();
@@ -77,9 +57,12 @@ double Rend::FpsCount() {
 
 
 	if (timeDiff >= 1.0 / 30.0) {
-		return (1.0 / timeDiff) * counter;
+		double fps = (1.0 / timeDiff) * counter;
+		return fps;
 	}
 
 	prevTime = currentTime;
 	counter = 0;
+
+	return NULL;
 };

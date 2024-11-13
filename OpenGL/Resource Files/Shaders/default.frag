@@ -7,7 +7,7 @@ in vec2 TexCoord;   // Texture coordinates from the vertex shader
 uniform sampler2D text;
 
 void main()
-{
+{ 
     // Sample the texture using the coordinates
     vec4 texColor = texture(text, TexCoord);
     
@@ -16,5 +16,5 @@ void main()
     //  FragColor = texColor;
     //  FragColor = texColor * vec4(color, 1.0);      // texture + color blend
     // FragColor = vec4(texColor.rgb, texColor.a * 1);   // texture + alpha blend
-       FragColor = vec4(color, 1.0f);  
+       FragColor = vec4(color , 1.0f) ;  
 }

@@ -9,6 +9,7 @@ using namespace std;
 #include <Texture.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
+#include "Camera.h"
 
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
@@ -204,14 +205,8 @@ int main() {
         ImGui::NewFrame();
 
 
-        //glViewport(0, 0, 3840.0f, 2160.0f);
-
-        // Aspect Ratio
-        rend.Projections(window, shader, "u_MVP");
-
-
         //Camera
-        //rend.Camera(glm::vec3(0.0f,0.0f,0.0f), shader, "u_MVP");
+        Camera camera(glm::vec3(0.0f,0.0f,0.0f), 45.0f, 0.1f, 1000.0f, window);                // [ position, fov , near , far , window ]
 
         //Model 
         rend.ModelTransform(translateModel);
@@ -219,15 +214,15 @@ int main() {
         rend.ModelRotate(rotateModel);
 
 
-        //All Transformation 
-        rend.Transform(shader, "u_MVP");
+        //All Matrix Transformation Applied
+        rend.UpdateMatrix(shader, "u_MVP", camera);
 
         // Clear the screen
         rend.Clear();
 
 
         // scale
-        glUniform1f(uniID, 2.0f);
+        glUniform1f(uniID, 5.0f);
 
         // Activates the setup of buffers
         glBindVertexArray(vao);

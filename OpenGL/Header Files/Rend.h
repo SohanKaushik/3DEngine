@@ -6,6 +6,8 @@
 #include <Shader.h>
 #include <glm/gtc/matrix_transform.hpp> 
 
+#include "Camera.h"
+
 class Rend {
 	
 
@@ -27,15 +29,15 @@ public:
 	};
 
 	void Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader) const;
-	void Projections(GLFWwindow* window, Shader& shader, const std::string& unformName );
-	void Camera(glm::vec3 positions, Shader& shader, const std::string& unformName);
+	//void Projections(GLFWwindow* window, Shader& shader, const std::string& unformName );
+	//void Camera(glm::vec3 positions, Shader& shader, const std::string& unformName, GLFWwindow* window);
 
 	//Model 
 	void ModelTransform(glm::vec3 translation);
-	void ModelScale();
+	void ModelScale();                                       
 	void ModelRotate(glm::vec3 axis);
 
-	void Transform(Shader& shader, const std::string& unformName);
+	void UpdateMatrix(Shader& shader, const std::string& uniformName, Camera& cam);
 	double FpsCount();
 	void Clear() const;
 	void Blend();

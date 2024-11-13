@@ -153,6 +153,7 @@
     <ClCompile Include="dependencies\include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Source Files\Camera.cpp" />
     <ClCompile Include="Source Files\glad.c" />
     <ClCompile Include="Source Files\IndexBuff.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
@@ -459,6 +460,7 @@
     <ClInclude Include="dependencies\include\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\include\imgui\imstb_truetype.h" />
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
+    <ClInclude Include="Header Files\Camera.h" />
     <ClInclude Include="Header Files\IndexBuff.h" />
     <ClInclude Include="Header Files\Rend.h" />
     <ClInclude Include="Header Files\Shader.h" />

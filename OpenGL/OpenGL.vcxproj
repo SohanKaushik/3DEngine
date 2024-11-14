@@ -156,6 +156,7 @@
     <ClCompile Include="Source Files\Camera.cpp" />
     <ClCompile Include="Source Files\glad.c" />
     <ClCompile Include="Source Files\IndexBuff.cpp" />
+    <ClCompile Include="Source Files\Light.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="sec.cpp" />
     <ClCompile Include="Source Files\Rend.cpp" />
@@ -468,6 +469,7 @@
     <ClInclude Include="Header Files\VertexBuff.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Source Files\Framework\Base.h" />
+    <ClInclude Include="Header Files\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc" />

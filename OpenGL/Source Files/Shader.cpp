@@ -80,7 +80,7 @@ void Shader::Bind() const
 // Deletes the Shader Program
 void Shader::Unbind() const
 {
-	glUseProgram(ID);
+	glUseProgram(0);
 }
 
 
@@ -108,6 +108,15 @@ int Shader::GetUniformLocation(const std::string& name) {
 void Shader::SetUniform1i(const std::string& name, int value) {
 	glUniform1i(GetUniformLocation(name), value);
 }
+
+void Shader::SetUniform1f(const std::string& name, float v1) {
+	glUniform1f(GetUniformLocation(name), v1);
+}
+
+void Shader::SetUniform3fv(const std::string& name, glm::vec3 pos) {
+	glUniform3fv(GetUniformLocation(name), 1, &pos[0]);
+}
+
 
 
 

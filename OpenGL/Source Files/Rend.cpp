@@ -19,6 +19,7 @@ void Rend::Blend() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+
 void Rend::Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader) const {
 
 	shader.Bind();
@@ -44,6 +45,8 @@ void Rend::ModelRotate(glm::vec3 axis){
 // All Matrix Transform
 void Rend::UpdateMatrix(Shader& shader, const std::string& unformName, Camera& cam) {
 	glm::mat4 mvp = cam.GetProjectionMatrix() * cam.GetViewMatrix() * model;
+
+	// Debug: print out the MVP matrix
 	shader.SetUniformMat4f(unformName, mvp);
 };
 
@@ -65,4 +68,8 @@ double Rend::FpsCount() {
 	counter = 0;
 
 	return NULL;
+};
+
+glm::mat4 Rend:: GetModelMatrix() {
+	return model;
 };

@@ -1,0 +1,30 @@
+1. Shader Texture , Color, Uniforms does not exist :: vertex shader or fragment shader
+2. Projection Intialization after binding the buffers.
+3. Projections are transformations that map 3D coordinates to 2D screen space [ Orhto, Perspective ].
+4. MVP : Model Matrix, View Matrix, Projection Matrix   [ Transforms, Camera, 3D to 2D ].
+5. Activate Shader before Initializing Projection Matrix , etc.
+6. MVP :: only linked with Vertex Shader not Fragment.
+7. FOV :: Field of View , in radians [ Debug :: Scalling ]
+
+!!
+ FragColor = texColor;
+ FragColor = texColor * vec4(color, 1.0);      // texture + color blend
+ FragColor = vec4(texColor.rgb, texColor.a * 1);   // texture + alpha blend
+
+
+8. Ambient Light : general light in a scene
+9. Diffused Light : light coming from a specific position ( calculated using normal of surface and direction of light).
+	            [  The more aligned the normal is with the light direction, the brighter the surface will be. ]
+
+10. Specular : Highlight on a surface, compares the normal vector of the surface and the light direction.
+	       [The closer the view direction aligns with the reflection direction, the brighter the specular highlight.]
+	       
+
+11. Virtual Func. : virtual functions must not be implemented into real funtions because they are just virtual ( in cpp file),
+					only derived class can override them.
+
+
+12. Sometimes deformed object is a result of inncorrect glVertexAttribPointer.
+13. Z UP : Makes sure that camera orientation is right.
+
+14. Uniforms : uniform color -> vertex ( replaced with new color2) -> fragment shader ( out FragColor : main name)

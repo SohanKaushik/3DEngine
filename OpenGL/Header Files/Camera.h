@@ -10,7 +10,8 @@
 class Camera {
 		
 private:
-	glm::vec3 m_positions;
+	glm::vec3 m_position;
+	glm::vec3 m_targetPos;
 
 	float m_fov;
 	float m_near;
@@ -21,7 +22,9 @@ private:
 public:
 	Camera(glm::vec3 position, float fov, float near, float far, GLFWwindow* window);
 
+	glm::vec3 GetCameraPosition();
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewMatrix();
 	float GetAspectRatio();
+	glm::vec3 GetCameraFront();
 };						

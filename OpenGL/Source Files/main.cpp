@@ -10,41 +10,39 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include "Camera.h"
-
+#include "Light.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#define WIDHT 800.0f
-#define HEIGHT 600.0f
-
-// Notes
-/*
-
-1.  Initialize Opengl and window context
-2.  Shader Program of Vertex and Fragment
-3.  Define vertex data
-4.  Generate and Bind VAO
-5.  Generate and Bind VBO
-6.  Set Vertex Attribute Pointers
-7.  Generate & Bind EBO (If needed)
-8.  Unbind VAO and VBO
-9.  Render
-10. Clean Up
+#define WIDHT 800
+#define HEIGHT 600
 
 
 
-*/
+
+// Set up and configure your directional light
+DirectionalLight dirLight(
+    glm::vec3(0.1f, 0.1f, 0.1f),   // ambient
+    glm::vec3(0.8f, 0.8f, 0.8f),   // diffuse
+    glm::vec3(1.0f, 1.0f, 1.0f),   // specular
+    glm::vec3(-0.2f, -1.0f, -0.3f) // direction
+
+);
+
+
 int main() {
 
+
+    // variables
     Rend rend;
+
+
 
     //opengl context
     glfwInit();
-
-
 
     //window context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -68,60 +66,37 @@ int main() {
     }
 
 
+    float vertices2[] = {
+        // Positions                    // Normals
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,  1.0f,  // Front face
+         0.5f, -0.5f,  0.5f,    0.0f, 0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,    0.0f, 0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,  1.0f,
 
-    // Define vertex
-    float vertices[] = {
-
-        // coordinates                               //colors                            // Text Co_ordinates
-        -0.5f, -0.5f, 0.0f,                        1.0f, 0.0f, 0.0f,                    0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,                        0.0f, 1.0f, 0.0f,                    1.0f, 0.0f,
-         0.5f,  0.5f, 0.0f,                        0.0f, 0.0f, 1.0f,                    1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f,                        1.0f, 1.0f, 0.0f,                    0.0f, 1.0f
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f, -1.0f,  // Back face
+         0.5f, -0.5f, -0.5f,    0.0f, 0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,    0.0f, 0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 0.0f, -1.0f,
     };
-    
- 
- float vertices2[] =
+
+
+
+ // 6 faces , 2 triangles per face, 12 triangles
+unsigned int indices2[] =
 {
-     // Positions          Color (RGB)
-      -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,  // TLF (Red)
-       0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,  // TRF (Green)
-       0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,  // BRF (Blue)
-      -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,  // BLF (Yellow)
-
-      -0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f,  // TLB (Cyan)
-       0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f,  // TRB (Magenta)
-       0.5f,  0.5f, -0.5f,   0.5f, 0.5f, 0.5f,  // BRB (Gray)
-      -0.5f,  0.5f, -0.5f,   0.5f, 1.0f, 0.5f   // BLB (Lime)
-
+    // Front face (TRF, TLF, BLF, BRF)
+    0, 1, 2, 2, 3, 0,
+    // Back face (TLB, TRB, BRB, BLB)
+    4, 5, 6, 6, 7, 4,
+    // Top face (TLF, TRF, TRB, TLB)
+    0, 1, 5, 5, 4, 0,
+    // Bottom face (BRF, BLF, BLB, BRB)
+    2, 3, 7, 7, 6, 2,
+    // Left face (TLF, BLF, BLB, TLB)
+    0, 3, 7, 7, 4, 0,
+    // Right face (TRF, BRF, BRB, TRB)
+    1, 2, 6, 6, 5, 1
 };
-
-
-
-
-
-    // Indices
-    unsigned int indices[] = {
-         1, 0, 2,  // First triangle
-         2, 3, 0   // Second triangle
-    };
-
-
-    // 6 faces , 2 triangles per face, 12 triangles
-    unsigned int indices2[] =
-    {
-        // Front face (TRF, TLF, BLF, BRF)
-        0, 1, 2, 2, 3, 0,
-        // Back face (TLB, TRB, BRB, BLB)
-        4, 5, 6, 6, 7, 4,
-        // Top face (TLF, TRF, TRB, TLB)
-        0, 1, 5, 5, 4, 0,
-        // Bottom face (BRF, BLF, BLB, BRB)
-        2, 3, 7, 7, 6, 2,
-        // Left face (TLF, BLF, BLB, TLB)
-        0, 3, 7, 7, 4, 0,
-        // Right face (TRF, BRF, BRB, TRB)
-        1, 2, 6, 6, 5, 1
-    };
 
 
 
@@ -138,39 +113,32 @@ int main() {
 
 
     IndexBuff iv(indices2, 36);                           //  (6 column) * (36 row)
-    VertexBuff vb(vertices2, 8 * 6 * sizeof(float), 0);   // 8 vertices, each with 6 floats (3 for position, 3 for color)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr); // Position: first 3 floats
+    VertexBuff vb(vertices2, 8 * 6 * sizeof(float));   // 8 vertices, each with 6 floats (3 for position, 3 for color)
+
+    //Position Attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
 
 
-    // Color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Color: next 3 floats
+
+    //Normal Attribute 
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
 
 
     // Shader setup
     Shader shader("shaders/default.vert", "shaders/default.frag"); 
-
-
-    //Texture setup
-    Texture texture("Textures/image.jpg");
-    texture.Bind();
-    shader.SetUniform1i("text", 0);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-
+    shader.Bind();
 
     // Blend
     rend.Blend();
 
-    // Scale
-    GLuint uniID = glGetUniformLocation(shader.ID, "scale");
-
-    //Unbinding 
-    iv.Unbind();
-    vb.Unbind();
-    shader.Unbind();
-
+  
+    //Light
+    // 
+    // 
+    // Assuming DirectionalLight is a class with a proper constructor
+    // Calculate lighting color on the CPU side
 
 
     // ImGUI
@@ -183,16 +151,18 @@ int main() {
     // Set up ImGui style
     ImGui::StyleColorsDark();
 
+    glfwSwapInterval(0);
+    glDisable(GL_CULL_FACE);  // Disable face culling to see both sides
 
 
 
-
-
+    //Variables 
+    glm::vec3 color(1.0f, 0.0f, 0.0f);
     glm::vec3 translateModel(0.0f, 0.0f, -1.0f);
     glm::vec3 rotateModel(0.1f, 0.1f, 0.1f);
 
-    glfwSwapInterval(0);
-    glDisable(GL_CULL_FACE);  // Disable face culling to see both sides
+    //Camera
+    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), 45.0f, 0.1f, 1000.0f, window);   // [ position, fov , near , far , window ]
 
 
     // =Render
@@ -204,9 +174,6 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-
-        //Camera
-        Camera camera(glm::vec3(0.0f,0.0f,0.0f), 45.0f, 0.1f, 1000.0f, window);                // [ position, fov , near , far , window ]
 
         //Model 
         rend.ModelTransform(translateModel);
@@ -220,19 +187,32 @@ int main() {
         // Clear the screen
         rend.Clear();
 
+        ////cube color
+        shader.SetUniform3fv("color", color);
 
-        // scale
-        glUniform1f(uniID, 5.0f);
 
         // Activates the setup of buffers
         glBindVertexArray(vao);
         iv.Bind();
 
+
+        // **Calculate light color and set uniform for lighting**
+        
+        /*
+        glm::vec3 normal = glm::vec3(0.0f, 0.0f, 1.0f); 
+        glm::vec3 viewDir = glm::normalize(camera.GetCameraPosition() - translateModel);  // Direction to the camera
+
+        // Calculate the lighting color using the DirectionalLight instance
+        glm::vec3 lightColor = dirLight.CalculateLight(normal, viewDir);
+        glm::vec3 lightDir = camera.GetCameraFront();
+
+        shader.SetUniform3fv("lightColorr", lightColor); // Pass to shader
+        shader.SetUniform3fv("lightDir", lightDir);
+        */
+
         // draws
         rend.Draw(vb, iv, shader);
         //glDrawArrays(GL_TRIANGLES, 3, 3); // Draw inner triangle
-
-
 
 
         //   // GUI: Create window and UI elements
@@ -243,12 +223,14 @@ int main() {
             ImGui::Text("Translations");               
             ImGui::SliderFloat("x", &translateModel.x, -1.0f, 1.0f);     
             ImGui::SliderFloat("y", &translateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("z", &translateModel.z, -1.0f, -0.44f);
+            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 2.8f);
+
             ImGui::Dummy(ImVec2(0.0f,20.0f));
 
 
             ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 1.0f);
-            
+            //ImGui::ColorPicker3("Color", &color[0]);
+
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 0 , rend.FpsCount());
             ImGui::End();
         }

@@ -35,8 +35,8 @@ public:
 
 	//Set Uniforms
 	void SetUniform1i(const std::string& name, int value);
-	//void SetUnifrom1f(const std::string& name, float value);
-	//void SetUnifrom4i(const std::string& name, float v0, float v1, float v2, float v3);
+	void SetUniform1f(const std::string& name, float v1);
+	void SetUniform3fv(const std::string& name, glm::vec3 pos);
 
 
 private: 

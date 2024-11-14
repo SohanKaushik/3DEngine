@@ -22,15 +22,9 @@ private:
 
 public:
 
-	Rend() {
-		proj = glm::mat4(1.0f);
-		view = glm::mat4(1.0f);
-		model = glm::mat4(1.0f);
-	};
 
 	void Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader) const;
-	//void Projections(GLFWwindow* window, Shader& shader, const std::string& unformName );
-	//void Camera(glm::vec3 positions, Shader& shader, const std::string& unformName, GLFWwindow* window);
+	
 
 	//Model 
 	void ModelTransform(glm::vec3 translation);
@@ -41,4 +35,6 @@ public:
 	double FpsCount();
 	void Clear() const;
 	void Blend();
+
+	glm::mat4 GetModelMatrix();
 };

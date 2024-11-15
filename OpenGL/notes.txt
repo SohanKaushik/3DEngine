@@ -27,4 +27,6 @@
 12. Sometimes deformed object is a result of inncorrect glVertexAttribPointer.
 13. Z UP : Makes sure that camera orientation is right.
 
-14. Uniforms : uniform color -> vertex ( replaced with new color2) -> fragment shader ( out FragColor : main name)
+14. UniformColor : uniform color -> vertex ( replaced with new color2) -> fragment shader ( out FragColor : main name) 
+15. Uniforms : must passed to main or throw error
+16. Unifroms : #version 330 core make sure its there 

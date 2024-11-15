@@ -8,7 +8,7 @@
 void Rend::Clear() const {
 
 	// Clear the screen
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  //bg color
+	glClearColor(0.3f, 0.3f, 0.3f, 0.3f);  //bg color
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 };
@@ -42,6 +42,7 @@ void Rend::ModelRotate(glm::vec3 axis){
 	model = glm::rotate(model, glm::radians(45.0f), axis);
 };
 
+
 // All Matrix Transform
 void Rend::UpdateMatrix(Shader& shader, const std::string& unformName, Camera& cam) {
 	glm::mat4 mvp = cam.GetProjectionMatrix() * cam.GetViewMatrix() * model;
@@ -49,9 +50,6 @@ void Rend::UpdateMatrix(Shader& shader, const std::string& unformName, Camera& c
 	// Debug: print out the MVP matrix
 	shader.SetUniformMat4f(unformName, mvp);
 };
-
-
-
 
 double Rend::FpsCount() {
 	currentTime = glfwGetTime();
@@ -69,6 +67,7 @@ double Rend::FpsCount() {
 
 	return NULL;
 };
+
 
 glm::mat4 Rend:: GetModelMatrix() {
 	return model;

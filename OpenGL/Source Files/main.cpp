@@ -28,7 +28,7 @@ DirectionalLight dirLight(
     glm::vec3(0.1f, 0.1f, 0.1f),   // ambient
     glm::vec3(0.8f, 0.8f, 0.8f),   // diffuse
     glm::vec3(1.0f, 1.0f, 1.0f),   // specular
-    glm::vec3(-0.2f, -1.0f, -0.3f) // direction
+    glm::vec3(-1.0f, -1.0f, -1.0f) // direction
 
 );
 
@@ -158,7 +158,7 @@ unsigned int indices2[] =
 
     //Variables 
     glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 translateModel(0.0f, 0.0f, -1.0f);
+    glm::vec3 translateModel(0.0f, 0.0f, 2.5f);
     glm::vec3 rotateModel(0.1f, 0.1f, 0.1f);
 
     //Camera
@@ -196,6 +196,7 @@ unsigned int indices2[] =
         iv.Bind();
 
 
+        dirLight.SetLightUniform(shader, "dirLight");
         // **Calculate light color and set uniform for lighting**
         
         /*
@@ -210,6 +211,10 @@ unsigned int indices2[] =
         shader.SetUniform3fv("lightDir", lightDir);
         */
 
+        shader.SetUniformMat4f("model", rend.GetModelMatrix());
+        shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
+        shader.SetUniformMat4f("view", camera.GetViewMatrix());
+
         // draws
         rend.Draw(vb, iv, shader);
         //glDrawArrays(GL_TRIANGLES, 3, 3); // Draw inner triangle
@@ -223,13 +228,14 @@ unsigned int indices2[] =
             ImGui::Text("Translations");               
             ImGui::SliderFloat("x", &translateModel.x, -1.0f, 1.0f);     
             ImGui::SliderFloat("y", &translateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 2.8f);
+            ImGui::SliderFloat("z", &translateModel.z,  1.0f, 2.8f);
 
             ImGui::Dummy(ImVec2(0.0f,20.0f));
 
 
             ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 1.0f);
-            //ImGui::ColorPicker3("Color", &color[0]);
+            ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
+            ImGui::ColorPicker3("Color", &color[0]);
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 0 , rend.FpsCount());
             ImGui::End();

@@ -31,7 +31,8 @@ void Rend::Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader)
 
 // Model Matrix
 void Rend::ModelTransform(glm::vec3 translation) {
-	model = glm::translate(glm::mat4(1.0), translation); 
+	model = glm::translate(glm::mat4(1.0), translation);
+	m_modelPosition = translation;
 };
 
 void Rend::ModelScale() {
@@ -71,4 +72,8 @@ double Rend::FpsCount() {
 
 glm::mat4 Rend:: GetModelMatrix() {
 	return model;
+};
+
+glm::vec3 Rend::GetModelPosition() {
+	return m_modelPosition;
 };

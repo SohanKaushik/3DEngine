@@ -18,7 +18,8 @@ private:
 	double currentTime = 0.0f;
 	double timeDiff;
 	unsigned int counter = 0;
-
+	
+	glm::vec3 m_modelPosition;
 
 public:
 
@@ -37,4 +38,5 @@ public:
 	void Blend();
 
 	glm::mat4 GetModelMatrix();
+	glm::vec3 GetModelPosition();
 };

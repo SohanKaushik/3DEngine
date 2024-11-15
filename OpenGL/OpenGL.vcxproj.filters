@@ -1414,6 +1414,8 @@
     <None Include="dependencies\include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="Resource Files\Shaders\light.frag" />
+    <None Include="Resource Files\Shaders\light.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

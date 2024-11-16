@@ -48,3 +48,6 @@
         shader.SetUniform3fv("lightDir", lightDir);
         */
 
+
+
+17. Normal : incomplete normals could results in half ligh - half dark cubes;

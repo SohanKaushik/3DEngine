@@ -22,7 +22,6 @@ void main()
 
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 
-
     // Pass data to the fragment shader
     FragPos = vec3(model * vec4(aPos, 1.0));  // Transform vertex to world space
     Normal = mat3(transpose(inverse(model))) * aNormal;  // Transform normal to world space

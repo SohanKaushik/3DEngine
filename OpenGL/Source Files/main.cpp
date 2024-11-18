@@ -22,12 +22,21 @@ using namespace std;
 
 
 DirectionalLight dirLight(
-    glm::vec3(0.2f, 0.2f, 0.2f),  // ambient (slightly brighter neutral)
-    glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse (neutral white)
-    glm::vec3(1.0f, 1.0f, 1.0f),  // specular (neutral white)
-    glm::vec3(-1.0f, -1.0f, -1.0f) // direction (diagonal downward)
+    glm::vec3(0.2f, 0.2f, 0.2f),  // ambient 
+    glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse 
+    glm::vec3(1.0f, 1.0f, 1.0f),  // specular
+    glm::vec3(0.0f, 1.0f, 0.0f)   // direction
 );
 
+SpotLight spotLight(
+    glm::vec3(0.2f, 0.2f, 0.2f),  // ambient 
+    glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse 
+    glm::vec3(1.0f, 1.0f, 1.0f),  // specular
+    glm::vec3(0.0f, 5.0f, 0.0f),  // direction
+    glm::vec3(0.0f, 5.0f, 0.0f),  // position
+    1.0f,                         // inner
+    2.0f                          // outer
+);
 
 int main() {
 
@@ -228,6 +237,7 @@ int main() {
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
     glm::vec3 rotateLight(0.0f, 0.0f, 1.0f);
 
+
     bool isChecked = false;
 
     //Camera
@@ -261,8 +271,11 @@ int main() {
             //All Matrix Transformation Applied
             rend.UpdateMatrix(shader, "u_MVP", camera);
             shader.SetUniform3fv("color", color);
+            
 
+            //SetUniforms
             dirLight.SetLightUniform(shader, "dirLight");
+            spotLight.SetLightUniform(shader, "spotLight");
             shader.SetUniformMat4f("model", rend.GetModelMatrix());
             shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
             shader.SetUniformMat4f("view", camera.GetViewMatrix());
@@ -276,7 +289,7 @@ int main() {
         {
             lightShader.Bind();
             glBindVertexArray(vao2);
-           // rend.Draw(vb2, iv2, lightShader);
+           //rend.Draw(vb2, iv2, lightShader);
                 
             rend.ModelTransform(translateLight);
             rend.ModelScale();
@@ -297,7 +310,7 @@ int main() {
             
             ImGui::SliderFloat("x", &translateModel.x, -1.0f, 1.0f);
             ImGui::SliderFloat("y", &translateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("z", &translateModel.z, 1.0f, 2.8f);
+            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 2.8f);
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -307,6 +320,9 @@ int main() {
             ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);
             ImGui::ColorPicker3("Color", &color[0]);
             
+            ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
+
 
             if (ImGui::Checkbox("Wireframe", &isChecked)) {
 

@@ -12,10 +12,30 @@ struct DirectionalLight {
     vec3 specular;
 }; 
 
+// Spotlight light structure
+struct SpotLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    vec3 direction;
+    vec3 position;
+    float inner;
+    float outer;
+}; 
+
+
+
 uniform DirectionalLight dirLight;  // Directional light
+uniform SpotLight spotLight;        // SpotLight light
+
 uniform vec3 viewPos;              // View position
 in vec3 FragPos;                   // Fragment position in world space
-in vec3 Normal;                    // Normal vector in world space
+in vec3 Normal;                    // Normal vector in world space\
+
+
+
+
+
 
 // Calculate the ambient light
 vec3 CalculateAmbient() {
@@ -55,12 +75,46 @@ vec3 DirectLight() {
 }
 
 
+vec3 SpotLightCalc() {
+    vec3 normal = normalize(Normal);
+    
+    // Light direction: from light position to fragment
+    vec3 lightDir = normalize(-spotLight.position - FragPos);
+    
+    // View direction: from fragment to camera
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    // Angle between lightDir and spotlight direction
+    float theta = dot(lightDir, normalize(-spotLight.direction));
+    
+    // Calculate intensity within the cone
+    float epsilon = spotLight.inner - spotLight.outer;
+    float intensity = clamp((theta - spotLight.outer) / epsilon, 0.0, 1.0);
+
+    // Ambient light
+    vec3 ambient = spotLight.ambient;
+
+    // Diffuse light
+    vec3 diffuse = spotLight.diffuse * max(dot(normal, lightDir), 0.0);
+
+    // Specular light
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 specular = spotLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+
+    // Combine lighting components
+    return   ambient + (diffuse + specular) * intensity;
+}
+
+
+
+
 void main()
 {
     // Calculate the lighting using DirectLight function
     vec3 color = DirectLight();
+    vec3 color2 = SpotLightCalc();
 
     // Final output color with the calculated lighting
-    FragColor = vec4(color * aColor, 1.0);
+    FragColor = vec4(color2 * aColor, 1.0);
 
 }

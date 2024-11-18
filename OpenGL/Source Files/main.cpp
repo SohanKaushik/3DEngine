@@ -21,13 +21,13 @@ using namespace std;
 #define HEIGHT 600
 
 
-// Set up and configure your directional light
 DirectionalLight dirLight(
-    glm::vec3(0.1f, 0.1f, 0.1f),    // ambient
-    glm::vec3(0.8f, 0.8f, 0.8f),    // diffuse
-    glm::vec3(1.0f, 1.0f, 1.0f),    // specular
-    glm::vec3(-1.0f, -1.0f, -1.0f) // direction
+    glm::vec3(0.2f, 0.2f, 0.2f),  // ambient (slightly brighter neutral)
+    glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse (neutral white)
+    glm::vec3(1.0f, 1.0f, 1.0f),  // specular (neutral white)
+    glm::vec3(-1.0f, -1.0f, -1.0f) // direction (diagonal downward)
 );
+
 
 int main() {
 
@@ -62,58 +62,55 @@ int main() {
         return -1;
     }
 
+    GLfloat vertices[] = {
+        // Positions          // Normals
+        -1.0f, -1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
+         1.0f, -1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
+         1.0f,  1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
+        -1.0f,  1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
 
-    float vertices[] = {
-        // Positions               // Normals
-        // Front face
-        -0.5f, -0.5f,  0.5f,      0.0f,  0.0f,  1.0f,  
-         0.5f, -0.5f,  0.5f,      0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,      0.0f,  0.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,      0.0f,  0.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
+        -1.0f,  1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
+         1.0f,  1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
+         1.0f, -1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
 
-        // Back face
-        -0.5f, -0.5f, -0.5f,      0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,      0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,      0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,      0.0f,  0.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,            -1.0f,  0.0f,  0.0f, // Left face
+         1.0f,  1.0f, -1.0f,            -1.0f,  0.0f,  0.0f, // Left face
+         1.0f,  1.0f,  1.0f,            -1.0f,  0.0f,  0.0f, // Left face
+         1.0f, -1.0f,  1.0f,            -1.0f,  0.0f,  0.0f, // Left face
 
-        // Left face
-        -0.5f, -0.5f, -0.5f,     -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,     -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,     -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,     -1.0f,  0.0f,  0.0f,
+        -1.0f, -1.0f, -1.0f,             1.0f,  0.0f,  0.0f, // Right face
+        -1.0f, -1.0f,  1.0f,             1.0f,  0.0f,  0.0f, // Right face
+        -1.0f,  1.0f,  1.0f,             1.0f,  0.0f,  0.0f, // Right face
+        -1.0f,  1.0f, -1.0f,             1.0f,  0.0f,  0.0f, // Right face
 
-        // Right face
-         0.5f, -0.5f, -0.5f,     1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,     1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,     1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,     1.0f,  0.0f,  0.0f,
+        -1.0f,  1.0f,  1.0f,             0.0f, -1.0f,  0.0f, // Top face
+         1.0f,  1.0f,  1.0f,             0.0f, -1.0f,  0.0f, // Top face
+         1.0f,  1.0f, -1.0f,             0.0f, -1.0f,  0.0f, // Top face
+        -1.0f,  1.0f, -1.0f,             0.0f, -1.0f,  0.0f, // Top face
 
-         // Bottom face
-         -0.5f, -0.5f, -0.5f,    0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f, -0.5f,    0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,    0.0f, -1.0f,  0.0f,
-         -0.5f, -0.5f,  0.5f,    0.0f, -1.0f,  0.0f,
-
-         // Top face
-         -0.5f,  0.5f, -0.5f,    0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f, -0.5f,    0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f,  0.5f,    0.0f,  1.0f,  0.0f,
-         -0.5f,  0.5f,  0.5f,    0.0f,  1.0f,  0.0f
+        -1.0f, -1.0f,  1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
+        -1.0f, -1.0f, -1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
+         1.0f, -1.0f, -1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
+         1.0f, -1.0f,  1.0f,             0.0f,  1.0f,  0.0f  // Bottom face
     };
 
 
+  
 
-    // 6 faces , 2 triangles per face, 12 triangles
-    unsigned int indices[] =
-    {
-      
-        0, 1, 2, 2, 3, 0,       // Front face
-        4, 5, 6, 6, 7, 4,       // Back face
-        8, 9, 10, 10, 11, 8,    // Left face
-        12, 13, 14, 14, 15, 12, // Right face
-        16, 17, 18, 18, 19, 16, // Bottom face
-        20, 21, 22, 22, 23, 20  // Top face
+    GLuint indices[] = {
+      0, 1, 2,
+      2, 3, 0,       // Front face
+      4, 5, 6,
+      6, 7, 4,       // Back face
+      8, 9, 10,
+      10, 11, 8,
+      12, 13, 14,
+      14, 15, 12,
+      16, 17, 18,
+      18, 19, 16, 
+      20, 21, 22,
+      22, 23, 20  // Bottom face
     };
 
 
@@ -165,20 +162,18 @@ int main() {
     IndexBuff iv(indices, sizeof(indices));                           //  (6 column) * (36 row)
     VertexBuff vb(vertices,sizeof(vertices));   // 8 vertices, each with 6 floats (3 for position, 3 for color)
 
-
-
+    std::cout << "size :" << sizeof(indices) << sizeof(vertices) <<  std::endl;
     //Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Position
     glEnableVertexAttribArray(0);
 
-
-    //Normal
+    // Normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-
-    iv.Unbind();
-    vb.Unbind();
+    iv.Unbind(); 
+    vb.Unbind(); 
+    glBindVertexArray(0);
 
 
     // // Light cube
@@ -202,8 +197,7 @@ int main() {
     vb2.Unbind();
     lightShader.Unbind();
 
-    // Blend
-    rend.Blend();
+
 
     // ImGUI
     ImGui::CreateContext();
@@ -216,33 +210,37 @@ int main() {
     ImGui::StyleColorsDark();
 
     glfwSwapInterval(0);
-    glDisable(GL_CULL_FACE);  // Disable face culling to see both sides
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.0f, 1.0f); // Adjust values based on your needs
-    glEnable(GL_DEPTH_TEST);
-
-
+    
+    
+    glEnable(GL_DEPTH_TEST);       // Enable depth testing
+    glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
+    glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
+    glCullFace(GL_BACK);          // Cull back faces
+    glFrontFace(GL_CCW);          // Counter-clockwise winding order}
 
     //Variables 
     glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 translateModel(-0.087f, -0.010f, 2.686f);
+    glm::vec3 translateModel(0.0, 0.0, 0.0f);
     glm::vec3 rotateModel(0.252f, -0.36f, 0.1f);
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 translateLight(0.612f, 0.282f, 1.2f);
+    glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
     glm::vec3 rotateLight(0.0f, 0.0f, 1.0f);
 
+    bool isChecked = false;
+
     //Camera
-    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), 45.0f, 0.1f, 100.0f, window);   // [ position, fov , near , far , window ]
+    Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), 45.0f, 0.1f,  100.0f, window);   // [ position, fov , near , far , window ]
 
 
     // =Render
     while (!glfwWindowShouldClose(window)) {
 
+
+        glEnable(GL_FRONT);
         // Clear the screen
         rend.Clear();
-
 
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
@@ -255,13 +253,13 @@ int main() {
             glBindVertexArray(vao);
             rend.Draw(vb, iv, shader);
 
+            shader.Bind();
             //Model 
             rend.ModelTransform(translateModel);
-            rend.ModelScale();
             rend.ModelRotate(rotateModel);
 
             //All Matrix Transformation Applied
-            //rend.UpdateMatrix(shader, "u_MVP", camera);
+            rend.UpdateMatrix(shader, "u_MVP", camera);
             shader.SetUniform3fv("color", color);
 
             dirLight.SetLightUniform(shader, "dirLight");
@@ -276,8 +274,9 @@ int main() {
         /// Light Cube
 
         {
+            lightShader.Bind();
             glBindVertexArray(vao2);
-            rend.Draw(vb2, iv2, lightShader);
+           // rend.Draw(vb2, iv2, lightShader);
                 
             rend.ModelTransform(translateLight);
             rend.ModelScale();
@@ -303,11 +302,22 @@ int main() {
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 
-            ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 1.0f);
+            ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 2.0f);
             ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
             ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);
             ImGui::ColorPicker3("Color", &color[0]);
             
+
+            if (ImGui::Checkbox("Wireframe", &isChecked)) {
+
+                if (isChecked) { 
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }
+                else {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 
+                }
+            }
+
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 

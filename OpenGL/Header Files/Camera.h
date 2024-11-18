@@ -10,8 +10,8 @@
 class Camera {
 		
 private:
-	glm::vec3 m_position;
-	glm::vec3 m_targetPos;
+	glm::vec3 m_position = glm::vec3(0.0f, 0.0f, -1.0f);;
+	glm::vec3 m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	float m_fov;
 	float m_near;

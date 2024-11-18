@@ -22,31 +22,6 @@ class PointLight : public Light {};
 
 
 
-glm::vec3 Light::ComputeCommonLight(const glm::vec3& lightDir, const glm::vec3& normal, const glm::vec3& viewDir) const {
-
-    // Ambient component: A constant base light level for all surfaces
-    glm::vec3 ambientComp = m_ambient;
-
-    // Diffuse component: Light intensity based on the angle between light direction and surface normal
-    float diff = std::max(glm::dot(normal, lightDir), 0.0f); 
-    glm::vec3 diffuseComp = m_diffuse * diff;
-
-
-    // Specular component: Reflective highlights, stronger when the view direction aligns with the reflection
-    glm::vec3 reflectDir = glm::reflect(-lightDir, normal);
-    float spec = std::pow(std::max(glm::dot(viewDir, reflectDir), 0.0f), 32.0f); // 32 is the shininess factor
-    glm::vec3 specularComp = m_specular * spec;
-
-    // Combine all components to get the final lighting effect at the point
-    return ambientComp + diffuseComp + specularComp;
-};
-
-glm::vec3 DirectionalLight::CalculateLight(const glm::vec3& normal, const glm::vec3& viewDir) const {
-    return ComputeCommonLight(-m_direction, normal, viewDir);
-};
-
-
-
 void DirectionalLight::SetLightUniform(Shader& shader, const std::string& uniformName) const {
 
     shader.SetUniform3fv(uniformName + ".direction", m_direction);

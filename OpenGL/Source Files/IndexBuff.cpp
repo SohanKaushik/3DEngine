@@ -8,7 +8,7 @@ IndexBuff::IndexBuff(const unsigned int* data, unsigned int count)
 	: m_Count(count)
 {
 
-	ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+	//ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);

@@ -3,6 +3,7 @@
 in vec3 aColor;  // Color passed from the vertex shader
 out vec4 FragColor;
 
+
 // Directional light structure
 struct DirectionalLight {
     vec3 direction;
@@ -34,11 +35,14 @@ vec3 CalculateSpecular(vec3 normal, vec3 lightDir, vec3 viewDir) {
     return dirLight.specular * spec;
 }
 
+
 // Calculate the total lighting
 vec3 DirectLight() {
+
     vec3 normal = normalize(Normal);
-    vec3 lightDir = normalize(-dirLight.direction);  // Light direction
+    vec3 lightDir = normalize(-dirLight.direction);
     vec3 viewDir = normalize(viewPos - FragPos);     // View direction
+
 
     // Calculate ambient, diffuse, and specular components
     vec3 ambient = CalculateAmbient();
@@ -46,8 +50,10 @@ vec3 DirectLight() {
     vec3 specular = CalculateSpecular(normal, lightDir, viewDir);
 
     // Combine the lighting components with the input color
-    return aColor * (ambient + diffuse + specular);
+    return  ambient + specular + diffuse;
+
 }
+
 
 void main()
 {
@@ -55,6 +61,6 @@ void main()
     vec3 color = DirectLight();
 
     // Final output color with the calculated lighting
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(color * aColor, 1.0);
 
 }

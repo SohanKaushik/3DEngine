@@ -51,3 +51,4 @@
 
 
 17. Normal : incomplete normals could results in half ligh - half dark cubes;
+18. Artifacts : just dont cull real time ( crying hard )

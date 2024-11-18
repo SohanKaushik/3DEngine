@@ -9,7 +9,7 @@ uniform mat4 model;  // Model matrix
 uniform mat4 view;   // View matrix
 uniform mat4 projection;  // Projection matrix
 
-
+uniform mat4 u_MVP;
 
 // Outputs to the fragment shader
 out vec3 FragPos;    // Fragment position in world space

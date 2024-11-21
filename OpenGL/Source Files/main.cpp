@@ -38,6 +38,16 @@ SpotLight spotLight(
     2.0f                          // outer
 );
 
+PointLight pointLight(
+    glm::vec3(0.2f, 0.2f, 0.2f),   // ambient
+    glm::vec3(1.0f, 1.0f, 1.0f),   // diffuse
+    glm::vec3(1.0f, 1.0f, 1.0f),   // specular
+    glm::vec3(0.0f, 0.0f, 0.0f)    // position
+    // constant, linear, quadratic use defaults: 1.0, 0.09, 0.032
+);
+
+
+
 int main() {
 
 
@@ -158,7 +168,7 @@ int main() {
     /////////////////////............................Buffers............................//////////////////////////
 
     // Shader setup
-    Shader shader("shaders/default.vert", "shaders/default.frag");
+    Shader shader("resource files/shaders/default.vert", "resource files/shaders/default.frag");
     shader.Bind();
 
 
@@ -186,7 +196,7 @@ int main() {
 
 
     // // Light cube
-    Shader lightShader("shaders/light.vert", "shaders/light.frag");
+    Shader lightShader("resource files/shaders/light.vert", "resource files/shaders/light.frag");
     lightShader.Bind();
 
     unsigned int vao2;             // vertex array object
@@ -234,6 +244,8 @@ int main() {
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightPosition = glm::vec3(0.1,0.1f, 2.5);
+
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
     glm::vec3 rotateLight(0.0f, 0.0f, 1.0f);
 
@@ -257,7 +269,6 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-
         // Cube
         {
             glBindVertexArray(vao);
@@ -274,8 +285,10 @@ int main() {
             
 
             //SetUniforms
-            dirLight.SetLightUniform(shader, "dirLight");
+            //dirLight.SetLightUniform(shader, "dirLight");
             spotLight.SetLightUniform(shader, "spotLight");
+            pointLight.SetLightUniform(shader, "pointLight");
+
             shader.SetUniformMat4f("model", rend.GetModelMatrix());
             shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
             shader.SetUniformMat4f("view", camera.GetViewMatrix());
@@ -289,13 +302,14 @@ int main() {
         {
             lightShader.Bind();
             glBindVertexArray(vao2);
-           //rend.Draw(vb2, iv2, lightShader);
+            rend.Draw(vb2, iv2, lightShader);
                 
-            rend.ModelTransform(translateLight);
+            rend.ModelTransform(lightPosition);
             rend.ModelScale();
             rend.ModelRotate(rotateLight);
             rend.UpdateMatrix(lightShader, "mvp", camera);
             lightShader.SetUniform3fv("lightColor", lightColor);
+
       
         }
 
@@ -308,21 +322,26 @@ int main() {
             ImGui::Text("Translations");
 
             
-            ImGui::SliderFloat("x", &translateModel.x, -1.0f, 1.0f);
-            ImGui::SliderFloat("y", &translateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 2.8f);
+            /*ImGui::SliderFloat("x", &translateModel.x, -1.0f, 5.0f);
+            ImGui::SliderFloat("y", &translateModel.y, -1.0f, 5.0f);
+            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 5.0f);*/
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 
-            ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 2.0f);
+            /*ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 2.0f);
             ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);
+            ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
             ImGui::ColorPicker3("Color", &color[0]);
             
-            ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
-            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
+            //ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+            //ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
 
+            ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
+            ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
+            ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);
+
+            pointLight.m_position = lightPosition;
 
             if (ImGui::Checkbox("Wireframe", &isChecked)) {
 
@@ -333,9 +352,14 @@ int main() {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 
                 }
             }
+            
+            /*if (spotLight.m_inner > spotLight.m_outer) {
 
+                spotLight.m_outer = spotLight.m_inner + 0.01;
+            }*/
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
 
             /*
             ImGui::SliderFloat("x", &translateLight.x, -1.0f, 1.0f);
@@ -365,6 +389,7 @@ int main() {
     // Clean up
     glDeleteVertexArrays(1, &vao);
     glDeleteVertexArrays(1, &vao2);
+
     shader.Unbind();
     lightShader.Unbind();
     ImGui_ImplOpenGL3_Shutdown();

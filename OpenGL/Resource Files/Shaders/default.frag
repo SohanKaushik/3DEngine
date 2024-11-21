@@ -23,41 +23,30 @@ struct SpotLight {
     float outer;
 }; 
 
+// PointLight light structure
+struct PointLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    vec3 position;
+}; 
 
 
-uniform DirectionalLight dirLight;  // Directional light
-uniform SpotLight spotLight;        // SpotLight light
+
+//uniform DirectionalLight dirLight;  
+uniform SpotLight spotLight;        
+uniform PointLight pointLight;      
 
 uniform vec3 viewPos;              // View position
 in vec3 FragPos;                   // Fragment position in world space
-in vec3 Normal;                    // Normal vector in world space\
+in vec3 Normal;                    // Normal vector in world space
 
 
 
 
 
-
-// Calculate the ambient light
-vec3 CalculateAmbient() {
-    return dirLight.ambient;
-}
-
-// Calculate the diffuse light
-vec3 CalculateDiffuse(vec3 normal, vec3 lightDir) {
-    float diff = max(dot(normal, lightDir), 0.0);
-    return dirLight.diffuse * diff;
-}
-
-// Calculate the specular light
-vec3 CalculateSpecular(vec3 normal, vec3 lightDir, vec3 viewDir) {
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);  // Shininess = 32
-    return dirLight.specular * spec;
-}
-
-
-// Calculate the total lighting
-vec3 DirectLight() {
+/*
+vec3 DirectLightCalc() {
 
     vec3 normal = normalize(Normal);
     vec3 lightDir = normalize(-dirLight.direction);
@@ -65,23 +54,20 @@ vec3 DirectLight() {
 
 
     // Calculate ambient, diffuse, and specular components
-    vec3 ambient = CalculateAmbient();
-    vec3 diffuse = CalculateDiffuse(normal, lightDir);
-    vec3 specular = CalculateSpecular(normal, lightDir, viewDir);
+    vec3 ambient = CalculateAmbient(dirLight.ambient);
+    vec3 diffuse = CalculateDiffuse(dirLight.diffuse, normal, lightDir);
+    vec3 specular = CalculateSpecular(dirLight.specular, normal, lightDir, viewDir);
 
     // Combine the lighting components with the input color
     return  ambient + specular + diffuse;
 
 }
-
+*/
 
 vec3 SpotLightCalc() {
+
     vec3 normal = normalize(Normal);
-    
-    // Light direction: from light position to fragment
     vec3 lightDir = normalize(-spotLight.position - FragPos);
-    
-    // View direction: from fragment to camera
     vec3 viewDir = normalize(viewPos - FragPos);
 
     // Angle between lightDir and spotlight direction
@@ -91,14 +77,11 @@ vec3 SpotLightCalc() {
     float epsilon = spotLight.inner - spotLight.outer;
     float intensity = clamp((theta - spotLight.outer) / epsilon, 0.0, 1.0);
 
-    // Ambient light
+  
     vec3 ambient = spotLight.ambient;
-
-    // Diffuse light
     vec3 diffuse = spotLight.diffuse * max(dot(normal, lightDir), 0.0);
-
-    // Specular light
     vec3 reflectDir = reflect(-lightDir, normal);
+
     vec3 specular = spotLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 
     // Combine lighting components
@@ -107,12 +90,39 @@ vec3 SpotLightCalc() {
 
 
 
+vec3 PointLightCalc() {
+
+    float constant = 1.0f;
+    float linear = 0.7f;
+    float quadratic = 3.0f;
+
+
+    vec3 normal = normalize(Normal);
+    vec3 lightDir = normalize(-pointLight.position - FragPos);
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    float distance = length(pointLight.position - FragPos);
+    float attenuation = 1.0 / (constant + 
+                               linear * distance + 
+                               quadratic * (distance * distance));
+
+    vec3 ambient = pointLight.ambient;
+    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 diffuse = pointLight.diffuse * diff;
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0); // Shininess = 32
+    vec3 specular = pointLight.specular * spec;
+
+    return ambient + (diffuse ) * attenuation;
+}
+
+
 
 void main()
 {
     // Calculate the lighting using DirectLight function
-    vec3 color = DirectLight();
-    vec3 color2 = SpotLightCalc();
+    vec3 color2 = PointLightCalc();
 
     // Final output color with the calculated lighting
     FragColor = vec4(color2 * aColor, 1.0);

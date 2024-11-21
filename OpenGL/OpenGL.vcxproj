@@ -77,10 +77,10 @@
     <IncludePath>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Header Files;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Header Files;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Resource Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Header Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\dependencies\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Header Files;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Resource Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Header Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\dependencies\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDIr)\OpenGL\dependencies\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Source Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -140,7 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDIr)\OpenGL\dependencies\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Lexi\Desktop\OpenGLF\OpenGL\Source Files;C:\Users\Lexi\Desktop\OpenGLF\OpenGL\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

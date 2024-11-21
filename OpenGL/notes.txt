@@ -31,24 +31,7 @@
 15. Uniforms : must passed to main or throw error
 16. Unifroms : #version 330 core make sure its there 
 
-
-
-
-// **Calculate light color and set uniform for lighting**
-
-        /*
-        glm::vec3 normal = glm::vec3(0.0f, 0.0f, 1.0f);
-        glm::vec3 viewDir = glm::normalize(camera.GetCameraPosition() - translateModel);  // Direction to the camera
-
-        // Calculate the lighting color using the DirectionalLight instance
-        glm::vec3 lightColor = dirLight.CalculateLight(normal, viewDir);
-        glm::vec3 lightDir = camera.GetCameraFront();
-
-        shader.SetUniform3fv("lightColorr", lightColor); // Pass to shader
-        shader.SetUniform3fv("lightDir", lightDir);
-        */
-
-
-
-17. Normal : incomplete normals could results in half ligh - half dark cubes;
+17. Normal : incomplete normals could results in half light - half dark cubes;
 18. Artifacts : just dont cull real time ( crying hard )
+
+19. Point Light : [ param : position, attenuation, quadratic, linear , constant , ambient light, diffuse light, specular light ]

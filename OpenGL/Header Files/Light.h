@@ -50,4 +50,15 @@ public:
 };
 
 
-class PointLight;
+class PointLight : public Light {
+
+public:
+    glm::vec3 m_position;
+    
+
+
+public: 
+    PointLight(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec, const glm::vec3& position);
+
+    void SetLightUniform(Shader& shader, const std::string& uniformName) const override;
+};

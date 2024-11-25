@@ -161,6 +161,7 @@
     <ClCompile Include="sec.cpp" />
     <ClCompile Include="Source Files\Rend.cpp" />
     <ClCompile Include="Source Files\Shader.cpp" />
+    <ClCompile Include="Source Files\ShadowMap.cpp" />
     <ClCompile Include="Source Files\stp.cpp" />
     <ClCompile Include="Source Files\Texture.cpp" />
     <ClCompile Include="Source Files\VertexBuff.cpp" />
@@ -465,6 +466,7 @@
     <ClInclude Include="Header Files\IndexBuff.h" />
     <ClInclude Include="Header Files\Rend.h" />
     <ClInclude Include="Header Files\Shader.h" />
+    <ClInclude Include="Header Files\ShadowMap.h" />
     <ClInclude Include="Header Files\Texture.h" />
     <ClInclude Include="Header Files\VertexBuff.h" />
     <ClInclude Include="resource.h" />

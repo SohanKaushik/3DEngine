@@ -163,8 +163,6 @@ int main() {
 
 
 
-
-
     /////////////////////............................Buffers............................//////////////////////////
 
     // Shader setup
@@ -237,14 +235,16 @@ int main() {
     glCullFace(GL_BACK);          // Cull back faces
     glFrontFace(GL_CCW);          // Counter-clockwise winding order}
 
+
     //Variables 
-    glm::vec3 color(1.0f, 0.0f, 0.0f);
+    glm::vec3 color(1.0f, 1.0f, 1.0f);
     glm::vec3 translateModel(0.0, 0.0, 0.0f);
     glm::vec3 rotateModel(0.252f, -0.36f, 0.1f);
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition = glm::vec3(0.1,0.1f, 2.5);
+    glm::vec3 lightPosition = glm::vec3(-1.002, 1.338f, 1.388);
+    glm::vec3 dirLightPosition(0.0f, 1.0f, 0.0f);
 
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
     glm::vec3 rotateLight(0.0f, 0.0f, 1.0f);
@@ -264,6 +264,8 @@ int main() {
         // Clear the screen
         rend.Clear();
 
+
+        //glfwSetWindowTitle(window, std::to_string(rend.FpsCount()).c_str());
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -285,7 +287,7 @@ int main() {
             
 
             //SetUniforms
-            //dirLight.SetLightUniform(shader, "dirLight");
+            dirLight.SetLightUniform(shader, "dirLight");
             spotLight.SetLightUniform(shader, "spotLight");
             pointLight.SetLightUniform(shader, "pointLight");
 
@@ -310,7 +312,6 @@ int main() {
             rend.UpdateMatrix(lightShader, "mvp", camera);
             lightShader.SetUniform3fv("lightColor", lightColor);
 
-      
         }
 
             
@@ -334,14 +335,22 @@ int main() {
             ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
             ImGui::ColorPicker3("Color", &color[0]);
             
-            //ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
-            //ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
+            ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
+
+            ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
             ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
             ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
             ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);
 
             pointLight.m_position = lightPosition;
+
+
+            /*ImGui::SliderFloat("x1", &dirLight.m_direction.x, -10.0f, 10.0f);
+            ImGui::SliderFloat("y2", &dirLight.m_direction.y, -10.0f, 10.0f);
+            ImGui::SliderFloat("z2", &dirLight.m_direction.z, -10.0f, 10.0f);*/
+
 
             if (ImGui::Checkbox("Wireframe", &isChecked)) {
 
@@ -353,10 +362,10 @@ int main() {
                 }
             }
             
-            /*if (spotLight.m_inner > spotLight.m_outer) {
+            if (spotLight.m_inner > spotLight.m_outer) {
 
                 spotLight.m_outer = spotLight.m_inner + 0.01;
-            }*/
+            }
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 

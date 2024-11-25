@@ -22,7 +22,7 @@ public:
 
 class DirectionalLight : public Light {
 
-private:
+public:
     glm::vec3 m_direction;
 
 public:

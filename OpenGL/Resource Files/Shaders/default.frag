@@ -33,7 +33,7 @@ struct PointLight {
 
 
 
-//uniform DirectionalLight dirLight;  
+uniform DirectionalLight dirLight;  
 uniform SpotLight spotLight;        
 uniform PointLight pointLight;      
 
@@ -45,7 +45,7 @@ in vec3 Normal;                    // Normal vector in world space
 
 
 
-/*
+
 vec3 DirectLightCalc() {
 
     vec3 normal = normalize(Normal);
@@ -54,15 +54,21 @@ vec3 DirectLightCalc() {
 
 
     // Calculate ambient, diffuse, and specular components
-    vec3 ambient = CalculateAmbient(dirLight.ambient);
-    vec3 diffuse = CalculateDiffuse(dirLight.diffuse, normal, lightDir);
-    vec3 specular = CalculateSpecular(dirLight.specular, normal, lightDir, viewDir);
+    vec3 ambient = dirLight.ambient;
+
+
+    vec3 diffuse = dirLight.diffuse * max(dot(normal, lightDir), 0.0);
+    //vec3 diffuse = CalculateDiffuse(dirLight.diffuse, normal, lightDir);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 specular = dirLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+
+    //vec3 specular = CalculateSpecular(dirLight.specular, normal, lightDir, viewDir);
 
     // Combine the lighting components with the input color
-    return  ambient + specular + diffuse;
-
+    return  (ambient + specular + diffuse);
 }
-*/
+
 
 vec3 SpotLightCalc() {
 
@@ -94,7 +100,7 @@ vec3 PointLightCalc() {
 
     float constant = 1.0f;
     float linear = 0.7f;
-    float quadratic = 3.0f;
+    float quadratic = 1.0f;
 
 
     vec3 normal = normalize(Normal);

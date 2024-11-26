@@ -17,6 +17,8 @@ using namespace std;
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "ShadowMap.h"
+
 #define WIDHT 800
 #define HEIGHT 600
 
@@ -25,7 +27,7 @@ DirectionalLight dirLight(
     glm::vec3(0.2f, 0.2f, 0.2f),  // ambient 
     glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse 
     glm::vec3(1.0f, 1.0f, 1.0f),  // specular
-    glm::vec3(0.0f, 1.0f, 0.0f)   // direction
+    glm::vec3(-3.168f, 0.495f, -1.188f)   // direction
 );
 
 SpotLight spotLight(
@@ -166,13 +168,21 @@ int main() {
     /////////////////////............................Buffers............................//////////////////////////
 
     // Shader setup
+  
+
+    //First Pass: Shadow Map Generation
+    //ShadowMap shadowMap;
+    //shadowMap.Init(40, 40);
+    //shadowMap.Write();
+    //glViewport(0, 0, 1024, 1024);
+    //glClear(GL_DEPTH_BUFFER_BIT);    // Render scene from light's perspective using shadow shaders
+
+
+    //Second Pass: Main Rendering
     Shader shader("resource files/shaders/default.vert", "resource files/shaders/default.frag");
     shader.Bind();
-
-
-    // First Buffer
     unsigned int vao;             // vertex array object
-    glGenVertexArrays(1, &vao);   //generate for gen
+    glGenVertexArrays(1, &vao);   // generate for gen
     glBindVertexArray(vao);
 
 
@@ -206,7 +216,7 @@ int main() {
     VertexBuff vb2(lightVertices, sizeof(lightVertices));     
 
     //Position Attribute
-     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
 
@@ -227,8 +237,6 @@ int main() {
     ImGui::StyleColorsDark();
 
     glfwSwapInterval(0);
-    
-    
     glEnable(GL_DEPTH_TEST);       // Enable depth testing
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
     glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
@@ -253,7 +261,7 @@ int main() {
     bool isChecked = false;
 
     //Camera
-    Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), 45.0f, 0.1f,  100.0f, window);   // [ position, fov , near , far , window ]
+    Camera camera(glm::vec3(0.0f, 0.0f, 7.0f), 45.0f, 0.1f,  100.0f, window);   // [ position, fov , near , far , window ]
 
 
     // =Render
@@ -261,9 +269,13 @@ int main() {
 
 
         glEnable(GL_FRONT);
-        // Clear the screen
         rend.Clear();
 
+        // Step 1: Shadow Map Pass
+        //shadowMap.Write();
+        //glClear(GL_DEPTH_BUFFER_BIT);
+        //shader.Bind();
+        //shader.SetUniformMat4f("DirLightSpaceMatrix", )
 
         //glfwSetWindowTitle(window, std::to_string(rend.FpsCount()).c_str());
         //GUI Start
@@ -323,9 +335,9 @@ int main() {
             ImGui::Text("Translations");
 
             
-            /*ImGui::SliderFloat("x", &translateModel.x, -1.0f, 5.0f);
+            ImGui::SliderFloat("x", &translateModel.x, -1.0f, 5.0f);
             ImGui::SliderFloat("y", &translateModel.y, -1.0f, 5.0f);
-            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 5.0f);*/
+            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 5.0f);
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -335,16 +347,16 @@ int main() {
             ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
             ImGui::ColorPicker3("Color", &color[0]);
             
-            ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
-            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);
+           /* ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);*/
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-            ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
+            /*ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
             ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
-            ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);
+            ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);*/
 
-            pointLight.m_position = lightPosition;
+            //pointLight.m_position = lightPosition;
 
 
             /*ImGui::SliderFloat("x1", &dirLight.m_direction.x, -10.0f, 10.0f);

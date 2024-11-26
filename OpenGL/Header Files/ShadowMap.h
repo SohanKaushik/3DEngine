@@ -6,14 +6,17 @@ class ShadowMap {
 
 public:
 	ShadowMap();
+	~ShadowMap();
+
 
 	virtual bool Init(unsigned int width, unsigned int height) ;
 	virtual void Write();
 	virtual void Read(GLenum textureInit);
 
-	unsigned int  GetShadowWidth() { return shadowWidth; }
-	unsigned int  GetShadowHeight() { return shadowHeight; }
+	unsigned int GetShadowMap() const { return shadowMap; }
+	unsigned int GetFBO() const { return FBO; }
 
+	
 
 protected:
 	unsigned int FBO, shadowMap;

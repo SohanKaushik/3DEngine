@@ -41,10 +41,30 @@ uniform vec3 viewPos;              // View position
 in vec3 FragPos;                   // Fragment position in world space
 in vec3 Normal;                    // Normal vector in world space
 
+/*
+//Shadows
+uniform sampler2D shadowMap;
+in FragPosLightSpace;
 
 
+float ShadowCalculation(vec4 fragPosLightSpace){
 
+     // Perform perspective divide
+     vec3 ProjCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+     ProjCoords = ProjCoords * 0.5 + 0.5;
 
+     // Get closest depth value from shadow map
+     float closestDepth = texture(shadowMap, ProjCoords.xy).r;
+
+     // Current Depth
+     float currentDepth = ProjCoords.z;
+
+     // Shadow Calculation
+     float shadow = currentDepth > closestDepth + 0.005 ? 1.0 : 0.0;         // Bias to prevent bias artifacts
+
+     return shadow;
+}
+*/
 
 vec3 DirectLightCalc() {
 
@@ -55,18 +75,20 @@ vec3 DirectLightCalc() {
 
     // Calculate ambient, diffuse, and specular components
     vec3 ambient = dirLight.ambient;
-
-
     vec3 diffuse = dirLight.diffuse * max(dot(normal, lightDir), 0.0);
-    //vec3 diffuse = CalculateDiffuse(dirLight.diffuse, normal, lightDir);
 
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 specular = dirLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 
     //vec3 specular = CalculateSpecular(dirLight.specular, normal, lightDir, viewDir);
 
+    //Shadow
+    //float Shadow = ShadowCalculation(FragPosLightSpace);
+
+
     // Combine the lighting components with the input color
-    return  (ambient + specular + diffuse);
+    //return  (ambient +  ( 1.0 - shadow) * (specular + diffuse));
+      return  (ambient + (specular + diffuse));
 }
 
 
@@ -128,8 +150,9 @@ vec3 PointLightCalc() {
 void main()
 {
     // Calculate the lighting using DirectLight function
-    vec3 color2 = PointLightCalc();
+    vec3 color2 = DirectLightCalc();
 
+ 
     // Final output color with the calculated lighting
     FragColor = vec4(color2 * aColor, 1.0);
 

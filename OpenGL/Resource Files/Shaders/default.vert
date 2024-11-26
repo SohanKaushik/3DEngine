@@ -9,6 +9,7 @@ uniform mat4 model;  // Model matrix
 uniform mat4 view;   // View matrix
 uniform mat4 projection;  // Projection matrix
 
+
 uniform mat4 u_MVP;
 
 // Outputs to the fragment shader
@@ -17,10 +18,18 @@ out vec3 Normal;     // Normal vector in world space
 out vec3 aColor;     // Output color for the fragment shader
 
 
+// Shadows
+uniform mat4 DirLightSpaceMatrix;
+out vec4 FragPosDirLightSpace; 
+
+
+
 void main()
 {
 
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
+    FragPosDirLightSpace = DirLightSpaceMatrix * model * vec4(aPos, 1.0f);
+
 
     // Pass data to the fragment shader
     FragPos = vec3(model * vec4(aPos, 1.0));  // Transform vertex to world space

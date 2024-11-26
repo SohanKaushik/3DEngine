@@ -1422,6 +1422,10 @@
     </None>
     <None Include="Resource Files\Shaders\light.frag" />
     <None Include="Resource Files\Shaders\light.vert" />
+    <None Include="Resource Files\Shaders\DirectionalShadowMap.vert" />
+    <None Include="Resource Files\Shaders\DirectionalShadowMap.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

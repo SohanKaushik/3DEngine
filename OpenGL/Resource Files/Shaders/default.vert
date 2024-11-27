@@ -1,13 +1,16 @@
 #version 330 core 
 
-layout(location = 0) in vec3 aPos;       // Vertex position attribute
-layout(location = 1) in vec3 aNormal;    // Vertex normal attribute
+layout(location = 0) in vec3 aPos;         // Vertex position attribute
+layout(location = 1) in vec3 aNormal;      // Vertex normal attribute
 
-// Uniforms
-uniform vec3 color;  // Color passed as a uniform
-uniform mat4 model;  // Model matrix
-uniform mat4 view;   // View matrix
-uniform mat4 projection;  // Projection matrix
+
+// Uniforms                    
+uniform vec3 color;              // Color passed as a uniform
+uniform vec3 planeColor;
+uniform mat4 model;              // Model matrix
+
+uniform mat4 view;               // View matrix
+uniform mat4 projection;         // Projection matrix
 
 
 uniform mat4 u_MVP;
@@ -16,7 +19,6 @@ uniform mat4 u_MVP;
 out vec3 FragPos;    // Fragment position in world space
 out vec3 Normal;     // Normal vector in world space
 out vec3 aColor;     // Output color for the fragment shader
-
 
 // Shadows
 uniform mat4 DirLightSpaceMatrix;

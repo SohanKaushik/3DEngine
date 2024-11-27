@@ -39,8 +39,8 @@ void Rend::ModelScale() {
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 };
 
-void Rend::ModelRotate(glm::vec3 axis){
-	model = glm::rotate(model, glm::radians(45.0f), axis);
+void Rend::ModelRotate(glm::vec3 axis, float radian){
+	model = glm::rotate(model, glm::radians(radian), axis);
 };
 
 

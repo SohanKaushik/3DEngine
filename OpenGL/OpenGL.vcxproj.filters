@@ -78,6 +78,9 @@
     <ClCompile Include="Source Files\ShadowMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -995,6 +998,9 @@
     <ClInclude Include="Header Files\ShadowMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc">
@@ -1424,6 +1430,12 @@
     <None Include="Resource Files\Shaders\light.vert" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.vert" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\plane.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\plane.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

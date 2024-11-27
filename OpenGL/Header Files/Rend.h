@@ -30,7 +30,7 @@ public:
 	//Model 
 	void ModelTransform(glm::vec3 translation);
 	void ModelScale();                                       
-	void ModelRotate(glm::vec3 axis);
+	void ModelRotate(glm::vec3 axis, float radian);
 
 	void UpdateMatrix(Shader& shader, const std::string& uniformName, Camera& cam);
 	double FpsCount();

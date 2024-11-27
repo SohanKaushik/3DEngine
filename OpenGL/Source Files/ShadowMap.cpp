@@ -23,7 +23,13 @@ bool ShadowMap::Init(unsigned int width, unsigned int height) {
 
 	glGenTextures(1, &shadowMap);
 	glBindTexture(GL_TEXTURE_2D, shadowMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowWidth, shadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+	//Allocating storage for depth texture
+	glTexImage2D(
+		GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		shadowWidth, shadowHeight, 0, 
+		GL_DEPTH_COMPONENT, GL_FLOAT, nullptr
+	);
 
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -42,7 +48,7 @@ bool ShadowMap::Init(unsigned int width, unsigned int height) {
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-	if(status != GL_FRAMEBUFFER_COMPLETE)\
+	if(status != GL_FRAMEBUFFER_COMPLETE)
 	{
 		std::cout << "Framebuffer Error: %i\n" << status;
 		return false;

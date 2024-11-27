@@ -11,6 +11,7 @@ using namespace std;
 #include <glm/glm.hpp>
 #include "Camera.h"
 #include "Light.h"
+#include "InputManager.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <imgui/imgui.h>
@@ -19,7 +20,7 @@ using namespace std;
 
 #include "ShadowMap.h"
 
-#define WIDHT 800
+#define WIDTH 800
 #define HEIGHT 600
 
 
@@ -49,14 +50,49 @@ PointLight pointLight(
 );
 
 
+Camera camera(glm::vec3(0.0f, 0.0f, 7.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f),
+    -90.0f,
+    0.0f,
+    45.0f,
+    0.1, 100.0f);
+
+float lastTime = 0.0f;
+
+
+void processCameraInputs(Camera& camera, float deltaTime) {
+    InputManager& input = InputManager::getInstance();
+
+    glm::vec3 direction(0.0f);
+
+    if (input.isKeyPressed(GLFW_KEY_W)) direction += camera.GetCameraFront();   // Forward
+    if (input.isKeyPressed(GLFW_KEY_S)) direction -= camera.GetCameraFront();   // Backward
+    if (input.isKeyPressed(GLFW_KEY_A)) direction -= camera.GetCameraRight();   // Left
+    if (input.isKeyPressed(GLFW_KEY_D)) direction += camera.GetCameraRight();   // Right
+
+    camera.CalKeyboardMovement(direction, deltaTime);
+
+    // Mouse rotation
+    double mouseX, mouseY;
+    input.getMousePosition(mouseX, mouseY);
+
+    static double lastX = mouseX, lastY = mouseY;
+    float xOffset = mouseX - lastX;
+    float yOffset = lastY - mouseY;  // Inverted Y-axis
+
+    lastX = mouseX;
+    lastY = mouseY;
+
+    camera.CalMouseRotation(xOffset, yOffset, true);
+}
+
 
 int main() {
 
 
     // variables
     Rend rend;
-
-
+    ShadowMap shadow;
 
     //opengl context
     glfwInit();
@@ -68,20 +104,32 @@ int main() {
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(WIDHT, HEIGHT, "Window", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Window", NULL, NULL);
     if (window == NULL) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
         return -1;
-    }
-
-    glfwMakeContextCurrent(window);
+    }  glfwMakeContextCurrent(window);
 
     // Load OpenGL functions using glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cerr << "Failed to initialize GLAD" << endl;
         return -1;
     }
+
+    if (!shadow.Init(1024, 1024)) {
+        std::cerr << "Failed to initialize shadow map!" << std::endl;
+    }
+
+    //Initializing Input Manager
+    InputManager::getInstance().Initialize(window);
+
+    // // Configure OpenGL state
+    glEnable(GL_DEPTH_TEST);
+
+    //Aspect Ratio
+    camera.SetAspectRatio(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     GLfloat vertices[] = {
         // Positions          // Normals
@@ -163,23 +211,30 @@ int main() {
         1, 2, 6, 6, 5, 1
     };
 
+    // Vertices of a quad (rectangle)
+    float planeVertices[] = {
+        // Positions         
+        -1.0f,  0.0f, -1.0f, 
+         1.0f,  0.0f, -1.0f, 
+         1.0f,  0.0f,  1.0f, 
+        -1.0f,  0.0f,  1.0f
+    };
+
+
+    unsigned int planeIndices[] = {
+        0, 1, 2 
+       
+    };
+
 
 
     /////////////////////............................Buffers............................//////////////////////////
 
-    // Shader setup
-  
-
-    //First Pass: Shadow Map Generation
-    //ShadowMap shadowMap;
-    //shadowMap.Init(40, 40);
-    //shadowMap.Write();
-    //glViewport(0, 0, 1024, 1024);
-    //glClear(GL_DEPTH_BUFFER_BIT);    // Render scene from light's perspective using shadow shaders
-
-
-    //Second Pass: Main Rendering
+    // Create shaders
     Shader shader("resource files/shaders/default.vert", "resource files/shaders/default.frag");
+    Shader depth("resource files/shaders/DirectionalShadowMap.vert", "resource files/shaders/DirectionalShadowMap.frag");
+
+
     shader.Bind();
     unsigned int vao;             // vertex array object
     glGenVertexArrays(1, &vao);   // generate for gen
@@ -189,7 +244,7 @@ int main() {
     IndexBuff iv(indices, sizeof(indices));                           //  (6 column) * (36 row)
     VertexBuff vb(vertices,sizeof(vertices));   // 8 vertices, each with 6 floats (3 for position, 3 for color)
 
-    std::cout << "size :" << sizeof(indices) << sizeof(vertices) <<  std::endl;
+
     //Position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Position
     glEnableVertexAttribArray(0);
@@ -197,9 +252,6 @@ int main() {
     // Normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    iv.Unbind(); 
-    vb.Unbind(); 
     glBindVertexArray(0);
 
 
@@ -218,11 +270,33 @@ int main() {
     //Position Attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
 
-    iv2.Unbind();
-    vb2.Unbind();
-    lightShader.Unbind();
+    // Plane
+     // // Light cube
+    Shader planeShader("resource files/shaders/plane.vert", "resource files/shaders/plane.frag");
+    planeShader.Bind();
+
+    unsigned int vao3;                                     
+    glGenVertexArrays(1, &vao3);                           
+    glBindVertexArray(vao3);
+
+
+    IndexBuff iv3(lightIndices, sizeof(planeIndices));
+    VertexBuff vb3(lightVertices, sizeof(planeVertices));
+
+
+    //Position Attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+
+    // Configure matrices
+    glm::mat4 lightProjection, lightView, lightSpaceMatrix;
+    float nearPlane = 1.0f, farPlane = 7.5f;
+    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
 
 
 
@@ -239,9 +313,9 @@ int main() {
     glfwSwapInterval(0);
     glEnable(GL_DEPTH_TEST);       // Enable depth testing
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
-    glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
-    glCullFace(GL_BACK);          // Cull back faces
-    glFrontFace(GL_CCW);          // Counter-clockwise winding order}
+   // glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
+    //glCullFace(GL_BACK);          // Cull back faces
+    //glFrontFace(GL_CCW);          // Counter-clockwise winding order}
 
 
     //Variables 
@@ -257,59 +331,79 @@ int main() {
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
     glm::vec3 rotateLight(0.0f, 0.0f, 1.0f);
 
+    glm::vec3 transformPlane(0.0, 0.0, 8.0f);
 
     bool isChecked = false;
+    float radian = 45.0f;
 
-    //Camera
-    Camera camera(glm::vec3(0.0f, 0.0f, 7.0f), 45.0f, 0.1f,  100.0f, window);   // [ position, fov , near , far , window ]
-
-
+    float lastFrame = 0.0f;
     // =Render
     while (!glfwWindowShouldClose(window)) {
+
+        float currentFrame = glfwGetTime();
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+
+
+        //1. Render depth map (shadow pass)
+        depth.Bind();
+
+        lightView = glm::lookAt(dirLightPosition, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        lightSpaceMatrix = lightProjection * lightView;
+        depth.SetUniformMat4f("DirectionalShadowMap", lightSpaceMatrix);
+
+        shadow.Write();
+        glClear(GL_DEPTH_BUFFER_BIT);
+ 
 
 
         glEnable(GL_FRONT);
         rend.Clear();
 
-        // Step 1: Shadow Map Pass
-        //shadowMap.Write();
-        //glClear(GL_DEPTH_BUFFER_BIT);
-        //shader.Bind();
-        //shader.SetUniformMat4f("DirLightSpaceMatrix", )
 
-        //glfwSetWindowTitle(window, std::to_string(rend.FpsCount()).c_str());
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+
+
+        //Second Pass
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, WIDTH, HEIGHT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
         // Cube
         {
             glBindVertexArray(vao);
             rend.Draw(vb, iv, shader);
 
-            shader.Bind();
+            
             //Model 
             rend.ModelTransform(translateModel);
-            rend.ModelRotate(rotateModel);
+            rend.ModelRotate(rotateModel, 45.0f);
 
             //All Matrix Transformation Applied
-            rend.UpdateMatrix(shader, "u_MVP", camera);
             shader.SetUniform3fv("color", color);
-            
 
+        }
+
+
+        {
             //SetUniforms
+           
             dirLight.SetLightUniform(shader, "dirLight");
             spotLight.SetLightUniform(shader, "spotLight");
             pointLight.SetLightUniform(shader, "pointLight");
 
+            shader.Bind();
             shader.SetUniformMat4f("model", rend.GetModelMatrix());
             shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
             shader.SetUniformMat4f("view", camera.GetViewMatrix());
             shader.SetUniform3fv("viewPos", rend.GetModelPosition());
-
         }
-
         
         /// Light Cube
 
@@ -320,12 +414,26 @@ int main() {
                 
             rend.ModelTransform(lightPosition);
             rend.ModelScale();
-            rend.ModelRotate(rotateLight);
+            rend.ModelRotate(rotateLight, 0.0f);
             rend.UpdateMatrix(lightShader, "mvp", camera);
             lightShader.SetUniform3fv("lightColor", lightColor);
 
         }
 
+        {
+            planeShader.Bind();
+            glBindVertexArray(vao3);
+            rend.Draw(vb3, iv3, planeShader);
+
+            rend.ModelTransform(transformPlane);
+            rend.ModelRotate(glm::vec3(0.0f, 1.0f, 0.0f), radian);
+            //rend.ModelScale();
+            rend.UpdateMatrix(planeShader, "mvp2", camera);
+            planeShader.SetUniform3fv("planeColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        }
+
+        shadow.Read(GL_TEXTURE0);
+        shader.SetUniform1f("shadow", 0);
             
         //   // GUI: Create window and UI elements
         {
@@ -335,10 +443,10 @@ int main() {
             ImGui::Text("Translations");
 
             
-            ImGui::SliderFloat("x", &translateModel.x, -1.0f, 5.0f);
-            ImGui::SliderFloat("y", &translateModel.y, -1.0f, 5.0f);
-            ImGui::SliderFloat("z", &translateModel.z, -1.0f, 5.0f);
-
+            ImGui::SliderFloat("x", &transformPlane.x, -1.0f, 5.0f);
+            ImGui::SliderFloat("y", &transformPlane.y, -1.0f, 5.0f);
+            ImGui::SliderFloat("z", &transformPlane.z, -1.0f, 10.0f);
+            ImGui::SliderFloat("r", &radian, -360.0f, 360.0f);
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 
@@ -403,7 +511,7 @@ int main() {
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
+        processCameraInputs(camera, deltaTime);
     }
 
 

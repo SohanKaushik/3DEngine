@@ -1,13 +1,19 @@
 #include "Camera.h"
 #include <glm/glm.hpp>
+#include <iostream>
 
 
 
 
 
-Camera :: Camera(glm::vec3 position, float fov, float near, float far, GLFWwindow* window)
-	: m_position(position), m_fov(fov), m_near(near), m_far(far), m_window(window)
-{}
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
+    : m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
+    m_moveSpeed(5.0f), m_senstivity(0.1f),
+    m_fov(fov), m_near(near), m_far(far),
+    m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
+{
+	UpdateCameraVectors();
+}
  
 
 glm::mat4 Camera::GetProjectionMatrix() {
@@ -17,34 +23,78 @@ glm::mat4 Camera::GetProjectionMatrix() {
 
 
 
-glm::mat4 Camera::GetViewMatrix() {
-
-	m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);  // Example: looking at the origin
-	glm::vec3 upDirection = glm::vec3(0.0f, 1.0f, 0.0f);     // orientation ( z up )
-
-	return glm::lookAt(m_position,m_targetPos,upDirection); 
+glm::mat4 Camera::GetViewMatrix() const {
+	return glm::lookAt(m_position, m_position + m_front, m_up);
 };
 
 
-float Camera::GetAspectRatio() {
-
+void Camera::SetAspectRatio(GLFWwindow* window) {
 	int width, height;
-	glfwGetFramebufferSize(m_window, &width, &height);
+	glfwGetFramebufferSize(window, &width, &height);
 
 	if (height == 0) height = 1;
-	float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+}
 
-	return aspectRatio;
+float Camera::GetAspectRatio() {
+	return m_aspectRatio;
 };
 
 
-glm::vec3 Camera::GetCameraFront() {
+glm::vec3 Camera::GetCameraFront() const {
 	// Direction is the vector from camera position to the target
-	return glm::normalize(m_targetPos - m_position);
+	return m_front;
 }
+
+
+glm::vec3 Camera::GetCameraRight() const {
+	// Direction is the vector from camera position to the target
+	return m_right;
+};
 
 
 glm::vec3 Camera::GetCameraPosition() {
 	return m_position;
 };
 
+
+void Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
+	float velocity = m_moveSpeed * deltaTime;
+	m_position += direction * velocity;    // Move in the specified direction
+};
+
+void Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch) {
+	xOffset *= m_senstivity;
+	yOffset *= m_senstivity;
+
+	m_pitch += yOffset;      // Update yaw
+	m_yaw += xOffset;        // Update pitch
+
+	// Constrain pitch to avoid gimbal lock
+	if (constrainPitch) {
+		if (m_pitch > 89.0f) m_pitch = 89.0f;
+		if (m_pitch < -89.0f) m_pitch = -89.0f;
+	}
+
+	// Update camera vectors based on new yaw and pitch
+	UpdateCameraVectors();
+};
+
+
+void Camera::UpdateCameraVectors() {
+	// Ensure the pitch is clamped between -89.0f and 89.0f to avoid gimbal lock
+	if (m_pitch > 89.0f) m_pitch = 89.0f;
+	if (m_pitch < -89.0f) m_pitch = -89.0f;
+
+	// Calculate the new front vector based on yaw and pitch
+	glm::vec3 front;
+	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	front.y = sin(glm::radians(m_pitch));
+	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+
+	m_front = glm::normalize(front); // Normalize front vector
+
+
+	m_right = glm::normalize(glm::cross(m_front, m_worldUP));   // Right is the cross product of front and world up
+	m_up = glm::normalize(glm::cross(m_right, m_front));        // Up is the cross product of right and front
+};

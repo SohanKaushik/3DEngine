@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-using namespace std;
 #include "Shader.h"
 #include "VertexBuff.h"
 #include "Rend.h"
@@ -19,9 +18,10 @@ using namespace std;
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "ShadowMap.h"
+#include "window.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 940
+#define HEIGHT 540
 
 
 DirectionalLight dirLight(
@@ -96,30 +96,10 @@ int main() {
 
     //opengl context
     glfwInit();
-
-    //window context
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-
-    // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Window", NULL, NULL);
-    if (window == NULL) {
-        cerr << "Failed to create GLFW window" << endl;
-        glfwTerminate();
-        return -1;
-    }  glfwMakeContextCurrent(window);
-
-    // Load OpenGL functions using glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        cerr << "Failed to initialize GLAD" << endl;
-        return -1;
-    }
-
-    if (!shadow.Init(1024, 1024)) {
-        std::cerr << "Failed to initialize shadow map!" << std::endl;
-    }
+   
+    ////window context
+    WindowManager::WindowInit(WIDTH, HEIGHT);
+    GLFWwindow* window = WindowManager::GetWindow(); 
 
     //Initializing Input Manager
     InputManager::getInstance().Initialize(window);
@@ -129,6 +109,8 @@ int main() {
 
     //Aspect Ratio
     camera.SetAspectRatio(window);
+
+    //Disabling Cursor
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     GLfloat vertices[] = {
@@ -163,9 +145,6 @@ int main() {
          1.0f, -1.0f, -1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
          1.0f, -1.0f,  1.0f,             0.0f,  1.0f,  0.0f  // Bottom face
     };
-
-
-  
 
     GLuint indices[] = {
       0, 1, 2,
@@ -220,11 +199,20 @@ int main() {
         -1.0f,  0.0f,  1.0f
     };
 
-
     unsigned int planeIndices[] = {
-        0, 1, 2 
-       
+        0, 1, 2,   
+        0, 2, 3   
     };
+
+
+    float gridVertices[] = {
+        // Positions
+        -1.0f,  1.0f,  // Top-left
+        -1.0f, -1.0f,  // Bottom-left
+         1.0f, -1.0f,  // Bottom-right
+         1.0f,  1.0f   // Top-right
+    };
+    unsigned int gridIndices[] = { 0, 1, 2, 0, 2, 3 };
 
 
 
@@ -235,6 +223,8 @@ int main() {
     Shader depth("resource files/shaders/DirectionalShadowMap.vert", "resource files/shaders/DirectionalShadowMap.frag");
 
 
+
+    //Cube
     shader.Bind();
     unsigned int vao;             // vertex array object
     glGenVertexArrays(1, &vao);   // generate for gen
@@ -255,7 +245,7 @@ int main() {
     glBindVertexArray(0);
 
 
-    // // Light cube
+    // Light cube
     Shader lightShader("resource files/shaders/light.vert", "resource files/shaders/light.frag");
     lightShader.Bind();
 
@@ -274,7 +264,6 @@ int main() {
 
 
     // Plane
-     // // Light cube
     Shader planeShader("resource files/shaders/plane.vert", "resource files/shaders/plane.frag");
     planeShader.Bind();
 
@@ -283,14 +272,34 @@ int main() {
     glBindVertexArray(vao3);
 
 
-    IndexBuff iv3(lightIndices, sizeof(planeIndices));
-    VertexBuff vb3(lightVertices, sizeof(planeVertices));
+    IndexBuff iv3(planeIndices, sizeof(planeIndices));
+    VertexBuff vb3(planeVertices, sizeof(planeVertices));
 
 
     //Position Attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
+
+
+    //// Grid
+    Shader gridShader("resource files/shaders/grid.vert", "resource files/shaders/grid.frag");
+    gridShader.Bind();
+
+    unsigned int vao4;
+    glGenVertexArrays(1, &vao4);
+    glBindVertexArray(vao4);
+
+
+    IndexBuff iv4(gridIndices, sizeof(planeIndices));
+    VertexBuff vb4(gridVertices, sizeof(planeVertices));
+
+
+    //Position Attribute
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
 
 
     // Configure matrices
@@ -313,7 +322,7 @@ int main() {
     glfwSwapInterval(0);
     glEnable(GL_DEPTH_TEST);       // Enable depth testing
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
-   // glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
+    glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
     //glCullFace(GL_BACK);          // Cull back faces
     //glFrontFace(GL_CCW);          // Counter-clockwise winding order}
 
@@ -464,7 +473,7 @@ int main() {
             ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
             ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);*/
 
-            //pointLight.m_position = lightPosition;
+            pointLight.m_position = lightPosition;
 
 
             /*ImGui::SliderFloat("x1", &dirLight.m_direction.x, -10.0f, 10.0f);
@@ -498,8 +507,10 @@ int main() {
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
             */
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 0, rend.FpsCount());
+            ImGui::Text("Frame Per Second (%.1f FPS)", rend.FpsCount());
             ImGui::End();
+
+            
         }
 
 

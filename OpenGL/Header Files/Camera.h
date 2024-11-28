@@ -24,7 +24,7 @@ private:
 	float m_far;
 
 	float m_aspectRatio;
-	GLFWwindow* m_window;
+	//GLFWwindow* m_window;
 
 private:
 	float m_yaw;

@@ -150,7 +150,7 @@ vec3 PointLightCalc() {
 void main()
 {
     // Calculate the lighting using DirectLight function
-    vec3 color2 = DirectLightCalc();
+    vec3 color2 = PointLightCalc();
 
  
     // Final output color with the calculated lighting

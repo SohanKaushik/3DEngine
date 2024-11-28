@@ -36,8 +36,9 @@ public:
 	//Set Uniforms
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniform1f(const std::string& name, float v1);
+	void SetUniform2f(const std::string& name, float f1, float f2);
 	void SetUniform3fv(const std::string& name, glm::vec3 pos);
-
+	
 
 private: 
 	int GetUniformLocation(const std::string& name);

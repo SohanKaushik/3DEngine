@@ -37,6 +37,10 @@ public:
 	void Clear() const;
 	void Blend();
 
+
+public:
 	glm::mat4 GetModelMatrix();
 	glm::vec3 GetModelPosition();
+
+	void DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& shader) const;
 };

@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include "Rend.h"
 #include "Camera.h"
-
+#include "window.h"
 
 void Rend::Clear() const {
 	// Set the background color
@@ -76,4 +76,16 @@ glm::mat4 Rend:: GetModelMatrix() {
 
 glm::vec3 Rend::GetModelPosition() {
 	return m_modelPosition;
+};
+
+void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& gridShader) const
+{
+	//Window winowSize;
+	gridShader.Bind();
+	//gridShader.SetUniform2f("viewportSize",);
+	gridShader.SetUniform1f("spacing", spacing);
+
+	//glBindVertexArray(gridVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 };

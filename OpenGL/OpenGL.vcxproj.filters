@@ -81,6 +81,9 @@
     <ClCompile Include="Source Files\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1001,6 +1004,9 @@
     <ClInclude Include="Header Files\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc">
@@ -1436,6 +1442,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Resource Files\Shaders\plane.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\grid.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\grid.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

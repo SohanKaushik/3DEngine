@@ -83,6 +83,11 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
+unsigned int Shader::GetID()
+{
+	return ID;
+}
+
 
 // Ratio Management          
 void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {

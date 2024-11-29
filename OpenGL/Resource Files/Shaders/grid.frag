@@ -1,27 +1,19 @@
 #version 330 core
 
+in vec3 FragPos;             // Position of the vertex in world space
+in float distanceToGrid;     // Distance from the camera to the grid
+
+uniform vec3 u_gridColor;    // Grid color
+
 out vec4 FragColor;
 
-uniform vec2 u_viewportSize;  // Screen resolution
-uniform float u_spacing;      // Distance between grid lines
-uniform float u_thickness;    // Thickness of grid lines
-uniform vec3 u_color;         // Grid line color
-uniform vec3 u_bgColor;       // Background color
+void main()
+{
+    // Fade the grid lines based on the distance to the grid (this formula can be adjusted)
+    // The further the distance, the more faded the grid lines become
+    float fade = 1.0 / (1.0 + distanceToGrid * .005); 
 
-void main() {
-
-    vec2 uv = gl_FragCoord.xy / u_viewportSize;      // Normalized coordinates
-
-    // Compute fractional position in the grid
-    vec2 grid = fract(uv / u_spacing);
-    grid = min(grid, 1.0 - grid); // Mirror around 0.5 for symmetry
-
-    // Calculate grid line strength
-    float line = max(grid.x, grid.y);
-    line = smoothstep(0.0, u_thickness, line);
-
-    // Mix grid and background colors
-    vec3 color = mix(u_color, u_bgColor, line);
-
-    FragColor = vec4(color, 1.0);
+   
+    // Set the grid color with fading
+    FragColor = vec4(u_gridColor, clamp(fade, 0.0, 1.0));  // Set alpha based on distance to grid
 }

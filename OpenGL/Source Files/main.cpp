@@ -19,16 +19,17 @@
 
 #include "ShadowMap.h"
 #include "window.h"
+#include <glm/gtx/string_cast.hpp>
 
 #define WIDTH 940
 #define HEIGHT 540
 
 
 DirectionalLight dirLight(
-    glm::vec3(0.2f, 0.2f, 0.2f),  // ambient 
+    glm::vec3(0.5f, 0.5f, 0.5f),  // ambient 
     glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse 
     glm::vec3(1.0f, 1.0f, 1.0f),  // specular
-    glm::vec3(-3.168f, 0.495f, -1.188f)   // direction
+    glm::vec3(0.0, 0.0, 0.0)   // direction
 );
 
 SpotLight spotLight(
@@ -42,20 +43,20 @@ SpotLight spotLight(
 );
 
 PointLight pointLight(
-    glm::vec3(0.2f, 0.2f, 0.2f),   // ambient
+    glm::vec3(0.5f, 0.5f, 0.5f),   // ambient
     glm::vec3(1.0f, 1.0f, 1.0f),   // diffuse
-    glm::vec3(1.0f, 1.0f, 1.0f),   // specular
-    glm::vec3(0.0f, 0.0f, 0.0f)    // position
+    glm::vec3(0.5f, 0.5f, 0.5f),   // specular
+    glm::vec3(0.0f, 10.0f, 0.0f)    // position
     // constant, linear, quadratic use defaults: 1.0, 0.09, 0.032
 );
 
 
-Camera camera(glm::vec3(0.0f, 0.0f, 7.0f),
+Camera camera(glm::vec3(0.0f, 0.0f, -1.0f),
     glm::vec3(0.0f, 1.0f, 0.0f),
     -90.0f,
     0.0f,
     45.0f,
-    0.1, 100.0f);
+    0.1, 2000.0f);
 
 float lastTime = 0.0f;
 
@@ -87,11 +88,15 @@ void processCameraInputs(Camera& camera, float deltaTime) {
 }
 
 
+
+
+
+
 int main() {
 
 
     // variables
-    Rend rend;
+    Rend rend(camera);
     ShadowMap shadow;
 
     //opengl context
@@ -205,23 +210,13 @@ int main() {
     };
 
 
-    float gridVertices[] = {
-        // Positions
-        -1.0f,  1.0f,  // Top-left
-        -1.0f, -1.0f,  // Bottom-left
-         1.0f, -1.0f,  // Bottom-right
-         1.0f,  1.0f   // Top-right
-    };
-    unsigned int gridIndices[] = { 0, 1, 2, 0, 2, 3 };
-
-
 
     /////////////////////............................Buffers............................//////////////////////////
 
     // Create shaders
     Shader shader("resource files/shaders/default.vert", "resource files/shaders/default.frag");
     Shader depth("resource files/shaders/DirectionalShadowMap.vert", "resource files/shaders/DirectionalShadowMap.frag");
-
+   
 
 
     //Cube
@@ -249,8 +244,8 @@ int main() {
     Shader lightShader("resource files/shaders/light.vert", "resource files/shaders/light.frag");
     lightShader.Bind();
 
-    unsigned int vao2;             // vertex array object
-    glGenVertexArrays(1, &vao2);   //generate for gen
+    unsigned int vao2;              // vertex array object
+    glGenVertexArrays(1, &vao2);    //generate for gen
     glBindVertexArray(vao2);
 
 
@@ -282,26 +277,14 @@ int main() {
     glBindVertexArray(0);
 
 
-    //// Grid
+    // Axes
+    Shader axis("resource files/shaders/axis.vert", "resource files/shaders/axis.frag");
+
+    // Grid
     Shader gridShader("resource files/shaders/grid.vert", "resource files/shaders/grid.frag");
-    gridShader.Bind();
-
-    unsigned int vao4;
-    glGenVertexArrays(1, &vao4);
-    glBindVertexArray(vao4);
-
-
-    IndexBuff iv4(gridIndices, sizeof(planeIndices));
-    VertexBuff vb4(gridVertices, sizeof(planeVertices));
-
-
-    //Position Attribute
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-
-
+ 
+ 
+ 
     // Configure matrices
     glm::mat4 lightProjection, lightView, lightSpaceMatrix;
     float nearPlane = 1.0f, farPlane = 7.5f;
@@ -320,11 +303,11 @@ int main() {
     ImGui::StyleColorsDark();
 
     glfwSwapInterval(0);
-    glEnable(GL_DEPTH_TEST);       // Enable depth testing
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
     glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
     //glCullFace(GL_BACK);          // Cull back faces
     //glFrontFace(GL_CCW);          // Counter-clockwise winding order}
+    //glDepthFunc(GL_ALWAYS);  // Force the axes to always be drawn
 
 
     //Variables 
@@ -334,7 +317,7 @@ int main() {
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition = glm::vec3(-1.002, 1.338f, 1.388);
+    glm::vec3 lightPosition = glm::vec3(0.0, 2.0, 0.0);
     glm::vec3 dirLightPosition(0.0f, 1.0f, 0.0f);
 
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
@@ -346,15 +329,33 @@ int main() {
     float radian = 45.0f;
 
     float lastFrame = 0.0f;
+
+    rend.Blend();
+
+
+
     // =Render
     while (!glfwWindowShouldClose(window)) {
 
+        glm::vec3 cameraPosition = pointLight.m_position; // Example camera position
+        std::cout << glm::to_string(cameraPosition) << std::endl;
+
+        rend.Clear();
         float currentFrame = glfwGetTime();
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        axis.Bind();
+        //rend.RenderAxes(
+        // , axis);
 
 
+        // Draw a red line
+        glColor3f(1.0f, 0.0f, 0.0f);  // Red color
+        glBegin(GL_LINES);  // Start drawing a line
+        glVertex3f(-0.5f, -0.5f, 0.0f);  // Start point
+        glVertex3f(0.5f, 0.5f, 0.0f);    // End point
+        glEnd();  // End drawing lines
         //1. Render depth map (shadow pass)
         depth.Bind();
 
@@ -392,7 +393,7 @@ int main() {
             
             //Model 
             rend.ModelTransform(translateModel);
-            rend.ModelRotate(rotateModel, 45.0f);
+            rend.ModelRotate(rotateModel, 0.0f);
 
             //All Matrix Transformation Applied
             shader.SetUniform3fv("color", color);
@@ -411,7 +412,7 @@ int main() {
             shader.SetUniformMat4f("model", rend.GetModelMatrix());
             shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
             shader.SetUniformMat4f("view", camera.GetViewMatrix());
-            shader.SetUniform3fv("viewPos", rend.GetModelPosition());
+            shader.SetUniform3fv("viewPos", camera.GetCameraPosition());
         }
         
         /// Light Cube
@@ -441,6 +442,25 @@ int main() {
             planeShader.SetUniform3fv("planeColor", glm::vec3(1.0f, 1.0f, 1.0f));
         }
 
+
+        // Grid and Axis
+        {       
+
+            rend.DrawGrid(10.0f, 0.01f, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
+            rend.UpdateMatrix(gridShader, "u_mvp", camera);
+            gridShader.Unbind();
+        }
+
+
+        {
+          
+            
+            rend.DrawAxes(axis, camera);
+            axis.SetUniformMat4f("u_mvp", glm::mat4(1.0f)); // Render without transformation
+
+            axis.Unbind();
+
+        }
         shadow.Read(GL_TEXTURE0);
         shader.SetUniform1f("shadow", 0);
             

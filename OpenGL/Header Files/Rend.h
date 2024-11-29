@@ -10,6 +10,8 @@
 
 class Rend {
 	
+public:
+	 Rend(Camera& cam);
 
 private: 
 
@@ -20,8 +22,10 @@ private:
 	unsigned int counter = 0;
 	
 	glm::vec3 m_modelPosition;
+	Camera m_camera;
 
 public:
+	
 
 
 	void Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader) const;
@@ -38,9 +42,21 @@ public:
 	void Blend();
 
 
+private:
+	unsigned int gridVAO, gridVBO;
+
 public:
 	glm::mat4 GetModelMatrix();
 	glm::vec3 GetModelPosition();
 
-	void DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& shader) const;
-};
+
+	void SetupGrid();
+	void DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& gridShader, Camera& camera) const;
+	void DrawAxes(Shader& axisShader, Camera& cam) const;
+
+	void CalcFrustumPlanes(Camera& camera, std::vector<glm::vec4>& planes);
+	bool isAxisVisible(const glm::vec3& axisPosition, const glm::vec3& axisDirection, const std::vector<glm::vec4>& planes);
+	void RenderAxes(Camera& camera, Shader& shader);
+
+	void DrawAxis(float length, float lineWidth, glm::vec3 color, Camera& camera, Shader& shader);
+}; 

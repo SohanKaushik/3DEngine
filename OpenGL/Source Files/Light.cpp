@@ -48,9 +48,9 @@ void SpotLight::SetLightUniform(Shader& shader, const std::string& uniformName) 
 
 void PointLight::SetLightUniform(Shader& shader, const std::string& uniformName) const
 {
-    shader.SetUniform3fv(uniformName + ".position", m_position);
     shader.SetUniform3fv(uniformName + ".ambient", m_ambient);
     shader.SetUniform3fv(uniformName + ".diffuse", m_diffuse);
     shader.SetUniform3fv(uniformName + ".specular", m_specular);
+    shader.SetUniform3fv(uniformName + ".position", m_position);
 };
 

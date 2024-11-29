@@ -29,6 +29,8 @@ public:
 	// Deletes the Shader Program
 	void Unbind() const;
 
+	unsigned int GetID();
+
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 	//int GetUniformLocation(const std::string& name);

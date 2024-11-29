@@ -621,6 +621,8 @@
     <None Include="dependencies\include\glm\gtx\vector_query.inl" />
     <None Include="dependencies\include\glm\gtx\wrap.inl" />
     <None Include="OpenGL.aps" />
+    <None Include="Resource Files\Shaders\axis.frag" />
+    <None Include="Resource Files\Shaders\axis.vert" />
     <None Include="Resource Files\Shaders\default.frag" />
     <None Include="Resource Files\Shaders\default.vert" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.frag" />

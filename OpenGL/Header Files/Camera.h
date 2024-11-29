@@ -36,7 +36,7 @@ private:
 public:
 	Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far);
 
-	glm::vec3 GetCameraPosition();
+	glm::vec3 GetCameraPosition() const;
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewMatrix() const;
 	glm::vec3 GetCameraFront() const;

@@ -8,7 +8,7 @@
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
     : m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
-    m_moveSpeed(5.0f), m_senstivity(0.1f),
+    m_moveSpeed(10.0f), m_senstivity(0.1f),
     m_fov(fov), m_near(near), m_far(far),
     m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
 {
@@ -53,7 +53,7 @@ glm::vec3 Camera::GetCameraRight() const {
 };
 
 
-glm::vec3 Camera::GetCameraPosition() {
+glm::vec3 Camera::GetCameraPosition() const{
 	return m_position;
 };
 

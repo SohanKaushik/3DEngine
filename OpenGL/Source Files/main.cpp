@@ -337,8 +337,6 @@ int main() {
     // =Render
     while (!glfwWindowShouldClose(window)) {
 
-        glm::vec3 cameraPosition = pointLight.m_position; // Example camera position
-        std::cout << glm::to_string(cameraPosition) << std::endl;
 
         rend.Clear();
         float currentFrame = glfwGetTime();

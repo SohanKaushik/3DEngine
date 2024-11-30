@@ -342,18 +342,9 @@ int main() {
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        axis.Bind();
-        //rend.RenderAxes(
-        // , axis);
+    
+       
 
-
-        // Draw a red line
-        glColor3f(1.0f, 0.0f, 0.0f);  // Red color
-        glBegin(GL_LINES);  // Start drawing a line
-        glVertex3f(-0.5f, -0.5f, 0.0f);  // Start point
-        glVertex3f(0.5f, 0.5f, 0.0f);    // End point
-        glEnd();  // End drawing lines
-        //1. Render depth map (shadow pass)
         depth.Bind();
 
         lightView = glm::lookAt(dirLightPosition, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -443,7 +434,7 @@ int main() {
         // Grid and Axis
         {       
 
-            rend.DrawGrid(10.0f, 0.01f, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
+            rend.DrawGrid(5.0f, 0.01f, glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
             rend.UpdateMatrix(gridShader, "u_mvp", camera);
             gridShader.Unbind();
         }

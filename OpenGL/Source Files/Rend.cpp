@@ -93,32 +93,43 @@ glm::vec3 Rend::GetModelPosition() {
 
 void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& gridShader, Camera& camera) const
 {
-
-
     // Set grid shader uniforms
     gridShader.Bind();
     gridShader.SetUniform3fv("u_gridColor", gridColor);
     gridShader.SetUniform3fv("u_cameraPosition", camera.GetCameraPosition());
     gridShader.SetUniformMat4f("u_model", model);
-    
-    // Create grid lines data (just an example of a 2D grid in XZ plane)
+
+
+
+    // Create grid lines data (position + color)
     std::vector<float> gridVertices;
+    int gridSize = 1000;
 
-   
+ 
+
+    glm::vec3 xColor = glm::vec3(0.886, 0.376, 0.357);
+    glm::vec3 yColor = glm::vec3(0.482, 0.8, 0.482);
+
+    glm::vec3 lineColor = gridColor;                    // Default grid color
+
     // Draw vertical lines (XZ plane)
-    for (float x = -1000.0f; x <= 1000.0f; x += spacing) {
+    for (float x = -gridSize; x <= gridSize; x += spacing) {
+        glm::vec3 color = (fabs(x) == 0) ? xColor : lineColor; // Red if x is near origin
+        gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(-gridSize); // Start
+        gridVertices.push_back(color.r); gridVertices.push_back(color.g); gridVertices.push_back(color.b);
 
-        if (x == 1000) {
-            std::cout << "x yes" << std::endl;
-        }
-        gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(-1000.0f);  // Start
-        gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(1000.0f);   // End
+        gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(gridSize); // End
+        gridVertices.push_back(color.r); gridVertices.push_back(color.g); gridVertices.push_back(color.b);
     }
 
     // Draw horizontal lines (XZ plane)
-    for (float z = -1000.0f; z <= 1000.0f; z += spacing) {
-        gridVertices.push_back(-1000.0f); gridVertices.push_back(0.0f); gridVertices.push_back(z);  // Start
-        gridVertices.push_back(1000.0f); gridVertices.push_back(0.0f); gridVertices.push_back(z);   // End
+    for (float z = -gridSize; z <= gridSize; z += spacing) {
+        glm::vec3 color = (fabs(z) == 0) ? yColor : lineColor; // Red if z is near origin
+        gridVertices.push_back(-gridSize); gridVertices.push_back(0.0f); gridVertices.push_back(z - 16); // Start
+        gridVertices.push_back(color.r); gridVertices.push_back(color.g); gridVertices.push_back(color.b);
+
+        gridVertices.push_back(gridSize); gridVertices.push_back(0.0f); gridVertices.push_back(z); // End
+        gridVertices.push_back(color.r); gridVertices.push_back(color.g); gridVertices.push_back(color.b);
     }
 
     // Bind vertex array for grid
@@ -131,13 +142,15 @@ void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, 
     glBufferData(GL_ARRAY_BUFFER, gridVertices.size() * sizeof(float), gridVertices.data(), GL_STATIC_DRAW);
 
     // Enable vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);       // Position attribute
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Color attribute
+    glEnableVertexAttribArray(1);
     glBindVertexArray(0); // Unbind VAO after setting up
 
     // Now bind VAO and draw the grid lines using GL_LINES
     glBindVertexArray(gridVAO);
-    glDrawArrays(GL_LINES, 0, gridVertices.size() / 3);  // Draw the grid lines
+    glDrawArrays(GL_LINES, 0, gridVertices.size() / 6);  // Each vertex has 6 floats (3 for position, 3 for color)
     glBindVertexArray(0);  // Unbind VAO
 
     // Cleanup

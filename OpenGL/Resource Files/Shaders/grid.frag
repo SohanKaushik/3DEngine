@@ -1,19 +1,26 @@
 #version 330 core
 
-in vec3 FragPos;             // Position of the vertex in world space
-in float distanceToGrid;     // Distance from the camera to the grid
+// Uniforms
+uniform vec3 u_cameraPosition; // Camera's world-space position
 
-uniform vec3 u_gridColor;    // Grid color
+// Inputs
+in vec3 FragPos;               // World-space position from the vertex shader
 
-out vec4 FragColor;
+// Outputs
+out vec4 fragColor;            // Final color output
 
-void main()
-{
-    // Fade the grid lines based on the distance to the grid (this formula can be adjusted)
-    // The further the distance, the more faded the grid lines become
-    float fade = 1.0 / (1.0 + distanceToGrid * .005); 
+// Hardcoded fade distances
+const float dMin = 10.0;       // Fade start distance
+const float dMax = 300.0;       // Fade end distance
 
-   
-    // Set the grid color with fading
-    FragColor = vec4(u_gridColor, clamp(fade, 0.0, 1.0));  // Set alpha based on distance to grid
-}
+void main() {
+    // Calculate distance from fragment to camera
+    float distance = length(FragPos - u_cameraPosition);
+
+    // Compute opacity using linear fade
+    float opacity = clamp((dMax - distance) / (dMax - dMin), 0.0, 1.0);
+
+    // Set final color with fade applied 
+    vec4 baseColor = vec4(0.32, 0.32, 0.32, 1.0); // Replace with your actual base color
+    fragColor = vec4(baseColor.rgb, baseColor.a * opacity);
+};

@@ -130,7 +130,7 @@ vec3 PointLightCalc() {
     vec3 ambient = pointLight.ambient;
 
     // Fresnel effect calculation
-    float fresnelFactor = pow(max(dot(normal, -viewDirection), 0.0), 2.0) * 2; // Adjust exponent for subtle 
+    float fresnelFactor = pow(max(dot(normal, -viewDirection), 0.0), 2.0) * 4; // Adjust exponent for subtle 
     vec3 fresnel = vec3(1.0, 1.0, 1.0) * fresnelFactor; // White edge highlights
 
     // Apply intensity attenuation to diffuse, specular, and Fresnel components

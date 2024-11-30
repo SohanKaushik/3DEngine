@@ -336,8 +336,7 @@ int main() {
 
     // =Render
     while (!glfwWindowShouldClose(window)) {
-
-
+      
         rend.Clear();
         float currentFrame = glfwGetTime();
         float deltaTime = currentFrame - lastFrame;
@@ -449,16 +448,6 @@ int main() {
             gridShader.Unbind();
         }
 
-
-        {
-          
-            
-            rend.DrawAxes(axis, camera);
-            axis.SetUniformMat4f("u_mvp", glm::mat4(1.0f)); // Render without transformation
-
-            axis.Unbind();
-
-        }
         shadow.Read(GL_TEXTURE0);
         shader.SetUniform1f("shadow", 0);
             

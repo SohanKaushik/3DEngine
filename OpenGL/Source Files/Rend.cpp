@@ -14,7 +14,7 @@ Rend::Rend(Camera& cam) : m_camera(cam)
 
 void Rend::Clear() const {
 	// Set the background color
-	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.247, 0.247, 0.247, 1.0);
 
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -98,14 +98,19 @@ void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, 
     // Set grid shader uniforms
     gridShader.Bind();
     gridShader.SetUniform3fv("u_gridColor", gridColor);
-    //gridShader.SetUniform3fv("u_cameraPos", camera.GetCameraPosition());
-
+    gridShader.SetUniform3fv("u_cameraPosition", camera.GetCameraPosition());
+    gridShader.SetUniformMat4f("u_model", model);
     
     // Create grid lines data (just an example of a 2D grid in XZ plane)
     std::vector<float> gridVertices;
 
+   
     // Draw vertical lines (XZ plane)
     for (float x = -1000.0f; x <= 1000.0f; x += spacing) {
+
+        if (x == 1000) {
+            std::cout << "x yes" << std::endl;
+        }
         gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(-1000.0f);  // Start
         gridVertices.push_back(x); gridVertices.push_back(0.0f); gridVertices.push_back(1000.0f);   // End
     }
@@ -139,68 +144,3 @@ void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, 
     glDeleteBuffers(1, &gridVBO);
     glDeleteVertexArrays(1, &gridVAO);
 };
-
-void Rend::DrawAxes(Shader& axisShader, Camera& cam) const
-{
-    std::vector<float> axisVertices = {
-        // X-axis (Red)
-        -1000.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // Start
-         1000.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,  // End
-
-         // Y-axis (Green)
-         0.0f, -1000.0f, 0.0f,  0.0f, 1.0f, 0.0f,  // Start
-         0.0f,  1000.0f, 0.0f,  0.0f, 1.0f, 0.0f,  // End
-
-         // Z-axis (Blue)
-         0.0f, 0.0f, -1000.0f,  0.0f, 0.0f, 1.0f,  // Start
-         0.0f, 0.0f,  1000.0f,  0.0f, 0.0f, 1.0f   // End
-    };
-
-
-    // Generate and bind VAO/VBO
-    GLuint axisVAO, axisVBO;
-    glGenVertexArrays(1, &axisVAO);
-    glGenBuffers(1, &axisVBO);
-
-    glBindVertexArray(axisVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
-    glBufferData(GL_ARRAY_BUFFER, axisVertices.size() * sizeof(float), axisVertices.data(), GL_STATIC_DRAW);
-
-
-
-    // Position attribute (location = 0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0); // Unbind VAO after setting up
-
-    // Color attribute (location = 1)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0); // Unbind VAO after setting up
-
-    // Unbind to avoid accidental modification
-    glBindVertexArray(0);
-
-
-    // Bind shader program
-    axisShader.Bind();
-
-    // Set the MVP matrix (view * projection)
-    glm::mat4 mvp = cam.GetProjectionMatrix() * cam.GetViewMatrix();
-    axisShader.SetUniformMat4f("u_mvp", mvp);
-
-
-
-    // Render the axes
-    glBindVertexArray(axisVAO);
-    glDrawArrays(GL_LINES, 0, 6);  // 4 vertices (2 per axis)
-    glBindVertexArray(0);
-
-    // Cleanup
-    glDeleteBuffers(1, &axisVBO);
-    glDeleteVertexArrays(1, &axisVAO);
-}
-
-
-
-//void Rend::DrawAxis();

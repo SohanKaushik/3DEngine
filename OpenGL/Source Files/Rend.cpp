@@ -38,27 +38,36 @@ void Rend::Draw(const VertexBuff& va, const IndexBuff& iv, const Shader& shader)
 
 
 // Model Matrix
-void Rend::ModelTransform(glm::vec3 translation) {
-	model = glm::translate(glm::mat4(1.0), translation);
-	m_modelPosition = translation;
+void Rend::SetModelPosition(glm::vec3 translation = glm::vec3(0,0,0)) {
+    m_modelPosition = translation;
+    model = glm::translate(glm::mat4(1.0), m_modelPosition);
 };
 
-void Rend::ModelScale() {
+void Rend::SetModelScale() {
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 };
 
-void Rend::ModelRotate(glm::vec3 axis, float radian){
-    glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(radian), axis);
+void Rend::SetModelRotate(glm::vec3 axis, float radian) {
+    model = m_modelRotate;
+    model = glm::rotate(m_modelRotate, glm::radians(radian), axis);
+};
+
+void Rend::SetModelColor(glm::vec3 color, const std::string& uniformName, Shader& shader )
+{
+    shader.SetUniform3fv("color", color);
 };
 
 
 // All Matrix Transform
-void Rend::UpdateMatrix(Shader& shader, const std::string& unformName, Camera& camera) {
-	glm::mat4 mvp = camera.GetProjectionMatrix() * camera.GetViewMatrix() * model;
+void Rend::UpdateMatrix(Shader& shader, const std::vector <std::string>& uniformNames, Camera& camera) {
+	//glm::mat4 mvp = camera.GetProjectionMatrix() * camera.GetViewMatrix() * model;
+    // No error checking of indexing
 
-	// Debug: print out the MVP matrix
-	shader.SetUniformMat4f(unformName, mvp);
+    
+    shader.SetUniformMat4f(uniformNames[0], model);
+    shader.SetUniformMat4f(uniformNames[1], camera.GetProjectionMatrix());
+    shader.SetUniformMat4f(uniformNames[2], camera.GetViewMatrix());
+    shader.SetUniform3fv(uniformNames[3], camera.GetCameraPosition());
 };
 
 double Rend::FpsCount() {
@@ -93,13 +102,7 @@ glm::vec3 Rend::GetModelPosition() {
 
 void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, const glm::vec3& bgColor, Shader& gridShader, Camera& camera) const
 {
-    // Set grid shader uniforms
-    gridShader.Bind();
-    gridShader.SetUniform3fv("u_gridColor", gridColor);
-    gridShader.SetUniform3fv("u_cameraPosition", camera.GetCameraPosition());
-    gridShader.SetUniformMat4f("u_model", model);
-
-
+    
 
     // Create grid lines data (position + color)
     std::vector<float> gridVertices;
@@ -125,7 +128,7 @@ void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, 
     // Draw horizontal lines (XZ plane)
     for (float z = -gridSize; z <= gridSize; z += spacing) {
         glm::vec3 color = (fabs(z) == 0) ? yColor : lineColor; // Red if z is near origin
-        gridVertices.push_back(-gridSize); gridVertices.push_back(0.0f); gridVertices.push_back(z - 16); // Start
+        gridVertices.push_back(-gridSize); gridVertices.push_back(0.0f); gridVertices.push_back(z); // Start
         gridVertices.push_back(color.r); gridVertices.push_back(color.g); gridVertices.push_back(color.b);
 
         gridVertices.push_back(gridSize); gridVertices.push_back(0.0f); gridVertices.push_back(z); // End

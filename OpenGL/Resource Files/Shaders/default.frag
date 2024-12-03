@@ -118,7 +118,7 @@ vec3 SpotLightCalc() {
 
 
 
-vec3 PointLightCalc() {
+vec3 SolidLightCalc() {
     // Calculate light vector from fragment position to light position
     vec3 lightVec = pointLight.position - FragPos;
     vec3 normal = normalize(Normal);
@@ -142,15 +142,43 @@ vec3 PointLightCalc() {
 }
 
 
+vec3 PointLightCalc() {
+    // Calculate light vector from fragment position to light position
+    vec3 lightVec = pointLight.position - FragPos;
 
+    // Calculate the distance to the light
+    float dist = length(lightVec);
+
+    // Distance attenuation formula
+    float a = 3.0f;
+    float b = 0.7f;
+    float inten = 1.0f / (a * dist * dist + b * dist + 3.0f);
+
+    // Ambient lighting (multiplied by the light's ambient color)
+    vec3 ambient = pointLight.ambient;
+
+    // Diffuse lighting
+    vec3 normal = normalize(Normal);
+    vec3 lightDirection = normalize(lightVec);
+    float diffuse = max(dot(normal, -lightDirection), 0.0f);
+    vec3 diffuseColor = pointLight.diffuse * diffuse;
+
+    // Specular lighting
+    vec3 viewDirection = normalize(viewPos - FragPos);
+    vec3 reflectionDirection = reflect(-lightDirection, normal);
+    float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 32.0);  // Shininess = 32
+    vec3 specularColor = pointLight.specular * specAmount;
+   
+    return ambient + (diffuseColor) * inten * 10;
+}
 
 void main()
 {
     // Calculate the lighting using DirectLight function
-    vec3 color2 = PointLightCalc();
+    vec3 color2 = DirectLightCalc() + PointLightCalc();
 
  
     // Final output color with the calculated lighting
-    FragColor = vec4(color2 , 1.0);
+    FragColor = vec4(color2 * aColor, 1.0);
 
 }

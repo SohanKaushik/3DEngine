@@ -26,10 +26,10 @@
 
 
 DirectionalLight dirLight(
-    glm::vec3(0.5f, 0.5f, 0.5f),  // ambient 
+    glm::vec3(0.0f, 0.0f, 0.0f),  // ambient 
     glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse 
     glm::vec3(1.0f, 1.0f, 1.0f),  // specular
-    glm::vec3(0.0, 0.0, 0.0)   // direction
+    glm::vec3(1.0, 3.0, 0.0)   // direction
 );
 
 SpotLight spotLight(
@@ -43,10 +43,10 @@ SpotLight spotLight(
 );
 
 PointLight pointLight(
-    glm::vec3(0.5f, 0.5f, 0.5f),   // ambient
+    glm::vec3(0.3f, 0.3f, 0.3f),   // ambient
     glm::vec3(1.0f, 1.0f, 1.0f),   // diffuse
     glm::vec3(0.5f, 0.5f, 0.5f),   // specular
-    glm::vec3(0.0f, 10.0f, 0.0f)    // position
+    glm::vec3(0.0f, 10.0f, 5.0f)    // position
     // constant, linear, quadratic use defaults: 1.0, 0.09, 0.032
 );
 
@@ -222,10 +222,11 @@ int main() {
     //Cube
     shader.Bind();
     unsigned int vao;             // vertex array object
+  
     glGenVertexArrays(1, &vao);   // generate for gen
     glBindVertexArray(vao);
 
-
+   
     IndexBuff iv(indices, sizeof(indices));                           //  (6 column) * (36 row)
     VertexBuff vb(vertices,sizeof(vertices));   // 8 vertices, each with 6 floats (3 for position, 3 for color)
 
@@ -277,9 +278,7 @@ int main() {
     glBindVertexArray(0);
 
 
-    // Axes
-    Shader axis("resource files/shaders/axis.vert", "resource files/shaders/axis.frag");
-
+   
     // Grid
     Shader gridShader("resource files/shaders/grid.vert", "resource files/shaders/grid.frag");
  
@@ -301,6 +300,7 @@ int main() {
 
     // Set up ImGui style
     ImGui::StyleColorsDark();
+    //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     glfwSwapInterval(0);
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
@@ -309,7 +309,7 @@ int main() {
     //glFrontFace(GL_CCW);          // Counter-clockwise winding order}
     //glDepthFunc(GL_ALWAYS);  // Force the axes to always be drawn
 
-
+    
     //Variables 
     glm::vec3 color(1.0f, 1.0f, 1.0f);
     glm::vec3 translateModel(0.0, 0.0, 0.0f);
@@ -317,7 +317,7 @@ int main() {
 
 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition = glm::vec3(0.0, 2.0, 0.0);
+    glm::vec3 lightPosition = glm::vec3(-5.0, 0.0, 0.0);
     glm::vec3 dirLightPosition(0.0f, 1.0f, 0.0f);
 
     glm::vec3 translateLight(0.1f, 0.1f, 2.5f);
@@ -331,7 +331,7 @@ int main() {
     float lastFrame = 0.0f;
 
     rend.Blend();
-
+    bool isZero = true;
 
 
     // =Render
@@ -342,7 +342,7 @@ int main() {
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-    
+        
        
 
         depth.Bind();
@@ -358,7 +358,7 @@ int main() {
 
         glEnable(GL_FRONT);
         rend.Clear();
-
+       
 
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
@@ -367,41 +367,39 @@ int main() {
 
 
 
+      
         //Second Pass
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, WIDTH, HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         // Cube
         {
             glBindVertexArray(vao);
             rend.Draw(vb, iv, shader);
+            rend.SetModelPosition(glm::vec3(5.0f,0,0));
+            rend.SetModelColor(color, "color", shader);
+            rend.UpdateMatrix(shader, { "model", "projection", "view", "viewPos" }, camera);
+           
+            if (isZero)
+            {
+                std::cout << "Cube:" << glm::to_string(rend.GetModelPosition()) << std::endl;
+            }
 
-            
-            //Model 
-            rend.ModelTransform(translateModel);
-            rend.ModelRotate(rotateModel, 0.0f);
-
-            //All Matrix Transformation Applied
-            shader.SetUniform3fv("color", color);
-
-        }
+        };
 
 
         {
             //SetUniforms
-           
+
             dirLight.SetLightUniform(shader, "dirLight");
             spotLight.SetLightUniform(shader, "spotLight");
             pointLight.SetLightUniform(shader, "pointLight");
-
-            shader.Bind();
-            shader.SetUniformMat4f("model", rend.GetModelMatrix());
-            shader.SetUniformMat4f("projection", camera.GetProjectionMatrix());
-            shader.SetUniformMat4f("view", camera.GetViewMatrix());
-            shader.SetUniform3fv("viewPos", camera.GetCameraPosition());
+            shader.Unbind();
+         
         }
+
+        
         
         /// Light Cube
 
@@ -409,50 +407,61 @@ int main() {
             lightShader.Bind();
             glBindVertexArray(vao2);
             rend.Draw(vb2, iv2, lightShader);
-                
-            rend.ModelTransform(lightPosition);
-            rend.ModelScale();
-            rend.ModelRotate(rotateLight, 0.0f);
-            rend.UpdateMatrix(lightShader, "mvp", camera);
-            lightShader.SetUniform3fv("lightColor", lightColor);
+              
+            rend.SetModelPosition(lightPosition);
+            rend.SetModelColor(lightColor, "lightColor", lightShader);
+            rend.UpdateMatrix(planeShader, { "model", "projection", "view", "k" }, camera);
+            lightShader.Unbind();
 
         }
 
         {
-            planeShader.Bind();
+            /*planeShader.Bind();
             glBindVertexArray(vao3);
-            rend.Draw(vb3, iv3, planeShader);
-
-            rend.ModelTransform(transformPlane);
-            rend.ModelRotate(glm::vec3(0.0f, 1.0f, 0.0f), radian);
-            //rend.ModelScale();
-            rend.UpdateMatrix(planeShader, "mvp2", camera);
-            planeShader.SetUniform3fv("planeColor", glm::vec3(1.0f, 1.0f, 1.0f));
-        }
-
-
-        // Grid and Axis
-        {       
-
-            rend.DrawGrid(5.0f, 0.01f, glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
-            rend.UpdateMatrix(gridShader, "u_mvp", camera);
-            gridShader.Unbind();
-        }
-
-        shadow.Read(GL_TEXTURE0);
-        shader.SetUniform1f("shadow", 0);
+            rend.Draw(vb3, iv3, planeShader);  
+            rend.SetModelColor(glm::vec3(1.0f, 1.0f, 1.0f), "planeColor", planeShader);
+            rend.SetModelPosition(glm::vec3(10, 0, 0));
+            rend.UpdateMatrix(planeShader, { "model", "projection", "view", "viewPos" }, camera);
             
-        //   // GUI: Create window and UI elements
+            if (isZero)
+            {
+                std::cout << "Plane:" << glm::to_string(rend.GetModelPosition()) << std::endl;
+                if (planeShader.isActive()) std::cout << "Shader program " << planeShader.getProgramID() << " is currently active!" << std::endl;
+            }
+            planeShader.Unbind();*/
+        }
+       
+
+       
+        // Grid and Axis
+        {
+            gridShader.Bind();
+            rend.DrawGrid(5.0f, 0.01f, glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
+            rend.SetModelPosition(glm::vec3(0, 0, 0));
+            rend.UpdateMatrix(gridShader, { "model", "projection", "view", "u_cameraPosition" }, camera);
+            if (isZero)
+            {
+                std::cout << "Grid:" << glm::to_string(rend.GetModelPosition()) << std::endl;
+                isZero = false;
+            }
+            gridShader.Unbind();
+        };
+
+       
+        //shadow.Read(GL_TEXTURE0);
+        //shader.SetUniform1f("shadow", 0);     
+        //GUI: Create window and UI elements
+
         {
 
             ImGui::Begin("Dialog!");
             ImGuiIO& io = ImGui::GetIO();
             ImGui::Text("Translations");
 
-            
-            ImGui::SliderFloat("x", &transformPlane.x, -1.0f, 5.0f);
-            ImGui::SliderFloat("y", &transformPlane.y, -1.0f, 5.0f);
-            ImGui::SliderFloat("z", &transformPlane.z, -1.0f, 10.0f);
+
+            /* ImGui::SliderFloat("x", &transformPlane.x, -1.0f, 5.0f);
+             ImGui::SliderFloat("y", &transformPlane.y, -1.0f, 5.0f);
+             ImGui::SliderFloat("z", &transformPlane.z, -1.0f, 10.0f);*/
             ImGui::SliderFloat("r", &radian, -360.0f, 360.0f);
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -461,9 +470,9 @@ int main() {
             ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
             ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
             ImGui::ColorPicker3("Color", &color[0]);
-            
-           /* ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
-            ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);*/
+
+            /* ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+             ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);*/
 
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -481,14 +490,14 @@ int main() {
 
             if (ImGui::Checkbox("Wireframe", &isChecked)) {
 
-                if (isChecked) { 
+                if (isChecked) {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 }
                 else {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); 
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
             }
-            
+
             if (spotLight.m_inner > spotLight.m_outer) {
 
                 spotLight.m_outer = spotLight.m_inner + 0.01;
@@ -508,8 +517,8 @@ int main() {
             ImGui::Text("Frame Per Second (%.1f FPS)", rend.FpsCount());
             ImGui::End();
 
-            
-        }
+
+        };
 
 
         ImGui::Render();
@@ -527,6 +536,7 @@ int main() {
     // Clean up
     glDeleteVertexArrays(1, &vao);
     glDeleteVertexArrays(1, &vao2);
+    glDeleteVertexArrays(1, &vao3);
 
     shader.Unbind();
     lightShader.Unbind();

@@ -29,18 +29,17 @@ public:
 	// Deletes the Shader Program
 	void Unbind() const;
 
-	unsigned int GetID();
+	unsigned int getProgramID();
 
-	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
+	
 
-	//int GetUniformLocation(const std::string& name);
-
+	bool isActive() const;
 	//Set Uniforms
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniform1f(const std::string& name, float v1);
 	void SetUniform2f(const std::string& name, float f1, float f2);
 	void SetUniform3fv(const std::string& name, glm::vec3 pos);
-	
+	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 private: 
 	int GetUniformLocation(const std::string& name);

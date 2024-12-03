@@ -1450,12 +1450,6 @@
     <None Include="Resource Files\Shaders\grid.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="Resource Files\Shaders\axis.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Resource Files\Shaders\axis.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

@@ -83,9 +83,16 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
-unsigned int Shader::GetID()
+unsigned int Shader::getProgramID()
 {
 	return ID;
+}
+
+// Method to check if the shader is active
+bool Shader::isActive() const {
+	GLint activeProgram;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &activeProgram);
+	return static_cast<GLuint>(activeProgram) == ID;
 }
 
 
@@ -103,7 +110,7 @@ int Shader::GetUniformLocation(const std::string& name) {
 		return m_UniformLocationCache[name];
 
 	int location = glGetUniformLocation(ID, name.c_str());
-	if (location == -1)
+	if (location == -1 || name == "")
 			std::cout << "Warning: uniform " << name << "doesn't exist!" << std::endl;
 
 	m_UniformLocationCache[name] = location;

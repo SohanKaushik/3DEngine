@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "InputManager.h"
-
+#include "Object.h"
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
@@ -57,6 +57,14 @@ Camera camera(glm::vec3(0.0f, 0.0f, -1.0f),
     0.0f,
     45.0f,
     0.1, 2000.0f);
+
+
+void renderObject(const Object& obj, Shader& shader) {
+    glBindVertexArray(obj.VAO);
+    shader.SetUniform3fv("color", obj.color); // Assuming Shader is your utility class for managing shaders
+    shader.SetUniformMat4f("model", obj.m_model);
+    glDrawElements(GL_TRIANGLES, obj.indexCount, GL_UNSIGNED_INT, 0);
+}
 
 float lastTime = 0.0f;
 
@@ -117,169 +125,15 @@ int main() {
 
     //Disabling Cursor
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    GLfloat vertices[] = {
-        // Positions          // Normals
-        -1.0f, -1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
-         1.0f, -1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
-         1.0f,  1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
-        -1.0f,  1.0f,  1.0f,             0.0f,  0.0f, -1.0f, // Front face
-
-        -1.0f, -1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
-        -1.0f,  1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
-         1.0f,  1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
-         1.0f, -1.0f, -1.0f,             0.0f,  0.0f,  1.0f, // Back face
-
-         1.0f, -1.0f, -1.0f,            -1.0f,  0.0f,  0.0f, // Left face
-         1.0f,  1.0f, -1.0f,            -1.0f,  0.0f,  0.0f, // Left face
-         1.0f,  1.0f,  1.0f,            -1.0f,  0.0f,  0.0f, // Left face
-         1.0f, -1.0f,  1.0f,            -1.0f,  0.0f,  0.0f, // Left face
-
-        -1.0f, -1.0f, -1.0f,             1.0f,  0.0f,  0.0f, // Right face
-        -1.0f, -1.0f,  1.0f,             1.0f,  0.0f,  0.0f, // Right face
-        -1.0f,  1.0f,  1.0f,             1.0f,  0.0f,  0.0f, // Right face
-        -1.0f,  1.0f, -1.0f,             1.0f,  0.0f,  0.0f, // Right face
-
-        -1.0f,  1.0f,  1.0f,             0.0f, -1.0f,  0.0f, // Top face
-         1.0f,  1.0f,  1.0f,             0.0f, -1.0f,  0.0f, // Top face
-         1.0f,  1.0f, -1.0f,             0.0f, -1.0f,  0.0f, // Top face
-        -1.0f,  1.0f, -1.0f,             0.0f, -1.0f,  0.0f, // Top face
-
-        -1.0f, -1.0f,  1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
-        -1.0f, -1.0f, -1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
-         1.0f, -1.0f, -1.0f,             0.0f,  1.0f,  0.0f, // Bottom face
-         1.0f, -1.0f,  1.0f,             0.0f,  1.0f,  0.0f  // Bottom face
-    };
-
-    GLuint indices[] = {
-      0, 1, 2,
-      2, 3, 0,       // Front face
-      4, 5, 6,
-      6, 7, 4,       // Back face
-      8, 9, 10,
-      10, 11, 8,
-      12, 13, 14,
-      14, 15, 12,
-      16, 17, 18,
-      18, 19, 16, 
-      20, 21, 22,
-      22, 23, 20  // Bottom face
-    };
-
-
-    float lightVertices[] =
-    { //     COORDINATES     //
-       -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-       -0.5f,  0.5f,  0.5f,
-       -0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-       -0.5f,  0.5f, -0.5f
-    };
-
-    unsigned int lightIndices[] =
-    {
-
-        0, 1, 2, 2, 3, 0,
-
-        4, 5, 6, 6, 7, 4,
-
-        0, 1, 5, 5, 4, 0,
-
-        2, 3, 7, 7, 6, 2,
-
-        0, 3, 7, 7, 4, 0,
-
-        1, 2, 6, 6, 5, 1
-    };
-
-    // Vertices of a quad (rectangle)
-    float planeVertices[] = {
-        // Positions         
-        -1.0f,  0.0f, -1.0f, 
-         1.0f,  0.0f, -1.0f, 
-         1.0f,  0.0f,  1.0f, 
-        -1.0f,  0.0f,  1.0f
-    };
-
-    unsigned int planeIndices[] = {
-        0, 1, 2,   
-        0, 2, 3   
-    };
-
-
+   
 
     /////////////////////............................Buffers............................//////////////////////////
 
     // Create shaders
     Shader shader("resource files/shaders/default.vert", "resource files/shaders/default.frag");
-    Shader depth("resource files/shaders/DirectionalShadowMap.vert", "resource files/shaders/DirectionalShadowMap.frag");
-   
-
-
-    //Cube
-    shader.Bind();
-    unsigned int vao;             // vertex array object
-  
-    glGenVertexArrays(1, &vao);   // generate for gen
-    glBindVertexArray(vao);
-
-   
-    IndexBuff iv(indices, sizeof(indices));                           //  (6 column) * (36 row)
-    VertexBuff vb(vertices,sizeof(vertices));   // 8 vertices, each with 6 floats (3 for position, 3 for color)
-
-
-    //Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Position
-    glEnableVertexAttribArray(0);
-
-    // Normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
-
-    // Light cube
     Shader lightShader("resource files/shaders/light.vert", "resource files/shaders/light.frag");
-    lightShader.Bind();
-
-    unsigned int vao2;              // vertex array object
-    glGenVertexArrays(1, &vao2);    //generate for gen
-    glBindVertexArray(vao2);
-
-
-    IndexBuff iv2(lightIndices, sizeof(lightVertices));                          
-    VertexBuff vb2(lightVertices, sizeof(lightVertices));     
-
-    //Position Attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-
-    // Plane
     Shader planeShader("resource files/shaders/plane.vert", "resource files/shaders/plane.frag");
-    planeShader.Bind();
-
-    unsigned int vao3;                                     
-    glGenVertexArrays(1, &vao3);                           
-    glBindVertexArray(vao3);
-
-
-    IndexBuff iv3(planeIndices, sizeof(planeIndices));
-    VertexBuff vb3(planeVertices, sizeof(planeVertices));
-
-
-    //Position Attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-
-   
-    // Grid
+    Shader depth("resource files/shaders/DirectionalShadowMap.vert", "resource files/shaders/DirectionalShadowMap.frag");
     Shader gridShader("resource files/shaders/grid.vert", "resource files/shaders/grid.frag");
  
  
@@ -333,6 +187,14 @@ int main() {
     rend.Blend();
     bool isZero = true;
 
+    // Create two cubes with different positions
+    Object cube1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Red cube at origin
+    Object cube2(glm::vec3(2.0f, 5.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Green cube at x = 2
+   
+    // Setup camera
+
+
+    glm::mat4 model1;
 
     // =Render
     while (!glfwWindowShouldClose(window)) {
@@ -341,23 +203,6 @@ int main() {
         float currentFrame = glfwGetTime();
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-        
-       
-
-        depth.Bind();
-
-        lightView = glm::lookAt(dirLightPosition, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        lightSpaceMatrix = lightProjection * lightView;
-        depth.SetUniformMat4f("DirectionalShadowMap", lightSpaceMatrix);
-
-        shadow.Write();
-        glClear(GL_DEPTH_BUFFER_BIT);
- 
-
-
-        glEnable(GL_FRONT);
-        rend.Clear();
        
 
         //GUI Start
@@ -365,93 +210,41 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-
-
-      
         //Second Pass
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, WIDTH, HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Cube
-        {
-            glBindVertexArray(vao);
-            rend.Draw(vb, iv, shader);
-            rend.SetModelPosition(glm::vec3(5.0f,0,0));
-            rend.SetModelColor(color, "color", shader);
-            rend.UpdateMatrix(shader, { "model", "projection", "view", "viewPos" }, camera);
-           
-            if (isZero)
-            {
-                std::cout << "Cube:" << glm::to_string(rend.GetModelPosition()) << std::endl;
-            }
-
-        };
 
 
-        {
-            //SetUniforms
+        // Calculate view and projection matrices
+        camera.UpdateCameraMatrix(shader);
 
-            dirLight.SetLightUniform(shader, "dirLight");
-            spotLight.SetLightUniform(shader, "spotLight");
-            pointLight.SetLightUniform(shader, "pointLight");
-            shader.Unbind();
-         
-        }
+        // Update model matrix (e.g., apply rotation or translation here)
+        cube1.SetModelPosition(glm::vec3(0.0f, 0.0f, 0.0f), shader);
+        cube2.SetModelPosition(glm::vec3(0.0f, -1.0f, 0.0f), shader);
+        cube2.SetModelScale(glm::vec3(5.0f, 0.2f, 5.0f));
 
-        
-        
-        /// Light Cube
+        // Render your object
+        renderObject(cube1, shader);
+        renderObject(cube2, shader);
 
-        {
-            lightShader.Bind();
-            glBindVertexArray(vao2);
-            rend.Draw(vb2, iv2, lightShader);
-              
-            rend.SetModelPosition(lightPosition);
-            rend.SetModelColor(lightColor, "lightColor", lightShader);
-            rend.UpdateMatrix(planeShader, { "model", "projection", "view", "k" }, camera);
-            lightShader.Unbind();
+        dirLight.SetLightUniform(shader, "dirLight");
+        spotLight.SetLightUniform(shader, "spotLight");
+        pointLight.SetLightUniform(shader, "pointLight");
+        shader.Unbind();
 
-        }
 
-        {
-            /*planeShader.Bind();
-            glBindVertexArray(vao3);
-            rend.Draw(vb3, iv3, planeShader);  
-            rend.SetModelColor(glm::vec3(1.0f, 1.0f, 1.0f), "planeColor", planeShader);
-            rend.SetModelPosition(glm::vec3(10, 0, 0));
-            rend.UpdateMatrix(planeShader, { "model", "projection", "view", "viewPos" }, camera);
-            
-            if (isZero)
-            {
-                std::cout << "Plane:" << glm::to_string(rend.GetModelPosition()) << std::endl;
-                if (planeShader.isActive()) std::cout << "Shader program " << planeShader.getProgramID() << " is currently active!" << std::endl;
-            }
-            planeShader.Unbind();*/
-        }
        
-
        
         // Grid and Axis
-        {
-            gridShader.Bind();
-            rend.DrawGrid(5.0f, 0.01f, glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
-            rend.SetModelPosition(glm::vec3(0, 0, 0));
-            rend.UpdateMatrix(gridShader, { "model", "projection", "view", "u_cameraPosition" }, camera);
-            if (isZero)
-            {
-                std::cout << "Grid:" << glm::to_string(rend.GetModelPosition()) << std::endl;
-                isZero = false;
-            }
-            gridShader.Unbind();
-        };
+        gridShader.Bind();
+        rend.DrawGrid(5.0f, 0.01f, glm::vec3(0.3, 0.3, 0.3), glm::vec3(0.235, 0.235, 0.235), gridShader, camera);
+        rend.SetModelPosition(glm::vec3(0, 0, 0));
+        rend.UpdateMatrix(gridShader, { "model", "projection", "view", "u_cameraPosition" }, camera);
+        gridShader.Unbind();
 
-       
-        //shadow.Read(GL_TEXTURE0);
-        //shader.SetUniform1f("shadow", 0);     
         //GUI: Create window and UI elements
-
         {
 
             ImGui::Begin("Dialog!");
@@ -532,12 +325,6 @@ int main() {
         processCameraInputs(camera, deltaTime);
     }
 
-
-    // Clean up
-    glDeleteVertexArrays(1, &vao);
-    glDeleteVertexArrays(1, &vao2);
-    glDeleteVertexArrays(1, &vao3);
-
     shader.Unbind();
     lightShader.Unbind();
     ImGui_ImplOpenGL3_Shutdown();
@@ -547,5 +334,5 @@ int main() {
     glfwDestroyWindow(window);
     glfwTerminate();
     return NULL;
-}
+};
 

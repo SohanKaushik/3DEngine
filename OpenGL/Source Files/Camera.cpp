@@ -78,6 +78,17 @@ void Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch)
 
 	// Update camera vectors based on new yaw and pitch
 	UpdateCameraVectors();
+}
+void Camera::UpdateCameraMatrix(Shader& shader)
+{
+	glm::mat4 view = this->GetViewMatrix();
+	glm::mat4 projection = this->GetProjectionMatrix();
+
+
+	// Set matrices in the shader
+	shader.Bind();
+	shader.SetUniformMat4f("view", view);
+	shader.SetUniformMat4f("projection", projection);
 };
 
 

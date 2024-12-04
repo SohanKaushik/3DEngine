@@ -3,9 +3,9 @@
 layout (location = 0) in vec3 aPlanePos;
 
 // Uniforms
-uniform mat4 model;            // Model matrix
-uniform mat4 view;               // View matrix
-uniform mat4 projection;         // Projection matrix
+uniform mat4 model;           
+uniform mat4 view;              
+uniform mat4 projection;        
 
 uniform vec3 planeColor;
 

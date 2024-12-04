@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <string>
 #include <GLFW/glfw3.h>
+#include <Shader.h>
 
 
 
@@ -47,8 +48,9 @@ public:
 
 	void CalKeyboardMovement(glm::vec3 direction, float deltaTime);
 	void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
+	void UpdateCameraMatrix(Shader& shader);
 
 private:
-	void UpdateCameraVectors();
+	void UpdateCameraVectors(); // for camera fly cam
 
 };						

@@ -2,13 +2,14 @@
 
 layout(location = 0) in vec3 aPos;         // Vertex position attribute
 layout(location = 1) in vec3 aNormal;      // Vertex normal attribute
-
+layout(location = 2) in vec2 aTexture;
 
 // Uniforms                    
 uniform vec3 color;              // Color passed as a uniform
 uniform vec3 planeColor;
-uniform mat4 model;              // Model matrix
 
+
+uniform mat4 model;              // Model matrix
 uniform mat4 view;               // View matrix
 uniform mat4 projection;         // Projection matrix
 
@@ -27,8 +28,8 @@ out vec4 FragPosDirLightSpace;
 void main()
 {
 
-	gl_Position = projection * view * model * vec4(aPos, 1.0);
-    FragPosDirLightSpace = DirLightSpaceMatrix * model * vec4(aPos, 1.0f);
+
+    //FragPosDirLightSpace = DirLightSpaceMatrix * model * vec4(aPos, 1.0f);
 
 
     // Pass data to the fragment shader
@@ -36,5 +37,6 @@ void main()
     Normal = mat3(transpose(inverse(model))) * aNormal;  // Transform normal to world space
     aColor = color;  
 
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
  

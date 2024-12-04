@@ -54,7 +54,7 @@ void Rend::SetModelRotate(glm::vec3 axis, float radian) {
 
 void Rend::SetModelColor(glm::vec3 color, const std::string& uniformName, Shader& shader )
 {
-    shader.SetUniform3fv("color", color);
+    shader.SetUniform3fv(uniformName, color);
 };
 
 
@@ -110,7 +110,7 @@ void Rend::DrawGrid(float spacing, float thickness, const glm::vec3& gridColor, 
 
  
 
-    glm::vec3 xColor = glm::vec3(0.886, 0.376, 0.357);
+    glm::vec3 xColor = glm::vec3(0.886, 0.376, 0.357); //red
     glm::vec3 yColor = glm::vec3(0.482, 0.8, 0.482);
 
     glm::vec3 lineColor = gridColor;                    // Default grid color

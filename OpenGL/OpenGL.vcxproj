@@ -153,6 +153,7 @@
     <ClCompile Include="dependencies\include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Source Files\Object.cpp" />
     <ClCompile Include="Source Files\window.cpp" />
     <ClCompile Include="Source Files\InputManager.cpp" />
     <ClCompile Include="Source Files\Camera.cpp" />
@@ -467,6 +468,7 @@
     <ClInclude Include="Header Files\Camera.h" />
     <ClInclude Include="Header Files\IndexBuff.h" />
     <ClInclude Include="Header Files\InputManager.h" />
+    <ClInclude Include="Header Files\Object.h" />
     <ClInclude Include="Header Files\Rend.h" />
     <ClInclude Include="Header Files\Shader.h" />
     <ClInclude Include="Header Files\ShadowMap.h" />

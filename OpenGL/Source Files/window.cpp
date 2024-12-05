@@ -100,6 +100,6 @@ void WindowManager::Clean()
 }
 bool WindowManager::isRunning()
 {
-    return glfwWindowShouldClose(m_window);
+    return !glfwWindowShouldClose(m_window);
 };
 

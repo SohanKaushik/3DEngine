@@ -11,7 +11,9 @@ public:
 
 	static Editor& Instance() { return *sInstance; }
 
+	void init();
 	void loop();
+	void end();
 
 private:
 	static Editor* sInstance;

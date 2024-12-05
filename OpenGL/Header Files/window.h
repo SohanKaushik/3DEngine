@@ -1,18 +1,28 @@
 #pragma once
+
 #include <GLFW/glfw3.h>
-
-
+#include <string>
 
 class WindowManager {
 private:
-    static GLFWwindow* m_window;
-    static int m_windowWidth;
-    static int m_windowHeight;
+    GLFWwindow* m_window;
+    int m_windowWidth;
+    int m_windowHeight;
 
 public:
-    static void WindowInit(int width, int height);
-    static GLFWwindow* GetWindow();
-    static int GetWindowWidth();
-    static int GetWindowHeight();
-    static void UpdateWindowSize();  // Function to update window size after creation or resizing
+    WindowManager();
+    ~WindowManager();
+
+    bool Init(int width, int height, const std::string& appName);
+    int GetWindowWidth();
+    int GetWindowHeight();
+    void UpdateWindowSize();
+    void Clear();
+    void Clean();
+    bool isRunning();
+
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+public:
+    GLFWwindow* GetWindow();
 };

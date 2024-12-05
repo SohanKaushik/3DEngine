@@ -13,11 +13,7 @@ Rend::Rend(Camera& cam) : m_camera(cam)
 
 
 void Rend::Clear() const {
-	// Set the background color
-	glClearColor(0.247, 0.247, 0.247, 1.0);
-
-	// Clear the color and depth buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 }
 
 

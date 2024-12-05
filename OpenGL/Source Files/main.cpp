@@ -20,6 +20,7 @@
 #include "ShadowMap.h"
 #include "window.h"
 #include <glm/gtx/string_cast.hpp>
+#include "Editor.h"
 
 #define WIDTH 940
 #define HEIGHT 540
@@ -101,30 +102,36 @@ void processCameraInputs(Camera& camera, float deltaTime) {
 
 
 int main() {
+ 
+    auto app = std::make_unique<Editor>("3D Editor");
+    app->loop();
+
+    // Create a raw pointer for WindowManager
+    WindowManager* nwindow = new WindowManager();
 
 
+    // Initialize the window
+    if (!nwindow->Init(WIDTH, HEIGHT, "Engine")) {
+        return -1; // Exit if initialization fails
+    }
+
+  
     // variables
     Rend rend(camera);
     ShadowMap shadow;
 
-    //opengl context
-    glfwInit();
    
-    ////window context
-    WindowManager::WindowInit(WIDTH, HEIGHT);
-    GLFWwindow* window = WindowManager::GetWindow(); 
-
     //Initializing Input Manager
-    InputManager::getInstance().Initialize(window);
+    InputManager::getInstance().Initialize(nwindow->GetWindow());
 
     // // Configure OpenGL state
     glEnable(GL_DEPTH_TEST);
 
     //Aspect Ratio
-    camera.SetAspectRatio(window);
+    camera.SetAspectRatio(nwindow->GetWindow());
 
     //Disabling Cursor
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+   // glfwSetInputMode(nwindow->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
    
 
     /////////////////////............................Buffers............................//////////////////////////
@@ -149,7 +156,7 @@ int main() {
     ImGui::CreateContext();
 
     // Initialize ImGui for GLFW and OpenGL3
-    ImGui_ImplGlfw_InitForOpenGL(window, true);  // This should be called only once
+    ImGui_ImplGlfw_InitForOpenGL(nwindow->GetWindow(), true);  // This should be called only once
     ImGui_ImplOpenGL3_Init("#version 130"); // OpenGL 3.3 shader version
 
     // Set up ImGui style
@@ -191,29 +198,25 @@ int main() {
     Object cube1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Red cube at origin
     Object cube2(glm::vec3(2.0f, 5.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Green cube at x = 2
    
-    // Setup camera
-
-
-    glm::mat4 model1;
 
     // =Render
-    while (!glfwWindowShouldClose(window)) {
+    while (!nwindow->isRunning()) {
       
-        rend.Clear();
+        nwindow->Clear();
         float currentFrame = glfwGetTime();
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
        
-
+       
         //GUI Start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //Second Pass
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, WIDTH, HEIGHT);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ////Second Pass
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glViewport(0, 0, WIDTH, HEIGHT);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 
@@ -244,74 +247,76 @@ int main() {
         rend.UpdateMatrix(gridShader, { "model", "projection", "view", "u_cameraPosition" }, camera);
         gridShader.Unbind();
 
-        //GUI: Create window and UI elements
-        {
+        ////GUI: Create window and UI elements
+        //{
 
-            ImGui::Begin("Dialog!");
-            ImGuiIO& io = ImGui::GetIO();
-            ImGui::Text("Translations");
-
-
-            /* ImGui::SliderFloat("x", &transformPlane.x, -1.0f, 5.0f);
-             ImGui::SliderFloat("y", &transformPlane.y, -1.0f, 5.0f);
-             ImGui::SliderFloat("z", &transformPlane.z, -1.0f, 10.0f);*/
-            ImGui::SliderFloat("r", &radian, -360.0f, 360.0f);
-            ImGui::Dummy(ImVec2(0.0f, 20.0f));
+        //    ImGui::Begin("Dialog!");
+        //    ImGuiIO& io = ImGui::GetIO();
+        //    ImGui::Text("Translations");
 
 
-            /*ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 2.0f);
-            ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
-            ImGui::ColorPicker3("Color", &color[0]);
-
-            /* ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
-             ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);*/
-
-            ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
-            /*ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
-            ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
-            ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);*/
-
-            pointLight.m_position = lightPosition;
+        //    /* ImGui::SliderFloat("x", &transformPlane.x, -1.0f, 5.0f);
+        //     ImGui::SliderFloat("y", &transformPlane.y, -1.0f, 5.0f);
+        //     ImGui::SliderFloat("z", &transformPlane.z, -1.0f, 10.0f);*/
+        //    ImGui::SliderFloat("r", &radian, -360.0f, 360.0f);
+        //    ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 
-            /*ImGui::SliderFloat("x1", &dirLight.m_direction.x, -10.0f, 10.0f);
-            ImGui::SliderFloat("y2", &dirLight.m_direction.y, -10.0f, 10.0f);
-            ImGui::SliderFloat("z2", &dirLight.m_direction.z, -10.0f, 10.0f);*/
+        //    /*ImGui::SliderFloat("a", &rotateModel.x, -1.0f, 2.0f);
+        //    ImGui::SliderFloat("b", &rotateModel.y, -1.0f, 1.0f);
+        //    ImGui::SliderFloat("c", &rotateModel.z, -1.0f, 1.0f);*/
+        //    ImGui::ColorPicker3("Color", &color[0]);
+
+        //    /* ImGui::SliderFloat("inner", &spotLight.m_inner, 0.0f, 15.0f);
+        //     ImGui::SliderFloat("outer", &spotLight.m_outer, 0.0f, 25.0f);*/
+
+        //    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+        //    /*ImGui::SliderFloat("a1", &lightPosition.x, -10.0f, 10.0f);
+        //    ImGui::SliderFloat("b2", &lightPosition.y, -10.0f, 10.0f);
+        //    ImGui::SliderFloat("c2", &lightPosition.z, -10.0f, 10.0f);*/
+
+        //    pointLight.m_position = lightPosition;
 
 
-            if (ImGui::Checkbox("Wireframe", &isChecked)) {
-
-                if (isChecked) {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                }
-                else {
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                }
-            }
-
-            if (spotLight.m_inner > spotLight.m_outer) {
-
-                spotLight.m_outer = spotLight.m_inner + 0.01;
-            }
-
-            ImGui::Dummy(ImVec2(0.0f, 20.0f));
+        //    /*ImGui::SliderFloat("x1", &dirLight.m_direction.x, -10.0f, 10.0f);
+        //    ImGui::SliderFloat("y2", &dirLight.m_direction.y, -10.0f, 10.0f);
+        //    ImGui::SliderFloat("z2", &dirLight.m_direction.z, -10.0f, 10.0f);*/
 
 
-            /*
-            ImGui::SliderFloat("x", &translateLight.x, -1.0f, 1.0f);
-            ImGui::SliderFloat("y", &translateLight.y, -1.0f, 1.0f);
-            ImGui::SliderFloat("z", &translateLight.z, 1.0f, 2.8f);
+        //    if (ImGui::Checkbox("Wireframe", &isChecked)) {
 
-            ImGui::Dummy(ImVec2(0.0f, 20.0f));
-            */
+        //        if (isChecked) {
+        //            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //        }
+        //        else {
+        //            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //        }
+        //    }
 
-            ImGui::Text("Frame Per Second (%.1f FPS)", rend.FpsCount());
-            ImGui::End();
+        //    if (spotLight.m_inner > spotLight.m_outer) {
+
+        //        spotLight.m_outer = spotLight.m_inner + 0.01;
+        //    }
+
+        //    ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 
-        };
+        //    /*
+        //    ImGui::SliderFloat("x", &translateLight.x, -1.0f, 1.0f);
+        //    ImGui::SliderFloat("y", &translateLight.y, -1.0f, 1.0f);
+        //    ImGui::SliderFloat("z", &translateLight.z, 1.0f, 2.8f);
+
+        //    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+        //    */
+
+        //    ImGui::Text("Frame Per Second (%.1f FPS)", rend.FpsCount());
+        //    ImGui::End();
+
+
+        //};
+        nwindow->UpdateWindowSize();
+       
 
 
         ImGui::Render();
@@ -320,7 +325,7 @@ int main() {
 
 
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(nwindow->GetWindow());
         glfwPollEvents();
         processCameraInputs(camera, deltaTime);
     }
@@ -331,8 +336,7 @@ int main() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    nwindow->Clean();
     return NULL;
 };
 

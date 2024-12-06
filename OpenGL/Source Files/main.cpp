@@ -1,9 +1,9 @@
-#include <iostream>
-#include <memory>
+#include "pch.h"
 #include "Editor.h"
 
+
 int main() {
-    // Create the Editor instance using smart pointer
+    // Create the Editor 
     auto app = std::make_unique<Editor>("3D Editor");
 
     app->init();

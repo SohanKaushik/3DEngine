@@ -1,7 +1,7 @@
+#include "pch.h"
+
 #include "Object.h"
-#include <glad/glad.h>  // For OpenGL functions
-#include <GLFW/glfw3.h> // For GLFW functions
-#include <glm/ext/matrix_transform.hpp>
+
 
 // Constructor that sets up the object
 Object::Object(glm::vec3 pos, glm::vec3 col) : position(pos), color(col) {

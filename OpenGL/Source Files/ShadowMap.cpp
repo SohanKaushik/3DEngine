@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "ShadowMap.h"
-#include <iostream>
 
 
 ShadowMap::ShadowMap() : FBO(0), shadowMap(0), shadowWidth(1024), shadowHeight(1024) {}

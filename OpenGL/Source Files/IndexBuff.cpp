@@ -1,6 +1,7 @@
+#include "pch.h"
+
 #include "IndexBuff.h"
-#include <glad/glad.h>
-#include <assert.h>
+
 
 #define ASSERT(x) assert(x)
 

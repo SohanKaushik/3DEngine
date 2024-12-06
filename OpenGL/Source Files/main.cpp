@@ -6,8 +6,7 @@ int main() {
     // Create the Editor 
     auto app = std::make_unique<Editor>("3D Editor");
 
-    app->init();
     app->loop();
-    app->end();
+    app->shutdown();
     return 0;
 }

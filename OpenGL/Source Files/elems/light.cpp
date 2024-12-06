@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Light.h"
-#include "Shader.h"
+#include "shader/shader.h"
 #include "Rend.h"
 
 Light::Light(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec)

@@ -17,6 +17,12 @@ public:
     int GetWindowWidth();
     int GetWindowHeight();
     void UpdateWindowSize();
+
+    void pre_render();
+    void post_render();
+    void end();
+    void render();
+
     void Clear();
     void Clean();
     bool isRunning();

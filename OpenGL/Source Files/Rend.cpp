@@ -1,8 +1,8 @@
 #include "pch.h"
 
 #include "Rend.h"
-#include "Camera.h"
-#include "window.h"
+#include "elems/camera.h"
+#include "window/window.h"
 
 
 

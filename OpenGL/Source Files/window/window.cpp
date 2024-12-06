@@ -32,6 +32,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
         return -1; // Exit early if window creation fails
     }
 
+    // window context
     glfwMakeContextCurrent(m_window);
 
     // Load OpenGL functions using glad
@@ -40,6 +41,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
         return -1; // Exit early if GLAD fails
     }
     
+    glEnable(GL_DEPTH_TEST);
    
     // Initialize window size
     m_windowWidth = width;
@@ -80,8 +82,27 @@ void WindowManager::UpdateWindowSize()
         glViewport(0, 0, m_windowWidth, m_windowHeight);
 
     }
-};
+}
 
+
+void WindowManager::pre_render()
+{
+    glViewport(0, 0, m_windowWidth, m_windowWidth);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void WindowManager::post_render()
+{
+    glfwPollEvents();
+    glfwSwapBuffers(m_window);
+}
+
+void WindowManager::end()
+{
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
+};
 
 void WindowManager::Clear()
 {

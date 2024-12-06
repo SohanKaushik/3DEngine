@@ -1,10 +1,9 @@
+#include "pch.h"
 
-#include <glm/glm.hpp>
 #include "Rend.h"
 #include "Camera.h"
 #include "window.h"
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+
 
 
 

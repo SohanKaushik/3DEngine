@@ -1,0 +1,25 @@
+#pragma once
+
+// Std includes
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <memory>
+#include <assert.h>
+
+#include <unordered_map>
+
+// OpenGL includes
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+// GLM includes
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
+
+#include <Windows.h>

@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "Shader.h"
-#include <string>
-#include <cerrno>
+
 
 // Reads a text file and outputs a string with everything in the text file
 std::string get_file_contents(const char* filename) {

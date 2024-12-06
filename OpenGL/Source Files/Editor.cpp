@@ -1,5 +1,6 @@
-#include "Editor.h"
+#include "pch.h"
 
+#include "Editor.h"
 #include "window.h"
 
 Editor::Editor(const std::string& app_name)

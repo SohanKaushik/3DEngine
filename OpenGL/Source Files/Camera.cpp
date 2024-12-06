@@ -1,9 +1,6 @@
+#include "pch.h"
+
 #include "Camera.h"
-#include <glm/glm.hpp>
-#include <iostream>
-
-
-
 
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)

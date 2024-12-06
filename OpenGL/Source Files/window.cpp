@@ -1,7 +1,6 @@
-#include <glad/glad.h>
-#include "window.h"
-#include <iostream>
+#include "pch.h"
 
+#include "window.h"
 
 
 WindowManager::WindowManager()

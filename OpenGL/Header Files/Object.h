@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp> 
 #include <vector>
-#include <Shader.h>
+#include <shader/shader.h>
 
 struct Object {
     glm::vec3 position;

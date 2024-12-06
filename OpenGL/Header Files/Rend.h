@@ -3,10 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <IndexBuff.h>
 #include <VertexBuff.h>
-#include <Shader.h>
+#include "shader/shader.h"
 #include <glm/gtc/matrix_transform.hpp> 
 
-#include "Camera.h"
+#include "elems/camera.h"
 
 class Rend {
 	

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "window.h"
-#include "camera.h"
+#include "window/window.h"
+#include "elems/camera.h"
 
 class Editor
 {
@@ -13,7 +13,7 @@ public:
 
 	void init();
 	void loop();
-	void end();
+	void shutdown();
 
 private:
 	static Editor* sInstance;

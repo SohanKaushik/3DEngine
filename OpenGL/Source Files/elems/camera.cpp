@@ -83,7 +83,7 @@ void Camera::UpdateCameraMatrix(Shader& shader)
 
 
 	// Set matrices in the shader
-	shader.Bind();
+	shader.use();
 	shader.SetUniformMat4f("view", view);
 	shader.SetUniformMat4f("projection", projection);
 };

@@ -6,11 +6,16 @@ using namespace Render;
 VertexIndexBuffer::VertexIndexBuffer() : m_vertexBuffer(0), m_indexBuffer(0)
 {}
 
+void Render::VertexIndexBuffer::print() {
+    std::cout << "bruh:" << std::endl;
+};
 
-void Render::VertexIndexBuffer::create(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
+void Render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices)
 {
-    // Create and bind the vertex buffer
+
+    //// Create and bind the vertex buffer
     glGenBuffers(1, &m_vertexBuffer);
+    std::cout << "bruh:"<< m_vertexBuffer << std::endl;
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
@@ -19,6 +24,13 @@ void Render::VertexIndexBuffer::create(const std::vector<float>& vertices, const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(glm::vec3), (void*)0);
+    
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(glm::vec3), (void*)(3 * sizeof(float)));
+    
+
     // Unbind buffers after use
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -26,7 +38,7 @@ void Render::VertexIndexBuffer::create(const std::vector<float>& vertices, const
 
 
 // Delete the vertex and index buffers
-void  VertexIndexBuffer::remove()
+void  VertexIndexBuffer::destroy()
 {
     if (m_vertexBuffer) {
         glDeleteBuffers(1, &m_vertexBuffer);

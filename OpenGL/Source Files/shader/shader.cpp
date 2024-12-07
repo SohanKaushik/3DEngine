@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Shader.h"
+#include "shader/Shader.h"
 
 
 // Reads a text file and outputs a string with everything in the text file
@@ -26,12 +26,7 @@ std::string get_file_contents(const char* filename) {
 
 
 // Constructor that build the Shader Program from 2 different shaders
-
-
-Shader::Shader(const char* vertexFile, const char* fragmentFile)
-{
-
-
+void Shader::load(const char* vertexFile, const char* fragmentFile) {
 
 	// Read vertexFile and fragmentFile and store the strings
 	std::string vertexCode = get_file_contents(vertexFile);
@@ -42,26 +37,27 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	const char* fragmentSource = fragmentCode.c_str();
 
 	// Create Vertex Shader Object and get its reference
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach Vertex Shader source to the Vertex Shader Object
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(vertexShader);
 
 	// Create Fragment Shader Object and get its reference
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Attach Fragment Shader source to the Fragment Shader Object
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	// Compile the Vertex Shader into machine code
 	glCompileShader(fragmentShader);
 
 	// Create Shader Program Object and get its reference
-	ID = glCreateProgram();
+	mProgramID = glCreateProgram();
 	// Attach the Vertex and Fragment Shaders to the Shader Program
-	glAttachShader(ID, vertexShader);
-	glAttachShader(ID, fragmentShader);
+	glAttachShader(mProgramID, vertexShader);
+	glAttachShader(mProgramID, fragmentShader);
 	// Wrap-up/Link all the shaders together into the Shader Program
-	glLinkProgram(ID);
+	glLinkProgram(mProgramID);
+
 
 	// Delete the now useless Vertex and Fragment Shader objects
 	glDeleteShader(vertexShader);
@@ -69,47 +65,38 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 
 
 
-}
+};
 
 // Activates the Shader Program
-void Shader::Bind() const
+void Shader::use() const
 {
-	glUseProgram(ID);
+	glUseProgram(mProgramID);
 }
 
 // Deletes the Shader Program
-void Shader::Unbind() const
+void Shader::unload() const
 {
-	glUseProgram(0);
+	glDeleteProgram(mProgramID);
 }
 
 unsigned int Shader::getProgramID()
 {
-	return ID;
-}
-
-// Method to check if the shader is active
-bool Shader::isActive() const {
-	GLint activeProgram;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &activeProgram);
-	return static_cast<GLuint>(activeProgram) == ID;
+	return mProgramID;
 }
 
 
-// Ratio Management          
+
 void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
 	
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 } 
-
-
 
 int Shader::GetUniformLocation(const std::string& name) {
 
 	if(m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
 
-	int location = glGetUniformLocation(ID, name.c_str());
+	int location = glGetUniformLocation(mProgramID, name.c_str());
 	if (location == -1 && name != "")
 			std::cout << "Warning: uniform " << "[" + name + "]" << " doesn't exist!" << std::endl;
 

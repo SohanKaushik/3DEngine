@@ -88,7 +88,9 @@ void WindowManager::UpdateWindowSize()
 void WindowManager::pre_render()
 {
     glViewport(0, 0, m_windowWidth, m_windowWidth);
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+    // Set the background color
+    glClearColor(0.247, 0.247, 0.247, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -104,14 +106,6 @@ void WindowManager::end()
     glfwTerminate();
 };
 
-void WindowManager::Clear()
-{
-    // Set the background color
-    glClearColor(0.247, 0.247, 0.247, 1.0);
-
-    // Clear the color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-};
 
 void WindowManager::Clean()
 {

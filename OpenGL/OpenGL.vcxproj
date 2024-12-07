@@ -168,19 +168,13 @@
     <ClCompile Include="Source Files\ui\viewport.cpp" />
     <ClCompile Include="Source Files\window\window.cpp" />
     <ClCompile Include="Source Files\elems\inputs.cpp" />
-    <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source Files\IndexBuff.cpp" />
-    <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\shader\shader.cpp" />
-    <ClCompile Include="Source Files\ShadowMap.cpp" />
     <ClCompile Include="Source Files\stp.cpp" />
-    <ClCompile Include="Source Files\Texture.cpp" />
-    <ClCompile Include="Source Files\VertexBuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\glad\glad.h" />
@@ -469,22 +463,14 @@
     <ClInclude Include="dependencies\include\glm\vec4.hpp" />
     <ClInclude Include="dependencies\include\glm\vector_relational.hpp" />
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
-    <ClInclude Include="Source Files\elems\camera.h" />
-    <ClInclude Include="Header Files\Editor.h" />
-    <ClInclude Include="Header Files\IndexBuff.h" />
+    <ClInclude Include="Source Files\Editor.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />
-    <ClInclude Include="Header Files\Object.h" />
     <ClInclude Include="Source Files\pch.h" />
-    <ClInclude Include="Header Files\Rend.h" />
     <ClInclude Include="Source Files\render\VertexIndexBuffer.h" />
     <ClInclude Include="Source Files\shader\shader.h" />
-    <ClInclude Include="Header Files\ShadowMap.h" />
-    <ClInclude Include="Header Files\Texture.h" />
-    <ClInclude Include="Header Files\VertexBuff.h" />
     <ClInclude Include="Source Files\ui\grid.h" />
     <ClInclude Include="Source Files\window\window.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\ui\viewport.h" />
   </ItemGroup>
   <ItemGroup>

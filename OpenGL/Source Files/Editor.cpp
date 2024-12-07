@@ -6,11 +6,8 @@
 
 Editor::Editor(const std::string& app_name)
 {
-    mWindow = std::make_unique<WindowManager>();
-    mViewport = std::make_unique<ui::Viewport>();
-
     mWindow->Init(1024, 720, app_name);
-
+    mViewport->Init();
 }
 
 

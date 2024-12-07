@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "grid.h"
 
-ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.3, 0.3, 0.3)), m_dMin(10.0f), m_dMax(300.0f)  {
-    std::cout << "Grid constructor called" << std::endl;
-}
+ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.3, 0.3, 0.3)), m_dMin(10.0f), m_dMax(300.0f)  
+{}
 
 void ui::Grid::render()
 {   

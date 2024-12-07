@@ -5,6 +5,7 @@
 
 WindowManager::WindowManager()
     : m_windowWidth(800), m_windowHeight(600), m_window(nullptr) {
+    
 };
 
 WindowManager::~WindowManager() {
@@ -18,6 +19,7 @@ WindowManager::~WindowManager() {
 
 bool WindowManager::Init(int width, int height , const std::string& appName)
 {
+    std::cout << "Window Init" << std::endl;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

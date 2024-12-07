@@ -14,8 +14,7 @@ namespace ui {
 
 	public:
 
-		Viewport();
-
+		void Init();
 		void render();
 		void destroy();
 

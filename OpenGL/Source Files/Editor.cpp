@@ -17,6 +17,8 @@ void Editor::loop()
        
         // Clear the view
         mWindow->pre_render();
+
+        // Viewport Scene Render
         mViewport->render();
        
         // Render end, swap buffers

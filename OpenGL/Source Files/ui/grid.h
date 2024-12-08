@@ -24,7 +24,7 @@ namespace ui {
 		float m_dMax;
 
 	private:
-		std::unique_ptr<Render::VertexIndexBuffer> mVertexIndexBuffer;
+		std::unique_ptr<render::VertexIndexBuffer> mVertexIndexBuffer;
 	};
 
 

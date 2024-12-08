@@ -5,12 +5,12 @@ ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.3, 0.3, 0.3
 {}
 
 void ui::Grid::render()
-{   
+{
     std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indices;
 
     float halfSize = m_size;
-   
+
     unsigned int index = 0;
 
     for (float x = -halfSize; x <= halfSize; x += m_spacing) {
@@ -21,7 +21,7 @@ void ui::Grid::render()
         // Add indices for the line
         indices.push_back(index++);
         indices.push_back(index++);
-    }
+    };
 
 
     for (float z = -halfSize; z <= halfSize; z += m_spacing) {
@@ -36,10 +36,10 @@ void ui::Grid::render()
 
     // Create or update the vertex-index buffer
     //mVertexIndexBuffer = std::make_unique<Render::VertexIndexBuffer>(vertices, indices);
-    mVertexIndexBuffer = std::make_unique<Render::VertexIndexBuffer>();
+    mVertexIndexBuffer = std::make_unique<render::VertexIndexBuffer>();
     mVertexIndexBuffer->create(vertices, indices);
-  
-}
+
+};
 
 void ui::Grid::destroy()
 {

@@ -7,6 +7,9 @@
 //#include "render/opengl_buffer_manager.h"
 #include "elems/inputs.h"
 #include "ui/grid.h"
+#include "Object.h"
+#include "elems/Primitive.h"
+
 
 namespace ui {
 
@@ -22,5 +25,6 @@ namespace ui {
 	private:
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
 		std::unique_ptr<Shader> mShader = std::make_unique<Shader>();
+		std::unordered_map<std::string, elems::Primitive*> primitives; 
 	};
 }

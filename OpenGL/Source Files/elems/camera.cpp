@@ -3,29 +3,29 @@
 #include "Camera.h"
 
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
-    : m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
-    m_moveSpeed(10.0f), m_senstivity(0.1f),
-    m_fov(fov), m_near(near), m_far(far),
-    m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
+elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
+	: m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
+	m_moveSpeed(10.0f), m_senstivity(0.1f),
+	m_fov(fov), m_near(near), m_far(far),
+	m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
 {
 	UpdateCameraVectors();
 }
- 
 
-glm::mat4 Camera::GetProjectionMatrix() {
+
+glm::mat4 elems::Camera::GetProjectionMatrix() {
 
 	return glm::perspective(glm::radians(m_fov), GetAspectRatio(), m_near, m_far);
 };
 
 
 
-glm::mat4 Camera::GetViewMatrix() const {
+glm::mat4  elems::Camera::GetViewMatrix() const {
 	return glm::lookAt(m_position, m_position + m_front, m_up);
 };
 
 
-void Camera::SetAspectRatio(GLFWwindow* window) {
+void elems::Camera::set_aspect(GLFWwindow* window) {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
@@ -33,34 +33,34 @@ void Camera::SetAspectRatio(GLFWwindow* window) {
 	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 }
 
-float Camera::GetAspectRatio() {
+float  elems::Camera::GetAspectRatio() {
 	return m_aspectRatio;
 };
 
 
-glm::vec3 Camera::GetCameraFront() const {
+glm::vec3 elems::Camera::GetCameraFront() const {
 	// Direction is the vector from camera position to the target
 	return m_front;
 }
 
 
-glm::vec3 Camera::GetCameraRight() const {
+glm::vec3 elems::Camera::GetCameraRight() const {
 	// Direction is the vector from camera position to the target
 	return m_right;
 };
 
 
-glm::vec3 Camera::GetCameraPosition() const{
+glm::vec3  elems::Camera::GetCameraPosition() const {
 	return m_position;
 };
 
 
-void Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
+void  elems::Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
 	float velocity = m_moveSpeed * deltaTime;
 	m_position += direction * velocity;    // Move in the specified direction
 };
 
-void Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch) {
+void  elems::Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch) {
 	xOffset *= m_senstivity;
 	yOffset *= m_senstivity;
 
@@ -76,7 +76,7 @@ void Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch)
 	// Update camera vectors based on new yaw and pitch
 	UpdateCameraVectors();
 }
-void Camera::UpdateCameraMatrix(Shader& shader)
+void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
 	glm::mat4 view = this->GetViewMatrix();
 	glm::mat4 projection = this->GetProjectionMatrix();
@@ -89,7 +89,7 @@ void Camera::UpdateCameraMatrix(Shader& shader)
 };
 
 
-void Camera::UpdateCameraVectors() {
+void  elems::Camera::UpdateCameraVectors() {
 	// Ensure the pitch is clamped between -89.0f and 89.0f to avoid gimbal lock
 	if (m_pitch > 89.0f) m_pitch = 89.0f;
 	if (m_pitch < -89.0f) m_pitch = -89.0f;

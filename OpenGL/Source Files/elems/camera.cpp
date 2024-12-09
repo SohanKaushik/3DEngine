@@ -9,7 +9,7 @@ elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, 
 	m_fov(fov), m_near(near), m_far(far),
 	m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
 {
-	UpdateCameraVectors();
+	//UpdateCameraVectors();
 }
 
 
@@ -21,7 +21,8 @@ glm::mat4 elems::Camera::GetProjectionMatrix() {
 
 
 glm::mat4  elems::Camera::GetViewMatrix() const {
-	return glm::lookAt(m_position, m_position + m_front, m_up);
+	//return glm::lookAt(m_position, m_position + m_front, m_up);
+	return glm::lookAt(m_position, m_targetPos, m_up);
 };
 
 
@@ -79,10 +80,9 @@ void  elems::Camera::CalMouseRotation(float xOffset, float yOffset, bool constra
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
 	glm::mat4 view = this->GetViewMatrix();
-	glm::mat4 projection = glm::mat4(1.0f); // Identity matrix (optional for clarity)
+	glm::mat4 projection = glm::mat4(1.0f);
 
-    view = glm::translate(view, glm::vec3(0.0f, -0.5, -2.0f));
-    projection = glm::perspective(glm::radians(45.0f), 1024.0f / 720.0f, 0.1f, 1000.0f);
+    projection = glm::perspective(glm::radians(45.0f), 1.0f , 0.1f, 1000.0f);
 
 	// Set matrices in the shader
 	shader.use();

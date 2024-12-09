@@ -10,7 +10,7 @@ VertexIndexBuffer::VertexIndexBuffer() : m_vertexBuffer(0), m_elementBuffer(0), 
 
 void render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices)
 {
- 
+
     // Create and bind VAO
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
@@ -29,11 +29,11 @@ void render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, c
 
     // Position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3), (void*)0);
     
-    //// Normals
-    //glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(glm::vec3), (void*)(3 * sizeof(float)));
+    // Normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3), (void*)(3 * sizeof(float)));
     
 
     // Unbind buffers after use

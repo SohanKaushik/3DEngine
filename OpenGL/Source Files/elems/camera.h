@@ -25,7 +25,7 @@ namespace elems {
 		float m_far;
 
 		float m_aspectRatio = 1.246f;
-		//GLFWwindow* m_window;
+		
 
 	private:
 		float m_yaw;
@@ -49,6 +49,7 @@ namespace elems {
 		void CalKeyboardMovement(glm::vec3 direction, float deltaTime);
 		void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
 		void UpdateCameraMatrix(Shader& shader);
+
 
 	private:
 		void UpdateCameraVectors(); // for camera fly cam

@@ -28,6 +28,9 @@ namespace render {
 		unsigned int m_vao = 0;  // Vertex buffer ID
 		unsigned int m_vertexBuffer = 0;   // Index buffer ID
 		unsigned int m_elementBuffer = 0;
+
+	private:
+		unsigned int m_indices = 0;
 	};
 
 	

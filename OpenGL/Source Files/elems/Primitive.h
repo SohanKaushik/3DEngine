@@ -17,17 +17,17 @@ namespace elems {
 
 	public:
 
-		Primitive(const std::string& id);
+		//Primitive();
 		void render();
-		void gen_cube();
-		void load_from_file();
+		void cube();
+
+		const std::vector<glm::vec3>& getVertices() const;
+		const std::vector<unsigned int> getIndices() const;
 
 	private:
 		std::unique_ptr<render::VertexIndexBuffer> m_buffer = std::make_unique<render::VertexIndexBuffer>();
 		std::vector<glm::vec3> m_vertices;       // Vertex data (positions, normals, etc.).
-		std::vector<uint32_t> m_indices;         // Index data.
+		std::vector<unsigned int> m_indices;         // Index data.
 
-	private:
-		std::string m_id; // Unique identifier
 	};
 }

@@ -7,8 +7,7 @@
 #include "shader/shader.h"
 #include "elems/inputs.h"
 #include "ui/grid.h"
-#include "Object.h"
-#include "elems/Primitive.h"
+#include "elems/Mesh.h"
 
 
 namespace ui {
@@ -24,11 +23,13 @@ namespace ui {
 
 
 	private:
-		glm::mat4 m_model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	
 
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
+		std::unordered_map<std::string, elems::Mesh*> mMesh;
+
 		std::unique_ptr<Shader> mShader = std::make_unique<Shader>();
 		std::unique_ptr<elems::Camera> mCamera;
-		std::unordered_map<std::string, elems::Primitive*> primitives; 
+		
 	};
 }

@@ -7,7 +7,6 @@
 Editor::Editor(const std::string& app_name)
 {
     mWindow->Init(1024, 720, app_name);
-    mViewport->Init();
 }
 
 
@@ -18,9 +17,9 @@ void Editor::loop()
         // Clear the view
         mWindow->pre_render();
 
-        // Viewport Scene Render
-        mViewport->render();
-       
+        // Render Scene
+        mWindow->render();
+
         // Render end, swap buffers
         mWindow->post_render();
     };
@@ -28,5 +27,4 @@ void Editor::loop()
 
 void Editor::shutdown() {
     mWindow->end();
-    mViewport->destroy();
 };

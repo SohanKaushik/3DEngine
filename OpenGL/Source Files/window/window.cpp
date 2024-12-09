@@ -52,7 +52,8 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     // Set the resize callback
     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
-   
+    // Viewport Init
+    mViewport->Init();
     return true;
 }
 
@@ -69,12 +70,12 @@ GLFWwindow* WindowManager::GetWindow()
 int WindowManager::GetWindowWidth()
 {
     return m_windowWidth;
-}
+};
 
 int WindowManager::GetWindowHeight()
 {
     return m_windowHeight;
-}
+};
 
 // Function to update window size if it has changed (called every frame or when resizing)
 void WindowManager::UpdateWindowSize()
@@ -100,14 +101,20 @@ void WindowManager::post_render()
 {
     glfwPollEvents();
     glfwSwapBuffers(m_window);
-}
+};
 
 void WindowManager::end()
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
+    mViewport->destroy();
+
 };
 
+void WindowManager::render()
+{
+    mViewport->render();
+};
 
 void WindowManager::Clean()
 {

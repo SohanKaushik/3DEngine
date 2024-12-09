@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-#include <string>
+#include "pch.h"
+#include "ui/viewport.h"
 
 class WindowManager {
 private:
@@ -31,4 +31,5 @@ public:
 
 public:
     GLFWwindow* GetWindow();
+    std::unique_ptr<ui::Viewport> mViewport = std::make_unique<ui::Viewport>();
 };

@@ -21,9 +21,12 @@ namespace ui {
 
 		void destroy();
 
+		void on_orbit(double mouseX, double mouseY, float speed, bool constraint);
+
 
 	private:
-	
+		bool firstMouse = true;
+		double lastX = 400.0, lastY = 300.0; // Default mouse position
 
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
 		std::unordered_map<std::string, elems::Mesh*> mMesh;

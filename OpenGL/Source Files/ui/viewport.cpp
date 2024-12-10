@@ -31,13 +31,11 @@ void ui::Viewport::render()
 	float angle = glfwGetTime() * rotationSpeed;  
 
 	m_model = glm::rotate(m_model, glm::radians(angle), glm::vec3(1.0f, 1.0f, 0.0f));  
-//	m_model = glm::translate(m_model, glm::vec3(0.0f, 0.0f, ))
+
 	mShader->SetUniformMat4f("model", m_model);
 	mShader->SetUniform3fv("color", glm::vec3(1.0f, 0.0f, 0.0f));
-	/*std::cout << "Position: " << glm::to_string(
-		mMesh["cube1"]->getRotation()
-	) << std::endl;*/
-	//mGrid->render();
+	
+	mGrid->render();
 };
 
 
@@ -47,5 +45,24 @@ void ui::Viewport::destroy()
 {
 	mGrid->destroy();
 	
+}
+
+void ui::Viewport::on_orbit(double mouseX, double mouseY, float speed, bool constraint)
+{
+	if (firstMouse) {
+		lastX = mouseX;
+		lastY = mouseY;
+		firstMouse = false;
+	}
+
+	// Incrementally apply changes (don't reset)
+	float xOffset = (mouseX - lastX) * speed;
+	float yOffset = (lastY - mouseY) * speed;
+
+	// Update camera position or orientation based on these deltas
+	mCamera->on_mouse_move(xOffset, yOffset, true);  // Orbit based on mouse movement
+
+	lastX = mouseX;
+	lastY = mouseY;
 };
 

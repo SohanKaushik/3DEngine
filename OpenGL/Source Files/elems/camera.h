@@ -11,13 +11,14 @@ namespace elems {
 	class Camera {
 
 	private:
-		glm::vec3 m_position = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 m_position = glm::vec3(0.0f, 0.0f, -1.0f);  // Camera starts at (0, 0, -1)
+		glm::vec3 m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);  // Camera looks at the origin
 
-		glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 m_front;
-		glm::vec3 m_right;
-		glm::vec3 m_worldUP;
+		glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);         // World up direction
+		glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);     // Default forward direction
+		glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);      // Default right direction
+		glm::vec3 m_worldUP = glm::vec3(0.0f, 1.0f, 0.0f);    // Explicitly set world up
+
 
 
 		float m_fov;
@@ -35,6 +36,8 @@ namespace elems {
 		float m_senstivity;
 
 	public:
+
+		Camera() {}
 		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far);
 
 		glm::vec3 GetCameraPosition() const;
@@ -48,11 +51,14 @@ namespace elems {
 
 		void CalKeyboardMovement(glm::vec3 direction, float deltaTime);
 		void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
+		
 		void UpdateCameraMatrix(Shader& shader);
 
+		void on_mouse_move(float xOffset, float yOffset, bool constrainPitch);
+		void on_mouse_scroll();
 
-	private:
-		void UpdateCameraVectors(); // for camera fly cam
+	public:
+		void UpdateCameraVectors();      // for camera fly cam
 
 	};
 

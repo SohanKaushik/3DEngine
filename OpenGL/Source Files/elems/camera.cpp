@@ -6,18 +6,17 @@
 elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
 	: m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
 	m_moveSpeed(10.0f), m_senstivity(0.1f),
-	m_fov(fov), m_near(near), m_far(far),
-	m_worldUP(glm::vec3(0.0f, 1.0f, 0.0f))
+	m_fov(fov), m_near(near), m_far(far)
 {
-	//UpdateCameraVectors();
-}
+	UpdateCameraVectors();
+	m_position = position;
+};
 
 
 glm::mat4 elems::Camera::GetProjectionMatrix() {
 
 	return glm::perspective(glm::radians(m_fov), GetAspectRatio(), m_near, m_far);
 };
-
 
 
 glm::mat4  elems::Camera::GetViewMatrix() const {
@@ -61,22 +60,30 @@ void  elems::Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
 	m_position += direction * velocity;    // Move in the specified direction
 };
 
-void  elems::Camera::CalMouseRotation(float xOffset, float yOffset, bool constrainPitch) {
+void  elems::Camera::on_mouse_move(float xOffset, float yOffset, bool constrainPitch) {
+	
+	const float m_senstivity = 1.0f;
 	xOffset *= m_senstivity;
 	yOffset *= m_senstivity;
-
+	
 	m_pitch += yOffset;      // Update yaw
 	m_yaw += xOffset;        // Update pitch
-
+	
 	// Constrain pitch to avoid gimbal lock
 	if (constrainPitch) {
 		if (m_pitch > 89.0f) m_pitch = 89.0f;
 		if (m_pitch < -89.0f) m_pitch = -89.0f;
 	}
-
+	
 	// Update camera vectors based on new yaw and pitch
 	UpdateCameraVectors();
-}
+
+	// Debug output
+	std::cout << "Yaw: " << m_yaw << ", Pitch: " << m_pitch << std::endl;
+	std::cout << "Front: " << m_front.x << ", " << m_front.y << ", " << m_front.z << std::endl;
+
+};
+
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
 	glm::mat4 view = this->GetViewMatrix();
@@ -90,9 +97,9 @@ void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 	shader.SetUniformMat4f("projection", projection);
 };
 
+void elems::Camera::UpdateCameraVectors() {
 
-void  elems::Camera::UpdateCameraVectors() {
-	// Ensure the pitch is clamped between -89.0f and 89.0f to avoid gimbal lock
+	//// Ensure the pitch is clamped between -89.0f and 89.0f to avoid gimbal lock
 	if (m_pitch > 89.0f) m_pitch = 89.0f;
 	if (m_pitch < -89.0f) m_pitch = -89.0f;
 
@@ -107,4 +114,10 @@ void  elems::Camera::UpdateCameraVectors() {
 
 	m_right = glm::normalize(glm::cross(m_front, m_worldUP));   // Right is the cross product of front and world up
 	m_up = glm::normalize(glm::cross(m_right, m_front));        // Up is the cross product of right and front
+
+	/*std::cout << "Front: " << glm::to_string(m_front) << "\n";
+	std::cout << "Right: " << glm::to_string(m_right) << "\n";
+	std::cout << "Up: " << glm::to_string(m_up) << "\n";*/
+
+
 };

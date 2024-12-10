@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "ui/viewport.h"
+#include "elems/camera.h"
 
 class WindowManager {
 private:
@@ -27,9 +28,14 @@ public:
     void Clean();
     bool isRunning();
 
+    void handleInputs();
+
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 public:
     GLFWwindow* GetWindow();
     std::unique_ptr<ui::Viewport> mViewport = std::make_unique<ui::Viewport>();
+    std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
+
+    InputManager& input = InputManager::getInstance();
 };

@@ -7,7 +7,7 @@
 Editor::Editor(const std::string& app_name)
 {
     mWindow->Init(1024, 1000, app_name);
-}
+};
 
 
 void Editor::loop()

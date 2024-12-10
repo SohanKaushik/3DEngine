@@ -4,9 +4,8 @@
 
 
 WindowManager::WindowManager()
-    : m_windowWidth(800), m_windowHeight(600), m_window(nullptr) {
-    
-};
+    : m_windowWidth(800), m_windowHeight(600), m_window(nullptr) 
+{};
 
 WindowManager::~WindowManager() {
     if (m_window) {
@@ -14,8 +13,6 @@ WindowManager::~WindowManager() {
     }
     glfwTerminate();
 };
-
-
 
 bool WindowManager::Init(int width, int height , const std::string& appName)
 {
@@ -54,6 +51,10 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
 
     // Viewport Init
     mViewport->Init();
+
+    // Inputs Init
+    input.Initialize(this->m_window);
+
     return true;
 }
 
@@ -114,6 +115,11 @@ void WindowManager::end()
 void WindowManager::render()
 {
     mViewport->render();
+
+    this->UpdateWindowSize();
+
+    // Handle Input here
+    this->handleInputs();
 };
 
 void WindowManager::Clean()
@@ -126,3 +132,25 @@ bool WindowManager::isRunning()
     return !glfwWindowShouldClose(m_window);
 };
 
+void WindowManager::handleInputs() {
+
+    //// Mouse rotation
+    double mouseX, mouseY;
+    input.getMousePosition(mouseX, mouseY);
+
+    static double lastX = mouseX, lastY = mouseY;
+    float xOffset = static_cast<float>(mouseX - lastX);
+    float yOffset = static_cast<float>(lastY - mouseY);  // Inverted Y-axis
+
+    lastX = mouseX;
+    lastY = mouseY;
+
+    // Check if middle mouse button is pressed to orbit
+    if (input.isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
+        // Pass xOffset and yOffset to control orbit based on mouse movement
+        mViewport->on_orbit(xOffset, yOffset, 50.0f, true);
+    }
+
+    //mCamera->UpdateCameraVectors();
+    mCamera->on_mouse_move(xOffset, yOffset, true);
+};

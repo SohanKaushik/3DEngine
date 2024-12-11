@@ -1,34 +1,54 @@
 #include "pch.h"
 #include "grid.h"
 
-ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.3, 0.3, 0.3)), m_dMin(10.0f), m_dMax(300.0f)  
+ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.4, 0.4, 0.4)), m_dMin(10.0f), m_dMax(300.0f)  
 {}
 
-// Generate vertices and indices
-std::vector<glm::vec3> vertices;
-std::vector<unsigned int> indices;
+void ui::Grid::Init()
+{   
+    std::cout << "grid" << std::endl;
 
-void ui::Grid::Init() {
+    std::vector<glm::vec3> vertices;
+    std::vector<unsigned int> indices;
+    int gridSize = m_size;
 
-    float halfSize = m_size;
+    glm::vec3 xColor = glm::vec3(0.886, 0.376, 0.357); //red
+    glm::vec3 yColor = glm::vec3(0.482, 0.8, 0.482);
+
+    glm::vec3 lineColor = m_color;                    // Default grid color
+
+   
+
     unsigned int index = 0;
 
-    for (float x = -halfSize; x <= halfSize; x += m_spacing) {
-        vertices.push_back(glm::vec3(x, 0.0f, -halfSize));
-        vertices.push_back(glm::vec3(x, 0.0f, halfSize));
+    // Draw vertical lines (XZ plane)
+    for (float x = -gridSize; x <= gridSize; x += m_spacing) {
+        glm::vec3 color = (fabs(x) == 0) ? xColor : lineColor; // Red if x is near origin
+        // Start vertex
+        vertices.push_back(glm::vec3(x, 0.0f, -gridSize));  // Position
+        vertices.push_back(color);                           // Color
         indices.push_back(index++);
+
+        // End vertex
+        vertices.push_back(glm::vec3(x, 0.0f, gridSize));   // Position
+        vertices.push_back(color);                           // Color
         indices.push_back(index++);
     }
 
-    for (float z = -halfSize; z <= halfSize; z += m_spacing) {
-        vertices.push_back(glm::vec3(-halfSize, 0.0f, z));
-        vertices.push_back(glm::vec3(halfSize, 0.0f, z));
+    // Draw horizontal lines (XZ plane)
+    for (float z = -gridSize; z <= gridSize; z += m_spacing) {
+        glm::vec3 color = (fabs(z) == 0) ? yColor : lineColor; // Red if z is near origin
+        // Start vertex
+        vertices.push_back(glm::vec3(-gridSize, 0.0f, z));   // Position
+        vertices.push_back(color);                             // Color
         indices.push_back(index++);
+
+        // End vertex
+        vertices.push_back(glm::vec3(gridSize, 0.0f, z));      // Position
+        vertices.push_back(color);                             // Color
         indices.push_back(index++);
     }
 
-    // Create the VertexIndexBuffer
-    mVertexIndexBuffer = std::make_unique<render::VertexIndexBuffer>();
     mVertexIndexBuffer->create(vertices, indices);
 };
 
@@ -38,21 +58,15 @@ void ui::Grid::render(Shader& shader) {
         return;
     }
 
-    // Bind the shader and set uniforms
     shader.use();
-    shader.SetUniformMat4f("model", glm::mat4(1.0f)); // Grid's model matrix
-    shader.SetUniform3fv("uColor", glm::vec3(0.8f, 0.8f, 0.8f)); // Grid color
+    shader.SetUniformMat4f("model", glm::mat4(1.0f));
+    shader.SetUniform3fv("uGridColor", m_color);     
 
-    // Draw the grid
     mVertexIndexBuffer->bind();
-    glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, nullptr);
+    mVertexIndexBuffer->draw(GL_LINES);
     mVertexIndexBuffer->unbind();
-}
+};
 
-
-//void ui :: Grid::SetGridUniforms() {
-//
-//};
 
 void ui::Grid::destroy()
 {

@@ -38,4 +38,8 @@ public:
     std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
 
     InputManager& input = InputManager::getInstance();
+
+private:
+    double lastX, lastY;
+    bool firstMouse;
 };

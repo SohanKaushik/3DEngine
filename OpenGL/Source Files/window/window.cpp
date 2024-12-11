@@ -16,6 +16,7 @@ WindowManager::~WindowManager() {
 
 bool WindowManager::Init(int width, int height , const std::string& appName)
 {
+
     std::cout << "Window Init" << std::endl;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -132,25 +133,28 @@ bool WindowManager::isRunning()
     return !glfwWindowShouldClose(m_window);
 };
 
+double mouseX, mouseY;
 void WindowManager::handleInputs() {
+    // Retrieve current mouse position
+    glfwGetCursorPos(this->GetWindow(), &mouseX, &mouseY);
 
-    //// Mouse rotation
-    double mouseX, mouseY;
-    input.getMousePosition(mouseX, mouseY);
-
-    static double lastX = mouseX, lastY = mouseY;
+    // Calculate mouse offsets
     float xOffset = static_cast<float>(mouseX - lastX);
     float yOffset = static_cast<float>(lastY - mouseY);  // Inverted Y-axis
 
+    // Store current mouse position for next frame
     lastX = mouseX;
     lastY = mouseY;
 
-    // Check if middle mouse button is pressed to orbit
+    // Check if middle mouse button is pressed and control key is held for zooming
     if (input.isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
-        // Pass xOffset and yOffset to control orbit based on mouse movement
-        mViewport->on_orbit(xOffset, yOffset, 50.0f, true);
+        if (input.isKeyPressed(GLFW_KEY_LEFT_CONTROL)) {
+            mViewport->on_zoom(yOffset, 0.2f);
+        }
+        else {
+            // Pass the mouse offsets to the viewport for orbiting
+            mViewport->on_orbit(xOffset, yOffset, 0.6f, false);
+        }
     }
 
-    //mCamera->UpdateCameraVectors();
-    mCamera->on_mouse_move(xOffset, yOffset, true);
 };

@@ -38,7 +38,35 @@ void render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, c
 
     // Unbind buffers after use
     glBindVertexArray(0);
+
+    m_indices = indices.size();
 };
+void render::VertexIndexBuffer::create(const std::vector<float>& vertices)
+{
+    // Create and bind VAO
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+
+    // Create and bind VBO
+    glGenBuffers(1, &m_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    // Position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    // Color
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    // Unbind buffers after use
+    glBindVertexArray(0);
+
+    //m_vertexCount = vertices.size() / 6;  // Each vertex consists of 3 position and 3 color values
+}
+
+
 
 
 // Delete the vertex and index buffers
@@ -71,7 +99,7 @@ void VertexIndexBuffer::unbind()
 };
 
 // Draw the object using the index buffer
-void VertexIndexBuffer::draw(int index_count)
+void VertexIndexBuffer::draw(GLenum mode)
 {
-    glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(mode, m_indices, GL_UNSIGNED_INT, nullptr);
 };

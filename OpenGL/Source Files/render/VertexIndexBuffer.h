@@ -11,6 +11,7 @@ namespace render {
 
 		// Create buffers with vertices and indices
 		void create(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices);
+		void create(const std::vector<float>& vertices);
 
 		// Destroy buffers
 		void destroy();
@@ -22,7 +23,7 @@ namespace render {
 		void unbind();
 
 		// Draw the object using the index buffer
-		void draw(int index_count);
+		void draw(GLenum mode);
 		
 	private:
 		unsigned int m_vao = 0;  // Vertex buffer ID
@@ -30,7 +31,7 @@ namespace render {
 		unsigned int m_elementBuffer = 0;
 
 	private:
-		unsigned int m_indices = 0;
+		 int m_indices = 0;
 	};
 
 	

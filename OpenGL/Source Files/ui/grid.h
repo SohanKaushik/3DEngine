@@ -17,7 +17,6 @@ namespace ui {
 
 		void render(Shader& shader);
 		
-		void render();
 		void destroy();
 
 	private:
@@ -30,7 +29,7 @@ namespace ui {
 		float m_dMax;
 
 	private:
-		std::unique_ptr<render::VertexIndexBuffer> mVertexIndexBuffer;
+		std::unique_ptr<render::VertexIndexBuffer> mVertexIndexBuffer = std::make_unique<render::VertexIndexBuffer>();
 	};
 
 

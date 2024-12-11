@@ -12,7 +12,7 @@ void elems::Mesh::draw()
 {
 	//Bind and render
 	mBuffer->bind();
-	mBuffer->draw(mPrimitives->getIndices().size());
+	mBuffer->draw(GL_TRIANGLES);
 	mBuffer->unbind();
 };
 

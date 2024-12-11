@@ -11,6 +11,9 @@ void ui::Viewport::Init()
 	mShader[1].load("Resource Files/Shaders/grid.vert", "Resource Files/Shaders/grid.frag");
 
 	mCamera = std::make_unique<elems::Camera>(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 45.0f, 0.1, 1000.0f);
+
+	mGrid->Init();
+
 	mMesh["cube1"] = new Mesh ({ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f) });
 };
 
@@ -33,10 +36,8 @@ void ui::Viewport::render() {
     }
 
     // Render Grid
-	mCamera->UpdateCameraMatrix(mShader[1]);
-	mGrid->Init();
     mGrid->render(mShader[1]);
-    mShader[1].SetUniformMat4f("model", m_model);
+	mCamera->UpdateCameraMatrix(mShader[1]);
 }
 
 

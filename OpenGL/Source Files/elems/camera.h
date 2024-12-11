@@ -28,7 +28,7 @@ namespace elems {
 		float m_aspectRatio = 1.246f;
 		
 
-	private:
+	public:
 		float m_yaw;
 		float m_pitch;
 
@@ -37,7 +37,7 @@ namespace elems {
 
 	public:
 
-		Camera() {}
+		Camera() = default;
 		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far);
 
 		glm::vec3 GetCameraPosition() const;
@@ -59,6 +59,12 @@ namespace elems {
 
 	public:
 		void UpdateCameraVectors();      // for camera fly cam
+
+		void UpdateOrbit();
+
+		void UpdateZoom(float offset);
+
+		float GetDistance();
 
 	};
 

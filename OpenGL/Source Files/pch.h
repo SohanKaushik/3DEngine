@@ -22,6 +22,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_interpolation.hpp>
 
 // Window API
 #include <Windows.h>

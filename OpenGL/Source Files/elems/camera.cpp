@@ -8,7 +8,7 @@ elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, 
 	m_moveSpeed(10.0f), m_senstivity(0.1f),
 	m_fov(fov), m_near(near), m_far(far)
 {
-	UpdateCameraVectors();
+	//UpdateCameraVectors();
 	m_position = position;
 };
 
@@ -60,29 +60,19 @@ void  elems::Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
 	m_position += direction * velocity;    // Move in the specified direction
 };
 
-void  elems::Camera::on_mouse_move(float xOffset, float yOffset, bool constrainPitch) {
-	
-	const float m_senstivity = 1.0f;
-	xOffset *= m_senstivity;
-	yOffset *= m_senstivity;
-	
-	m_pitch += yOffset;      // Update yaw
-	m_yaw += xOffset;        // Update pitch
-	
+void elems::Camera::on_mouse_move(float deltaYaw, float deltaPitch, bool constrainPitch) {
+	m_yaw += deltaYaw;    // Rotate horizontally
+	m_pitch += deltaPitch; // Rotate vertically
+
 	// Constrain pitch to avoid gimbal lock
 	if (constrainPitch) {
 		if (m_pitch > 89.0f) m_pitch = 89.0f;
 		if (m_pitch < -89.0f) m_pitch = -89.0f;
 	}
-	
-	// Update camera vectors based on new yaw and pitch
-	UpdateCameraVectors();
 
-	// Debug output
-	std::cout << "Yaw: " << m_yaw << ", Pitch: " << m_pitch << std::endl;
-	std::cout << "Front: " << m_front.x << ", " << m_front.y << ", " << m_front.z << std::endl;
-
+	UpdateOrbit();  // Update camera position and orientation
 };
+
 
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
@@ -121,3 +111,37 @@ void elems::Camera::UpdateCameraVectors() {
 
 
 };
+
+void elems::Camera::UpdateOrbit() {
+	// Spherical to Cartesian conversion
+	float radius = glm::length(m_position - m_targetPos);  // Distance to the target
+
+	glm::vec3 offset;
+	offset.x = radius * cos(glm::radians(m_pitch)) * cos(glm::radians(m_yaw));
+	offset.y = radius * sin(glm::radians(m_pitch));
+	offset.z = radius * cos(glm::radians(m_pitch)) * sin(glm::radians(m_yaw));
+
+	// Update camera position
+	m_position = m_targetPos + offset;
+
+	// Ensure the camera is always looking at the target
+	m_front = glm::normalize(m_targetPos - m_position);
+	m_right = glm::normalize(glm::cross(m_front, m_worldUP));
+	m_up = glm::normalize(glm::cross(m_right, m_front));
+
+};
+
+void elems::Camera::UpdateZoom(float offset) {
+	// Move the camera along the Z-axis for zooming
+	m_position.z += offset;
+
+	// Clamp the position to avoid going through the target
+	if (m_position.z < m_near) m_position.z = 1.0f;     // Minimum zoom distance
+	if (m_position.z < m_far) m_position.z = 1000.0f;   // Maximum zoom distance
+};
+
+
+float elems::Camera::GetDistance() {
+
+	return glm::length(m_position - m_targetPos);
+}

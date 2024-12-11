@@ -21,7 +21,8 @@ namespace ui {
 
 		void destroy();
 
-		void on_orbit(double mouseX, double mouseY, float speed, bool constraint);
+		void on_orbit(float xOffset, float yOffset, float speed, bool constraint);
+		void on_zoom(float offset, float senst);
 
 
 	private:
@@ -31,7 +32,7 @@ namespace ui {
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
 		std::unordered_map<std::string, elems::Mesh*> mMesh;
 
-		std::unique_ptr<Shader> mShader = std::make_unique<Shader>();
+		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<elems::Camera> mCamera;
 		
 	};

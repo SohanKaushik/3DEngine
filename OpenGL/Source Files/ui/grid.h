@@ -1,6 +1,8 @@
 #pragma once
 
 #include "pch.h"
+#include <shader/shader.h>
+
 #include "render/VertexIndexBuffer.h"
 
 namespace ui {
@@ -10,6 +12,10 @@ namespace ui {
 	public:
 
 		Grid();
+
+		void Init();
+
+		void render(Shader& shader);
 		
 		void render();
 		void destroy();

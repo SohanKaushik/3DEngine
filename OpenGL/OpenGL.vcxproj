@@ -159,6 +159,7 @@
     </ClCompile>
     <ClCompile Include="Source Files\Editor.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
+    <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
     <ClCompile Include="Source Files\pch.cpp">
@@ -468,6 +469,7 @@
     <ClInclude Include="Source Files\Editor.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />
+    <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />
     <ClInclude Include="Source Files\pch.h" />

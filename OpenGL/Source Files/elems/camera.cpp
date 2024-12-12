@@ -61,17 +61,25 @@ void  elems::Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
 };
 
 void elems::Camera::on_mouse_move(float deltaYaw, float deltaPitch, bool constrainPitch) {
-	m_yaw += deltaYaw;    // Rotate horizontally
-	m_pitch += deltaPitch; // Rotate vertically
+	m_yaw += deltaYaw;    // Rotate horizontally (yaw)
+	m_pitch += deltaPitch; // Rotate vertically (pitch)
 
-	// Constrain pitch to avoid gimbal lock
+	// Constrain pitch to avoid gimbal lock (this can be removed for unrestricted pitch rotation)
 	if (constrainPitch) {
 		if (m_pitch > 89.0f) m_pitch = 89.0f;
 		if (m_pitch < -89.0f) m_pitch = -89.0f;
 	}
 
+	// Normalize yaw to ensure it stays within the 0 - 360 degree range
+	if (m_yaw > 360.0f) {
+		m_yaw -= 360.0f;
+	}
+
 	UpdateOrbit();  // Update camera position and orientation
+
+	// Fix Gimble Lock 
 };
+
 
 
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)

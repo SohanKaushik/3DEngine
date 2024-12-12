@@ -34,6 +34,6 @@ namespace ui {
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<elems::Camera> mCamera;
-		
+		//std::unique_ptr<elems::DirectionalLight> mLight;
 	};
 }

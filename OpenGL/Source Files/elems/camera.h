@@ -18,7 +18,7 @@ namespace elems {
 		glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);     // Default forward direction
 		glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);      // Default right direction
 		glm::vec3 m_worldUP = glm::vec3(0.0f, 1.0f, 0.0f);    // Explicitly set world up
-
+		glm::quat m_orientation;
 
 
 		float m_fov;

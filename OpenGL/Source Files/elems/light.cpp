@@ -4,10 +4,21 @@
 #include "shader/shader.h"
 #include "Rend.h"
 
+using namespace elems;
+
 Light::Light(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec)
 	: m_ambient(amb), m_diffuse(diff), m_specular(spec)
-{};
+{}
 
+void elems::Light::render(const std::vector<std::unique_ptr<elems::Light>> lights, Shader& shader)
+{
+    int lightIndex = 0;
+    for (const auto& light : lights) {
+        std::string uniformBase = "lights[" + std::to_string(lightIndex) + "]";
+        light->SetLightUniform(shader, uniformBase);
+        ++lightIndex;
+    }
+};
 
 
 DirectionalLight::DirectionalLight(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec, const glm::vec3& dir)
@@ -54,4 +65,5 @@ void PointLight::SetLightUniform(Shader& shader, const std::string& uniformName)
     shader.SetUniform3fv(uniformName + ".specular", m_specular);
     shader.SetUniform3fv(uniformName + ".position", m_position);
 };
+
 

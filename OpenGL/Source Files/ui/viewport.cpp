@@ -10,11 +10,18 @@ void ui::Viewport::Init()
 	mShader[0].load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
 	mShader[1].load("Resource Files/Shaders/grid.vert", "Resource Files/Shaders/grid.frag");
 
+	// Camera
 	mCamera = std::make_unique<elems::Camera>(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 45.0f, 0.1, 1000.0f);
 
+	// Grid Axes
 	mGrid->Init();
 
+
+	// Primitvies
 	mMesh["cube1"] = new Mesh ({ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f) });
+
+	//Lights
+	
 };
 
 void ui::Viewport::render() {
@@ -29,7 +36,7 @@ void ui::Viewport::render() {
 
         // Send model matrix and object color to the shader
         mShader[0].SetUniformMat4f("model", m_model);
-        mShader[0].SetUniform3fv("color", glm::vec3(1.0f, 0.0f, 0.0f));
+		mShader[0].SetUniform3fv("color", glm::vec3(1.0f, 1.0f, 1.0f));
 
         // Draw the mesh
         pair.second->draw();
@@ -38,6 +45,20 @@ void ui::Viewport::render() {
     // Render Grid
     mGrid->render(mShader[1]);
 	mCamera->UpdateCameraMatrix(mShader[1]);
+
+
+	// Lights 
+	//mLight.push_back(std::make_unique<DirectionalLight>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f)));
+	mShader[0].use();
+	DirectionalLight dirLight(
+		glm::vec3(0.2),  // ambient 
+		glm::vec3(1.0f),  // diffuse 
+		glm::vec3(0),                // specular
+		glm::vec3(-1.0, -3.0, 0.0)   // direction
+	);
+
+	dirLight.SetLightUniform(mShader[0], "dirLight");
+	
 }
 
 

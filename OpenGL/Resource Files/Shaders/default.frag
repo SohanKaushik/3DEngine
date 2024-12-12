@@ -80,8 +80,6 @@ vec3 DirectLightCalc() {
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 specular = dirLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
-    //vec3 specular = CalculateSpecular(dirLight.specular, normal, lightDir, viewDir);
-
     //Shadow
     //float Shadow = ShadowCalculation(FragPosLightSpace);
 
@@ -175,10 +173,10 @@ vec3 PointLightCalc() {
 void main()
 {
     // Calculate the lighting using DirectLight function
-   // vec3 color2 = DirectLightCalc() + PointLightCalc();
+    vec3 color2 = DirectLightCalc();
 
  
     // Final output color with the calculated lighting
-    FragColor = vec4(aColor, 1.0);
+    FragColor = vec4(color2 * aColor, 1.0);
 
 }

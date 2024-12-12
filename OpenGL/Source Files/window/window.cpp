@@ -152,8 +152,9 @@ void WindowManager::handleInputs() {
             mViewport->on_zoom(yOffset, 0.2f);
         }
         else {
+
             // Pass the mouse offsets to the viewport for orbiting
-            mViewport->on_orbit(xOffset, yOffset, 0.6f, false);
+            mViewport->on_orbit(xOffset, yOffset, 0.6f, true);
         }
     }
 

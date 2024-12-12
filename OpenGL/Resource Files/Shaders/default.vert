@@ -38,6 +38,5 @@ void main()
     aColor = color;  
 
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-   // gl_Position = vec4(aPos * 0.5, 1.0);
 }
  

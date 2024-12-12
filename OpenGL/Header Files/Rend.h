@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 
 #include "elems/camera.h"
+using namespace elems;
 
 class Rend {
 	

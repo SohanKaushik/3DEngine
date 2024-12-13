@@ -3,6 +3,7 @@
 #include "pch.h"
 #include "ui/viewport.h"
 #include "elems/camera.h"
+#include "render/ui_context.h"
 
 class WindowManager {
 private:
@@ -36,6 +37,7 @@ public:
     GLFWwindow* GetWindow();
     std::unique_ptr<ui::Viewport> mViewport = std::make_unique<ui::Viewport>();
     std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
+    std::unique_ptr<render::UIXContext> mUIx = std::make_unique<render::UIXContext>();
 
     InputManager& input = InputManager::getInstance();
 

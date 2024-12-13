@@ -26,10 +26,10 @@ void ui::Viewport::Init()
 };
 
 void ui::Viewport::render() {
-  
+
 	mMesh["cube1"]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-    // Set per-object uniforms and draw
+	// Set per-object uniforms and draw
 	for (auto& obj : mMesh) {
 		glm::mat4 m_model = glm::mat4(1.0f);
 		m_model = glm::translate(m_model, obj.second->getPosition());
@@ -42,8 +42,8 @@ void ui::Viewport::render() {
 	};
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
-    // Render Grid
-    mGrid->render(mShader[1]);
+	// Render Grid
+	mGrid->render(mShader[1]);
 	mCamera->UpdateCameraMatrix(mShader[1]);
 
 
@@ -58,8 +58,9 @@ void ui::Viewport::render() {
 	);
 
 	dirLight.SetLightUniform(mShader[0], "dirLight");
-	
-}
+
+
+};
 
 void ui::Viewport::destroy()
 {

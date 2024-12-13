@@ -8,9 +8,10 @@ WindowManager::WindowManager()
 {};
 
 WindowManager::~WindowManager() {
-    if (m_window) {
-        glfwDestroyWindow(m_window);
-    }
+ 
+   // mUIx->end();
+    mViewport->destroy();
+    glfwDestroyWindow(m_window);
     glfwTerminate();
 };
 
@@ -50,11 +51,15 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     // Set the resize callback
     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
+   
     // Viewport Init
     mViewport->Init();
 
     // Inputs Init
     input.Initialize(this->m_window);
+
+    // UI context
+    mUIx->init(this->m_window);
 
     return true;
 }
@@ -92,35 +97,38 @@ void WindowManager::UpdateWindowSize()
 
 void WindowManager::pre_render()
 {
-    glViewport(0, 0, m_windowWidth, m_windowWidth);
+   // glViewport(0, 0, m_windowWidth, m_windowWidth);
 
     // Set the background color
     glClearColor(0.247, 0.247, 0.247, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    mUIx->pre_render();
 }
 
-void WindowManager::post_render()
-{
-    glfwPollEvents();
-    glfwSwapBuffers(m_window);
-};
 
 void WindowManager::end()
-{
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
-    mViewport->destroy();
-
-};
+{};
 
 void WindowManager::render()
 {
+
     mViewport->render();
+
+    mUIx->render();
 
     this->UpdateWindowSize();
 
     // Handle Input here
     this->handleInputs();
+};
+
+
+void WindowManager::post_render()
+{
+    mUIx->post_render();
+    glfwSwapBuffers(m_window);
+    glfwPollEvents();
 };
 
 void WindowManager::Clean()

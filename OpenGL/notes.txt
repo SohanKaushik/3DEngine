@@ -39,5 +39,6 @@
 20. Stride: The stride tells OpenGL how much space is between consecutive vertices.
     Since each vertex consists of two glm::vec3 (position and normal), the stride should be 2 * sizeof(glm::vec3).
 
+21. Mesh m = new mesh requires manual deletion
 
 

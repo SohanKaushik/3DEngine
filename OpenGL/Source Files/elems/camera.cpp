@@ -3,19 +3,19 @@
 #include "Camera.h"
 
 
-elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float near, float far)
+elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis)
 	: m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
 	m_moveSpeed(10.0f), m_senstivity(0.1f),
-	m_fov(fov), m_near(near), m_far(far)
+	m_fov(fov), m_near(nearDis), m_far(farDis)
 {
 	//UpdateCameraVectors();
-	m_position = position;
+	
 };
 
 
 glm::mat4 elems::Camera::GetProjectionMatrix() {
 
-	return glm::perspective(glm::radians(m_fov), GetAspectRatio(), m_near, m_far);
+	return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
 };
 
 
@@ -76,7 +76,6 @@ void elems::Camera::on_mouse_move(float deltaYaw, float deltaPitch, bool constra
 	}
 
 	UpdateOrbit();  // Update camera position and orientation
-
 	// Fix Gimble Lock 
 };
 
@@ -85,9 +84,8 @@ void elems::Camera::on_mouse_move(float deltaYaw, float deltaPitch, bool constra
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
 	glm::mat4 view = this->GetViewMatrix();
-	glm::mat4 projection = glm::mat4(1.0f);
+	glm::mat4 projection = this->GetProjectionMatrix();
 
-    projection = glm::perspective(glm::radians(45.0f), 1.0f , 0.1f, 1000.0f);
 
 	// Set matrices in the shader
 	shader.use();
@@ -132,20 +130,28 @@ void elems::Camera::UpdateOrbit() {
 	// Update camera position
 	m_position = m_targetPos + offset;
 
-	// Ensure the camera is always looking at the target
-	m_front = glm::normalize(m_targetPos - m_position);
-	m_right = glm::normalize(glm::cross(m_front, m_worldUP));
-	m_up = glm::normalize(glm::cross(m_right, m_front));
-
+	// Update camera orientation vectors
+	m_front = glm::normalize(m_targetPos - m_position); // Look direction
+	m_right = glm::normalize(glm::cross(m_front, m_worldUP)); // Right direction
+	m_up = glm::normalize(glm::cross(m_right, m_front)); // Up direction
 };
 
-void elems::Camera::UpdateZoom(float offset) {
-	// Move the camera along the Z-axis for zooming
-	m_position.z += offset;
+void elems::Camera::UpdateZoom(float offset, Shader& shader) {
+	glm::vec3 forward = glm::normalize(m_targetPos - m_position);
 
-	// Clamp the position to avoid going through the target
-	if (m_position.z < m_near) m_position.z = 1.0f;     // Minimum zoom distance
-	if (m_position.z < m_far) m_position.z = 1000.0f;   // Maximum zoom distance
+	// Move the camera closer/farther from the target
+	m_position += forward * offset;
+
+	// Clamp the zoom distance
+	float distance = glm::length(m_targetPos - m_position);
+	if (distance < m_near) {
+		m_position = m_targetPos - forward * m_near;
+	}
+	else if (distance > m_far) {
+		m_position = m_targetPos - forward * m_far;
+	}
+
+	this->UpdateCameraMatrix(shader);
 };
 
 

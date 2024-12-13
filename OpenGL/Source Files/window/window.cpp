@@ -156,6 +156,6 @@ void WindowManager::handleInputs() {
             // Pass the mouse offsets to the viewport for orbiting
             mViewport->on_orbit(xOffset, yOffset, 0.6f, true);
         }
-    }
+    };
 
 };

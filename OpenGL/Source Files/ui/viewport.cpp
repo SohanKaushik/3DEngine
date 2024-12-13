@@ -17,30 +17,30 @@ void ui::Viewport::Init()
 	mGrid->Init();
 
 
-	// Primitvies
-	mMesh["cube1"] = new Mesh ({ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f) });
-
+	// Primitvies : { position, rotation, scale }
+	mMesh["cube1"] = new Mesh ({ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });  
+	mMesh["cube2"] = new Mesh ({ glm::vec3(3.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });
+	
 	//Lights
 	
 };
 
 void ui::Viewport::render() {
   
-    mCamera->UpdateCameraMatrix(mShader[0]);
-    glm::mat4 m_model = glm::mat4(1.0f);
+	mMesh["cube1"]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Set per-object uniforms and draw
-    for (auto& pair : mMesh) {
-        // Set position and model matrix
-        m_model = glm::translate(m_model, pair.second->getPosition());
+	for (auto& obj : mMesh) {
+		glm::mat4 m_model = glm::mat4(1.0f);
+		m_model = glm::translate(m_model, obj.second->getPosition());
+		m_model = glm::rotate(m_model, glm::radians(0.0f), glm::normalize(obj.second->getRotation()));
+		m_model = glm::scale(m_model, obj.second->getScale());
 
-        // Send model matrix and object color to the shader
-        mShader[0].SetUniformMat4f("model", m_model);
-		mShader[0].SetUniform3fv("color", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        // Draw the mesh
-        pair.second->draw();
-    }
+		mShader[0].SetUniformMat4f("model", m_model);
+		mShader[0].SetUniform3fv("color", obj.second->getColor());
+		obj.second->draw();
+	};
+	mCamera->UpdateCameraMatrix(mShader[0]);
 
     // Render Grid
     mGrid->render(mShader[1]);
@@ -61,14 +61,14 @@ void ui::Viewport::render() {
 	
 }
 
-
-
-
-
 void ui::Viewport::destroy()
 {
 	mGrid->destroy();
 
+	for (auto& obj : mMesh) {
+		delete obj.second;
+	};
+	mMesh.clear();
 };
 
 void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool constraint) {
@@ -81,15 +81,7 @@ void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool cons
 
 void ui::Viewport::on_zoom(float offset, float senst){
 
-	//Distance based senstivity
-	float distance = mCamera->GetDistance();
-	float dMIn = 0.0f;
-	float dMax = 10.0f;
-
-	float distanceFac = glm::smoothstep(dMIn, dMax, distance);
-	//float zoomFac = glm::lerp(1.0f, 0.2f, distanceFac);
-
-	mCamera->UpdateZoom(static_cast<float>(-offset) * senst);
+	mCamera->UpdateZoom(static_cast<float>(offset) * senst, mShader[0]);
 };
 
 

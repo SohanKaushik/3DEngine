@@ -3,12 +3,13 @@
 // Std includes
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <memory>
 #include <assert.h>
+#include <algorithm>
+
 
 #include <unordered_map>
 

@@ -52,7 +52,7 @@ void ui::Grid::Init()
     mVertexIndexBuffer->create(vertices, indices);
 };
 
-void ui::Grid::render(Shader& shader) {
+void ui::Grid::render(Shader& shader, glm::vec3 camPosition) {
     if (!mVertexIndexBuffer) {
         std::cerr << "Error: VertexIndexBuffer not initialized.\n";
         return;
@@ -60,7 +60,8 @@ void ui::Grid::render(Shader& shader) {
 
     shader.use();
     shader.SetUniformMat4f("model", glm::mat4(1.0f));
-    shader.SetUniform3fv("uGridColor", m_color);     
+    shader.SetUniform3fv("u_cameraPosition", camPosition);
+    //shader.SetUniform3fv("uGridColor", m_color);     
 
     mVertexIndexBuffer->bind();
     mVertexIndexBuffer->draw(GL_LINES);

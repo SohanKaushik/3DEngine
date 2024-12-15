@@ -43,7 +43,17 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     }
     
     glEnable(GL_DEPTH_TEST);
-   
+
+    glfwSwapInterval(0);
+    glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
+    glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
+
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Full Screen
+    set_fullscreen(false);
+
     // Initialize window size
     m_windowWidth = width;
     m_windowHeight = height;
@@ -74,6 +84,18 @@ GLFWwindow* WindowManager::GetWindow()
     return m_window;
 }
 
+void WindowManager::set_fullscreen(bool isFullSrn)
+{
+
+    if (isFullSrn) {
+
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        // Get the video mode of the monitor
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwSetWindowMonitor(this->m_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    }  
+};
+
 int WindowManager::GetWindowWidth()
 {
     return m_windowWidth;
@@ -97,7 +119,7 @@ void WindowManager::UpdateWindowSize()
 
 void WindowManager::pre_render()
 {
-   // glViewport(0, 0, m_windowWidth, m_windowWidth);
+    glViewport(0, 0, m_windowWidth, m_windowWidth);
 
     // Set the background color
     glClearColor(0.247, 0.247, 0.247, 1.0);

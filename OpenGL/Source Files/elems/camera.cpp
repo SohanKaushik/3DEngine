@@ -15,7 +15,7 @@ elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, 
 
 glm::mat4 elems::Camera::GetProjectionMatrix() {
 
-	return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
+	return glm::perspective(glm::radians(m_fov), this->GetAspectRatio(), m_near, m_far);
 };
 
 
@@ -25,12 +25,13 @@ glm::mat4  elems::Camera::GetViewMatrix() const {
 };
 
 
-void elems::Camera::set_aspect(GLFWwindow* window) {
-	int width, height;
+void elems::Camera::set_aspect(float size) {
+	m_aspectRatio = size;
+	/*int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
 	if (height == 0) height = 1;
-	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);*/
 }
 
 float  elems::Camera::GetAspectRatio() {

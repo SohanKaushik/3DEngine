@@ -15,11 +15,12 @@ namespace ui {
 
 		void Init();
 
-		void render(Shader& shader);
+		void render(Shader& shader, glm::vec3 camPosition);
 		
 		void destroy();
 
 	private:
+		std::vector<float> vertices;
 
 		unsigned int m_size;
 		float m_spacing;

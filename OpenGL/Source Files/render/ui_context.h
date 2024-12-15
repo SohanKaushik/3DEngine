@@ -11,5 +11,11 @@ namespace render {
 		void render();
 		void post_render();
 		void end();
+
+	private:
+		void render_toolbar();
+		void render_inspector();
+		void render_hierarchy();
+		void render_assets_hierarchy();
 	};
 }

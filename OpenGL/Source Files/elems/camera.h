@@ -45,7 +45,7 @@ namespace elems {
 		glm::mat4 GetViewMatrix() const;
 		glm::vec3 GetCameraFront() const;
 		glm::vec3 GetCameraRight() const;
-		void set_aspect(GLFWwindow* window);
+		
 		float GetAspectRatio();
 
 
@@ -58,6 +58,8 @@ namespace elems {
 		//void on_mouse_scroll();
 
 	public:
+		void set_aspect(float size);
+
 		void UpdateCameraVectors();      // for camera fly cam
 
 		void UpdateOrbit();

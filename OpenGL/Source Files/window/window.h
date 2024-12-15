@@ -44,4 +44,7 @@ public:
 private:
     double lastX, lastY;
     bool firstMouse;
+
+private:
+    void set_fullscreen(bool isFullSrn);
 };

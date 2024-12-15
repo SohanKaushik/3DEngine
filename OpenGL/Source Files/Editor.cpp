@@ -2,11 +2,10 @@
 
 #include "Editor.h"
 #include "window/window.h"
-#include "ui/viewport.h"
 
 Editor::Editor(const std::string& app_name)
 {
-    mWindow->Init(1024, 1000, app_name);
+    mWindow->Init(3820, 2160, app_name);
 };
 
 

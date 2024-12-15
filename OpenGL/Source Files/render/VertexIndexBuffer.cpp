@@ -41,32 +41,30 @@ void render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, c
 
     m_indices = indices.size();
 };
+
+
 void render::VertexIndexBuffer::create(const std::vector<float>& vertices)
 {
-    // Create and bind VAO
+    // Bind vertex array for grid
     glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
-
-    // Create and bind VBO
     glGenBuffers(1, &m_vertexBuffer);
+
+    glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    // Position
+    // Enable vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);       // Position attribute
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-    // Color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Color attribute
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
-    // Unbind buffers after use
-    glBindVertexArray(0);
+    // Now bind VAO and draw the grid lines using GL_LINES
+    glBindVertexArray(m_vao);
+    glDrawArrays(GL_LINES, 0, vertices.size() / 6);  // Each vertex has 6 floats (3 for position, 3 for color)
+    glBindVertexArray(0);  // Unbind VAO
 
-    //m_vertexCount = vertices.size() / 6;  // Each vertex consists of 3 position and 3 color values
-}
-
-
+};
 
 
 // Delete the vertex and index buffers
@@ -90,12 +88,14 @@ void  VertexIndexBuffer::destroy()
 void VertexIndexBuffer::bind()
 {
     glBindVertexArray(m_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 };
 
 // Unbind the vertex and index buffers
 void VertexIndexBuffer::unbind()
 {
     glBindVertexArray(0);
+    glDeleteBuffers(1, &m_vertexBuffer);
 };
 
 // Draw the object using the index buffer

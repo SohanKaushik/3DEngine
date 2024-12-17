@@ -31,6 +31,7 @@ namespace render {
 		unsigned int m_elementBuffer = 0;
 
 	private:
+		
 		 int m_indices = 0;
 	};
 

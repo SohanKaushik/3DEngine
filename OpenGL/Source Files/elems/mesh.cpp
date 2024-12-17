@@ -1,13 +1,22 @@
 #include "pch.h"
 #include "mesh.h"
 
-elems::Mesh::Mesh(Transform transform) : transform()
+elems::Mesh::Mesh(PrimitiveType type)
 {
-	this->setPosition(transform.position);
-	this->setRotation(transform.rotation);
-	this->setScale(transform.scale);
+    switch (type) {
+    case PrimitiveType::Cube:
+        mPrimitives->cube();
+        break;
+    case PrimitiveType::Plane:
+        std::cerr << "PrimitiveType::Plane is not yet implemented.\n";
+        return;
+    case PrimitiveType::Sphere:
+        std::cerr << "PrimitiveType::Sphere is not yet implemented.\n";
+        return;
+    default:
+        throw std::runtime_error("Unsupported PrimitiveType!");
+    }
 
-	mPrimitives->cube();
 	mBuffer->create(mPrimitives->getVertices(), mPrimitives->getIndices());
 };
 

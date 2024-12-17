@@ -4,7 +4,7 @@
 //elems::Primitive::Primitive()
 //{
 //    cube();
-//   // m_buffer->create(m_vertices, m_indices);
+//   //m_buffer->create(m_vertices, m_indices);
 //};
 
 void elems::Primitive::render()
@@ -16,7 +16,8 @@ void elems::Primitive::render()
 
 void elems::Primitive::cube()
 {
-     m_vertices = {
+   // m_buffer->create(vertices, indices);
+    m_vertices = {
     // Front face
     {-1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},
     { 1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},

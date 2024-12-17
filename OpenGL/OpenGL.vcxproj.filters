@@ -102,6 +102,12 @@
     <ClCompile Include="Source Files\render\framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\ui\scene_hierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\elems\entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1041,6 +1047,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\render\framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\ui\scene_hierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\elems\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

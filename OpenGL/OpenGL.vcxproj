@@ -167,6 +167,7 @@
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source Files\Editor.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
+    <ClCompile Include="Source Files\elems\entity.cpp" />
     <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Source Files\render\ui_context.cpp" />
     <ClCompile Include="Source Files\render\VertexIndexBuffer.cpp" />
     <ClCompile Include="Source Files\ui\grid.cpp" />
+    <ClCompile Include="Source Files\ui\scene_hierarchy.cpp" />
     <ClCompile Include="Source Files\ui\viewport.cpp" />
     <ClCompile Include="Source Files\window\window.cpp" />
     <ClCompile Include="Source Files\elems\inputs.cpp" />
@@ -492,6 +494,7 @@
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
     <ClInclude Include="Source Files\Editor.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
+    <ClInclude Include="Source Files\elems\entity.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />
     <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
@@ -502,6 +505,7 @@
     <ClInclude Include="Source Files\render\VertexIndexBuffer.h" />
     <ClInclude Include="Source Files\shader\shader.h" />
     <ClInclude Include="Source Files\ui\grid.h" />
+    <ClInclude Include="Source Files\ui\scene_hierarchy.h" />
     <ClInclude Include="Source Files\window\window.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Source Files\ui\viewport.h" />

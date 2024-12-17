@@ -21,12 +21,12 @@ void ui::Viewport::Init()
 	mGrid->Init();
 
 	// Primitvies : { position, rotation, scale }
-	mMesh["cube1"] = std::make_unique<elems::Mesh>(
-		Transform{ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });  
+	/*mMesh["cube1"] = std::make_unique<elems::Mesh>(
+		Transform{ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });  */
 
-	mMesh["cube2"] = std::make_unique<elems::Mesh>(
-		Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f) });
-	
+	/*mMesh["cube2"] = std::make_unique<elems::Mesh>(
+		Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f) });*/
+	AddEntities();
 	//Lights
 };
 
@@ -35,20 +35,27 @@ void ui::Viewport::render() {
 	//Frame Buffer
 	mFramebuffer->bind();
 
-	mMesh["cube1"]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+	
+	RenderEntities();
+	/*mMeshh = std::make_unique<MeshEntity>(
+		Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f) }, glm::vec3(1.0, 1.0f, 1.0f) );
 
-	// Set per-object uniforms and draw
-	for (auto& obj : mMesh) {
-		glm::mat4 m_model = glm::mat4(1.0f);
-		m_model = glm::translate(m_model, obj.second->getPosition());
-		m_model = glm::rotate(m_model, glm::radians(0.0f), glm::normalize(obj.second->getRotation()));
-		m_model = glm::scale(m_model, obj.second->getScale());
+	cube1->init();
+	AddEntities(std::move(cube1));*/
+	//mMesh["cube1"]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
-		mShader[0].SetUniformMat4f("model", m_model);
-		mShader[0].SetUniform3fv("color", obj.second->getColor());
-		obj.second->draw();
-	};
-	mCamera->UpdateCameraMatrix(mShader[0]);
+	//// Set per-object uniforms and draw
+	//for (auto& obj : mMesh) {
+	//	glm::mat4 m_model = glm::mat4(1.0f);
+	//	m_model = glm::translate(m_model, obj.second->getPosition());
+	//	m_model = glm::rotate(m_model, glm::radians(0.0f), glm::normalize(obj.second->getRotation()));
+	//	m_model = glm::scale(m_model, obj.second->getScale());
+
+	//	mShader[0].SetUniformMat4f("model", m_model);
+	//	mShader[0].SetUniform3fv("color", obj.second->getColor());
+	//	obj.second->draw();
+	//};
+	//mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// Render Grid
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
@@ -76,7 +83,8 @@ void ui::Viewport::render() {
 void ui::Viewport::destroy()
 {
 	mGrid->destroy();
-	mMesh.clear();
+	//mMesh.clear();
+	mEntity.clear();
 };
 
 void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool constraint) {
@@ -140,6 +148,45 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::End();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor(3);
+}
+
+
+void ui::Viewport::AddEntities()
+{
+	auto cube = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 0.0f, 0.0f));
+	auto cube2 = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	mEntity.push_back(std::move(cube));
+	mEntity.push_back(std::move(cube2));
+
+	for (int i = 0; i < 10; ++i) {
+		MeshEntity* cubex = new MeshEntity(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) }, glm::vec3(1.0f, 1.0f, 1.0f));
+		cubex->m_transform.position = glm::vec3(i * -2.0f, 0.0f, 0.0f); // Position each cube 2 units apart
+		mEntity.push_back(std::unique_ptr<MeshEntity>(cubex));
+	}
+}
+
+void ui::Viewport::RenderEntities()
+{
+	mShader[0].use();
+	mCamera->UpdateCameraMatrix(mShader[0]);
+
+	// Render each entity in the scene
+	for (auto& entities : mEntity) {
+		entities->render(mShader[0]);
+	}
+
 };
 
 
+//void ui::Viewport::AddNewEntity()
+//{
+//	// Dynamically create and add new entities based on some event
+//	auto newEntity = std::make_unique<MeshEntity>(
+//		PrimitiveType::Cube,
+//		Transform{ glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f) },
+//		glm::vec3(0.0f, 1.0f, 0.0f) // Green color
+//	);
+//
+//	mEntity.push_back(std::move(newEntity));
+//}

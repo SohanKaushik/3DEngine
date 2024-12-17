@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "elems/mesh.h"
 
 namespace render {
 
@@ -17,5 +18,15 @@ namespace render {
 		void render_inspector();
 		void render_hierarchy();
 		void render_assets_hierarchy();
+
+	private:
+
+		void ShowFileMenu();
+		void ShowSimpleFileMenu();
+		void ShowEditMenu();
+		void ShowAddMenu();
+
+	private:
+		std::unique_ptr<elems::Mesh> mMesh;
 	};
 }

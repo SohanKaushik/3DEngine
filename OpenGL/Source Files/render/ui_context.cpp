@@ -50,7 +50,6 @@ void render::UIXContext::pre_render() {
     ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
 
 
-    render_toolbar();
   
     // Create dock space for docking windows
     ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
@@ -65,10 +64,12 @@ void render::UIXContext::pre_render() {
 
 
 void render::UIXContext::render() {
-
-    render_inspector();
-    render_hierarchy();
-    render_assets_hierarchy();
+ 
+    render_toolbar();
+    ImGui::ShowDemoWindow();
+   // render_inspector();
+    //render_hierarchy();
+   // render_assets_hierarchy();
 };
 
 void render::UIXContext::post_render() {
@@ -94,18 +95,114 @@ void render::UIXContext::end()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
+
 void render::UIXContext::render_toolbar()
 {
-    ImGui::Button("File");
-    ImGui::SameLine();
-    ImGui::Button("Edit");
-    ImGui::SameLine();
-    ImGui::Button("Add");
-    ImGui::SameLine();
-    ImGui::Button("Window");
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    style.ItemSpacing = ImVec2(15.0f, 5.0f); // Adjust the space between menu items
+    style.FramePadding = ImVec2(5.0f, 5.0f); // Adjust the padding inside menu items
+    //style.WindowPadding = ImVec2(5.0f, 5.0f); // Adjust the padding inside the menu bar
+    
+
+    if (ImGui::BeginMainMenuBar()) {
 
 
+        ShowFileMenu();
+
+        // **Edit Menu**
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Undo")) {
+                // Action for Undo
+            }
+            if (ImGui::MenuItem("Redo")) {
+                // Action for Redo
+            }
+            if (ImGui::MenuItem("Preferences")) {
+                // Action for Preferences
+            }
+            ImGui::EndMenu();
+        }
+
+        // **View Menu**
+        if (ImGui::BeginMenu("View")) {
+            if (ImGui::MenuItem("Show Grid")) {
+                // Action for Show Grid
+            }
+            if (ImGui::MenuItem("Hide Grid")) {
+                // Action for Hide Grid
+            }
+            ImGui::EndMenu();
+        }
+
+        // **Window Menu**
+        if (ImGui::BeginMenu("Add")) {
+            if (ImGui::MenuItem("Mesh")) {
+                std::cout << "add mesh" << std::endl;
+               /* mMesh = std::make_unique<elems::Mesh>(
+                    elems::Transform{ glm::vec3(5.0f, 5.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });
+                mMesh->draw();*/
+            }
+
+            if (ImGui::MenuItem("Close Window")) {
+                // Action for Close Window
+            }
+            ImGui::EndMenu();
+        }
+
+        // **Help Menu**
+        if (ImGui::BeginMenu("Help")) {
+            if (ImGui::MenuItem("Documentation")) {
+                // Action for Documentation
+            }
+            if (ImGui::MenuItem("About")) {
+                // Action for About
+            }
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
 }
+
+
+
+void render::UIXContext::ShowFileMenu()
+{
+    // Set the size and constraints for the popup window
+    //ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f));  // Increase size of the popup
+    ImGui::SetNextWindowSizeConstraints(ImVec2(200.0f, 250.0f), ImVec2(200, 200.0f)); // Constraints for resizing
+
+    // Apply padding and rounding to the popup window
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 20.0f));  // Set padding inside the window
+    ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, 5.0f);  // Apply rounding to the window corners
+
+    // **File Menu**
+    if (ImGui::BeginMenu("File")) {
+        // Menu items
+        if (ImGui::MenuItem("New File")) {
+            // Action for New File
+        }
+        if (ImGui::MenuItem("Open File")) {
+            // Action for Open File
+        }
+        if (ImGui::MenuItem("Save File")) {
+            // Action for Save File
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Exit")) {
+            // Action for Exit
+        }
+
+        ImGui::EndMenu();
+    }
+
+    // Pop the style variables
+    ImGui::PopStyleVar(2);
+}
+
+
 void render::UIXContext::render_inspector()
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.5f, 0.5f));          // Override for one window
@@ -156,4 +253,3 @@ void render::UIXContext::render_assets_hierarchy()
     // End the window
     ImGui::End();
 }
-

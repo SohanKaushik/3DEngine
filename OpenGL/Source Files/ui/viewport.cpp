@@ -20,13 +20,10 @@ void ui::Viewport::Init()
 	// Grid Axes
 	mGrid->Init();
 
-	// Primitvies : { position, rotation, scale }
-	/*mMesh["cube1"] = std::make_unique<elems::Mesh>(
-		Transform{ glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });  */
+	// Entities
+	//this->AddEntity(mesh);
+	//this->AddEntity(light);
 
-	/*mMesh["cube2"] = std::make_unique<elems::Mesh>(
-		Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f) });*/
-	AddEntities();
 	//Lights
 };
 
@@ -150,43 +147,87 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::PopStyleColor(3);
 }
 
-
 void ui::Viewport::AddEntities()
 {
-	auto cube = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 0.0f, 0.0f));
-	auto cube2 = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 0.0f, 0.0f));
+	//auto cube = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 0.0f, 0.0f));
+	////auto cube2 = std::make_unique<MeshEntity>(PrimitiveType::Cube, Transform{ glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)}, glm::vec3(1.0f, 1.0f, 1.0f));
 
-	mEntity.push_back(std::move(cube));
-	mEntity.push_back(std::move(cube2));
+	//mEntity.push_back(std::move(cube));
 
-	for (int i = 0; i < 10; ++i) {
-		MeshEntity* cubex = new MeshEntity(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) }, glm::vec3(1.0f, 1.0f, 1.0f));
-		cubex->m_transform.position = glm::vec3(i * -2.0f, 0.0f, 0.0f); // Position each cube 2 units apart
-		mEntity.push_back(std::unique_ptr<MeshEntity>(cubex));
+	//mEntity.push_back(std::move(cube2));
+
+	//for (int i = 0; i < 1; ++i) {
+	//	MeshEntity* cubex = new MeshEntity(PrimitiveType::Cube, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) }, glm::vec3(1.0f, 1.0f, 1.0f));
+	//	cubex->m_transform.position = glm::vec3(i * -3.0f, 0.0f, 0.0f); // Position each cube 2 units apart
+	//	mEntity.push_back(std::unique_ptr<MeshEntity>(cubex));
+	//}
+}
+
+//void ui::Viewport::RenderEntities()
+//{ 
+//	mShader[0].use();
+//	mCamera->UpdateCameraMatrix(mShader[0]);
+//
+//	//if (mEntity.empty())
+//	//{
+//	//	//std::cerr << "No Entity is here!!" << std::endl;
+//	//	return;
+//	//}
+//	//std::cout << "Entity Size: " << mEntity.size() << std::endl;
+//
+//	for (auto& entities : mEntity) {
+//		if (entities) {
+//			entities->render(mShader[0]);  // Ensure this method is called for every entity
+//		}
+//		else {
+//			std::cerr << "Null entity detected in mEntity!" << std::endl;
+//		}
+//	}
+//
+//};
+
+
+
+static float xOffset = 0.0f;
+void ui::Viewport::AddEntity(elems::EntityType type) {
+
+	switch (type) {
+	case elems::mesh: {
+		auto cube = std::make_shared<MeshEntity>(
+			PrimitiveType::Cube,
+			Transform{ glm::vec3(xOffset, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
+			glm::vec3(1.0f, 0.0f, 0.0f)
+		);
+		//size++;
+		//std::cout << "Size: " << size << std::endl;
+		xOffset += 3.0f;
+		mEntity.push_back(cube);
+		std::cout << "Added entity to mEntity. Size: " << mEntity.size() << std::endl;
+		break;
+	}
+	case elems::light:
+		std::cerr << "Light is not yet available" << std::endl;
+		break;
+	default:
+		break;
 	}
 }
 
-void ui::Viewport::RenderEntities()
-{
-	mShader[0].use();
-	mCamera->UpdateCameraMatrix(mShader[0]);
 
-	// Render each entity in the scene
-	for (auto& entities : mEntity) {
-		entities->render(mShader[0]);
+void ui::Viewport::RenderEntities() {
+
+	for (const auto& entity : mEntity) {
+		if (entity) {
+			entity->render(mShader[0]);
+		}
+		else std::cerr << "Null entity encountered in mEntity!" << std::endl;
 	}
 
-};
+	//for (size_t i = 0; i < mEntity.size(); ++i) // loop condition
+	//	mEntity[i]->render(mShader[0]);
+	//}
+
+}
 
 
-//void ui::Viewport::AddNewEntity()
-//{
-//	// Dynamically create and add new entities based on some event
-//	auto newEntity = std::make_unique<MeshEntity>(
-//		PrimitiveType::Cube,
-//		Transform{ glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f) },
-//		glm::vec3(0.0f, 1.0f, 0.0f) // Green color
-//	);
-//
-//	mEntity.push_back(std::move(newEntity));
-//}
+

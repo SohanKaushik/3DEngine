@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "render/ui_context.h"
 
-void render::UIXContext::init(GLFWwindow* window) {
+void render::UIXContext::init(GLFWwindow* window, ui::Viewport* vp) {
 
     // ImGUI
     ImGui::CreateContext();
@@ -18,6 +18,10 @@ void render::UIXContext::init(GLFWwindow* window) {
 
     // Set up ImGui style
     ImGui::StyleColorsDark();
+
+    vp->AddEntity(elems::mesh);
+    vp->AddEntity(elems::mesh);
+    mViewport = vp;
 };
 
 
@@ -138,10 +142,17 @@ void render::UIXContext::render_toolbar()
         // **Window Menu**
         if (ImGui::BeginMenu("Add")) {
             if (ImGui::MenuItem("Mesh")) {
-                std::cout << "add mesh" << std::endl;
-               /* mMesh = std::make_unique<elems::Mesh>(
-                    elems::Transform{ glm::vec3(5.0f, 5.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 0.0f),  glm::vec3(1.0f) });
-                mMesh->draw();*/
+               // std::cout << "Adding mesh entity..." << std::endl;
+                //mViewport.AddEntity(elems::EntityType::mesh);
+                //std::cout << "Viewport Address: " << &ui::Viewport::getInstance() << std::endl;
+                mViewport->AddEntity(elems::EntityType::mesh); 
+                //mViewport.AddEntity(elems::EntityType::mesh);
+               /* if (mViewport.getInstance) {
+                  
+                }
+                else {
+                    std::cerr << "Error: Viewport is not initialized!" << std::endl;
+                }*/
             }
 
             if (ImGui::MenuItem("Close Window")) {

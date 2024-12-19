@@ -16,6 +16,13 @@ namespace ui {
 
 	public:
 
+		/*static Viewport& getInstance() {
+			static Viewport instance;
+			return instance;
+		};
+
+		Viewport() {}*/
+
 		void Init();
 		void render();
 
@@ -26,24 +33,27 @@ namespace ui {
 
 		void RenderSceneUI();
 
+
 		void AddEntities();
 		void RenderEntities();
 
+		void AddEntity(elems::EntityType type);
+		void GetViewport();
 
 	private:
 		double lastX = 400.0, lastY = 300.0; // Default mouse position
 		glm::vec2 m_size;
 
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
-		//std::unordered_map<std::string, std::unique_ptr<elems::Mesh>> mMesh;
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<elems::Camera> mCamera;
 		std::unique_ptr<render::Framebuffer> mFramebuffer = std::make_unique<render::Framebuffer>();
 
-		std::vector<std::unique_ptr<elems::Entity>> mEntity;
-		//std::unique_ptr<MeshEntity> mMeshEntry;
-
+		std::vector<std::shared_ptr<elems::Entity>> mEntity;
 		//std::unique_ptr<elems::DirectionalLight> mLight;
+
+		/*Viewport(const Viewport&) = delete;
+		Viewport& operator=(const Viewport&) = delete;*/
 	};
 }

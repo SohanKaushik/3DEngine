@@ -7,13 +7,18 @@
 
 namespace elems {
 
+    enum EntityType {
+        mesh,
+        light,
+    };
+
     struct Transform {
         glm::vec3 position;
         glm::vec3 rotation;
         glm::vec3 scale;
     };
 
-    
+     
     // Base class for entities
     class Entity {
     public:
@@ -40,7 +45,7 @@ namespace elems {
            
             mMesh = std::make_unique<elems::Mesh>(type);
         };
-
+      
         void init() override {
 
         };

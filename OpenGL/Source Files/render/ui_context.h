@@ -1,13 +1,15 @@
 #pragma once
 #include "pch.h"
 #include "elems/mesh.h"
+#include <ui/viewport.h>
 
 namespace render {
 
 	class UIXContext {
 
 	public:
-		void init(GLFWwindow* window);
+		
+		void init(GLFWwindow* window, ui::Viewport* viewport);
 		void pre_render();
 		void render();
 		void post_render();
@@ -22,11 +24,12 @@ namespace render {
 	private:
 
 		void ShowFileMenu();
-		void ShowSimpleFileMenu();
 		void ShowEditMenu();
 		void ShowAddMenu();
 
 	private:
-		std::unique_ptr<elems::Mesh> mMesh;
+		//ui::Viewport& mViewport;
+		//ui::Viewport& mViewport = ui::Viewport::getInstance();
+		ui::Viewport* mViewport = nullptr;
 	};
 }

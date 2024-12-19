@@ -69,7 +69,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     input.Initialize(this->m_window);
 
     // UI context
-    mUIx->init(this->m_window);
+    mUIx->init(this->m_window, mViewport.get());
 
     return true;
 }

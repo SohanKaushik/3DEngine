@@ -44,39 +44,48 @@ void ui::Viewport::Init()
 	mGrid->Init();
 
 	// Entities
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	//this->AddEntity(mesh, PrimitiveType::Plane);
+	this->AddEntity(mesh, PrimitiveType::Plane); 
+	this->AddEntity(mesh, PrimitiveType::Cube); 
+	this->AddEntity(mesh, PrimitiveType::Cube); 
+
 	//this->AddEntity(light);
 
 
 	//dump
 	//renderQuad();
+
+	// Enables the Depth Buffer 
+	glEnable(GL_DEPTH_TEST); 
+	 
+	// Enables Multisampling 
+	glEnable(GL_MULTISAMPLE); 
+
+	// Enables Cull Facing
+	glEnable(GL_CULL_FACE); 
+	
+	// Uses counter clock-wise standard
+	glFrontFace(GL_CCW);
+	  
 };
 
 void ui::Viewport::render() {
 
-	glEnable(GL_DEPTH_TEST);
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 50.0f);  // Near and far planes adjusted
-	glm::vec3 lightPos = glm::vec3(10.0f, 10.0f, 10.0f); // Light position
+	
+	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+	glm::vec3 lightPos = glm::vec3(10.0f, 10.0f, 0.0f); // Light position
 	glm::vec3 lightTarget = glm::vec3(0.0f);            // Target of the light
 	glm::vec3 lightUp = glm::vec3(0.0f, 1.0f, 0.0f);    // Up direction
 	glm::mat4 lightView = glm::lookAt(lightPos, lightTarget, lightUp);
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	glm::mat4 lightSpaceMatrix = orthgonalProjection * lightView;
 
-	////std::cout << glm::to_string(lightSpaceMatrix) << std::endl;
 
 	mShader[2].use();
 	mShader[2].SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 
 	// Pre-Shadow pass
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 	mShadowFrameBuffer->bind();   
-	glClear(GL_DEPTH_BUFFER_BIT);  
-	RenderEntities();   
+	RenderEntities(mShader[2]);
 	mShadowFrameBuffer->unbind();    
 
 
@@ -84,17 +93,19 @@ void ui::Viewport::render() {
 	mFramebuffer->bind();
 
 
-	mShader[3].use();
-	mCamera->UpdateCameraMatrix(mShader[3]);
+	mShader[0].use();
+	mCamera->UpdateCameraMatrix(mShader[0]);
+	mShader[0].SetUniformMat4f("DirLightSpaceMatrix", lightSpaceMatrix);
 
+
+	// Bind the shadow map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mShadowFrameBuffer->get_dtexture());  
-	
+	mShader[0].SetUniform1i("shadowMap", 0);
 
+	//renderQuad();
+	RenderEntities(mShader[0]);
 
-	mShader[3].SetUniform1f("shadowMap", 0);
-	renderQuad();
-	
 
 
 	// Render Grid
@@ -104,11 +115,13 @@ void ui::Viewport::render() {
 	// Lights 
 	//mLight.push_back(std::make_unique<DirectionalLight>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f)));
 	mShader[0].use();
+	glm::vec3 lightDirection = glm::normalize(glm::vec3(0.0f, -1.0f, 0.0f));
+
 	DirectionalLight dirLight(
 		glm::vec3(0.2),              // ambient 
 		glm::vec3(1.0f),             // diffuse 
 		glm::vec3(0),                // specular
-		glm::vec3(-1.0, -3.0, 0.0)   // direction
+		lightDirection   // direction
 	);
 
 	dirLight.SetLightUniform(mShader[0], "dirLight");
@@ -177,7 +190,7 @@ void ui::Viewport::RenderSceneUI() {
 	// Resize Image Texture too .......(needs to be done)
 
 	mCamera->set_aspect(m_size.x / m_size.y);
-	//mCamera->UpdateCameraMatrix(mShader[0]);
+	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// add rendered texture to ImGUI scene window
 	unsigned int textureID = mFramebuffer->get_texture();
@@ -195,7 +208,7 @@ void ui::Viewport::AddEntity(elems::EntityType type, PrimitiveType meshtype) {
 		case elems::mesh: {
 			auto cube = std::make_shared<MeshEntity>(
 				meshtype,
-				Transform{ glm::vec3(xOffset, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
+				Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
 				glm::vec3(1.0f, 0.0f, 0.0f)
 			);
 			xOffset += 3.0f;
@@ -243,18 +256,21 @@ void ui::Viewport::renderQuad() {
 	glBindVertexArray(0);   // Unbind the VAO
 };
 
-void ui::Viewport::RenderEntities() {
+void ui::Viewport::RenderEntities(Shader& shader) {
 
 	for (const auto& entity : mEntity) {
 		if (entity) {
-			entity->render(mShader[2]);
-			mEntity[1]->setPosition(glm::vec3(0.0, 2.0f, 0.0f));
-			mEntity[1]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
-			mEntity[1]->setScale(glm::vec3(2.0f));
-			mEntity[0]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-			mEntity[0]->setPosition(glm::vec3(0.0, 3.0f, 0.1f));
+			entity->render(shader);
+			mEntity[0]->setPosition(glm::vec3(0.0, 0.0f, -1.0f));
+			mEntity[0]->setScale(glm::vec3(5.0f, 5.0f, 1.0f));               //z = y , y = z only for planes might be cuz of clockwise vertices
+			mEntity[0]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 
-			//mEntity[1]->setScale(glm::vec3(8.0f, 0.001, 8.0f));
+			mEntity[1]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+			mEntity[1]->setPosition(glm::vec3(0.0, 3.0f, 0.1f));
+
+			mEntity[2]->setPosition(glm::vec3(0.0, 1.0f, 0.1f));
+			mEntity[2]->setScale(glm::vec3(5.0f, 0.1f, 5.0f));            
+
 		}
 		else std::cerr << "Null entity encountered in mEntity!" << std::endl;
 	}

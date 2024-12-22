@@ -33,14 +33,14 @@ struct PointLight {
 uniform DirectionalLight dirLight;
 uniform SpotLight spotLight;
 uniform PointLight pointLight;
-uniform vec3 viewPos;  // View position
+uniform vec3 viewPos; 
 
 uniform sampler2D shadowMap;  // Shadow map texture
 
 // Inputs from vertex shader
-in vec3 FragPos;  // Fragment position in world space
-in vec3 Normal;   // Normal vector in world space
-in vec4 FragPosDirLightSpace; // Fragment position in light space for shadow calculation
+in vec3 FragPos;                           // Fragment position in world space
+in vec3 Normal;                 
+in vec4 FragPosDirLightSpace;              // Fragment position in light space for shadow calculation
 
 
 
@@ -162,10 +162,6 @@ vec3 PointLightCalc() {
     return ambient + (diffuseColor) * inten * 10;
 }
 
-float far = 100.0f;
-float linearizeDepth(float depth){
-        return (2.0f* 0.1 * far) / (far + 0.1 - (depth * 2.0f -1.0f) * (far - 0.1f));
-}
 
 void main()
 {
@@ -173,11 +169,6 @@ void main()
     vec3 color2 = DirectLightCalc();
 
  
-    float depth = texture(shadowMap, gl_FragCoord.xy).r;
-    // FragColor = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.0f);
-
-    // Final output color with the calculated lighting
     FragColor = vec4(color2 * aColor, 1.0);
-    //FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
 
 }

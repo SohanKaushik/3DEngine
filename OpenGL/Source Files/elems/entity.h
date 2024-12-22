@@ -94,7 +94,7 @@ namespace elems {
 
             // Pass the model matrix and color to the shader
             shader.SetUniformMat4f("model", m_model);
-            //shader.SetUniform3fv("color", mColor);
+            shader.SetUniform3fv("color", mColor);
 
             // Draw the mesh
             mMesh->draw();

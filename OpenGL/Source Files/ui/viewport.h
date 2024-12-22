@@ -36,12 +36,10 @@ namespace ui {
 		void RenderSceneUI();
 
 
-		void AddEntities();
-		void RenderEntities();
+		void RenderEntities(Shader& shader);
 
 		void AddEntity(elems::EntityType type, elems::PrimitiveType meshtype);
 		void renderQuad();
-		void GetViewport();
 
 	private:
 		double lastX = 400.0, lastY = 300.0; // Default mouse position
@@ -56,9 +54,6 @@ namespace ui {
 		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
 
 		std::vector<std::shared_ptr<elems::Entity>> mEntity;
-		//std::unique_ptr<elems::DirectionalLight> mLight;
-
-		/*Viewport(const Viewport&) = delete;
-		Viewport& operator=(const Viewport&) = delete;*/
+		
 	};
 }

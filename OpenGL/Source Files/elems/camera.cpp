@@ -87,7 +87,6 @@ void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 	glm::mat4 view = this->GetViewMatrix();
 	glm::mat4 projection = this->GetProjectionMatrix();
 
-
 	// Set matrices in the shader
 	shader.use();
 	shader.SetUniformMat4f("view", view);

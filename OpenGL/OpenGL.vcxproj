@@ -178,6 +178,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Source Files\render\framebuffer.cpp" />
+    <ClCompile Include="Source Files\render\ShadowMap.cpp" />
     <ClCompile Include="Source Files\render\ui_context.cpp" />
     <ClCompile Include="Source Files\render\VertexIndexBuffer.cpp" />
     <ClCompile Include="Source Files\ui\grid.cpp" />
@@ -501,6 +502,7 @@
     <ClInclude Include="Source Files\elems\Primitive.h" />
     <ClInclude Include="Source Files\pch.h" />
     <ClInclude Include="Source Files\render\framebuffer.h" />
+    <ClInclude Include="Source Files\render\ShadowMap.h" />
     <ClInclude Include="Source Files\render\ui_context.h" />
     <ClInclude Include="Source Files\render\VertexIndexBuffer.h" />
     <ClInclude Include="Source Files\shader\shader.h" />

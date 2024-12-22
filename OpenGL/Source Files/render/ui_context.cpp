@@ -19,8 +19,6 @@ void render::UIXContext::init(GLFWwindow* window, ui::Viewport* vp) {
     // Set up ImGui style
     ImGui::StyleColorsDark();
 
-    vp->AddEntity(elems::mesh);
-    vp->AddEntity(elems::mesh);
     mViewport = vp;
 };
 
@@ -145,7 +143,8 @@ void render::UIXContext::render_toolbar()
                // std::cout << "Adding mesh entity..." << std::endl;
                 //mViewport.AddEntity(elems::EntityType::mesh);
                 //std::cout << "Viewport Address: " << &ui::Viewport::getInstance() << std::endl;
-                mViewport->AddEntity(elems::EntityType::mesh); 
+                mViewport->AddEntity(elems::EntityType::mesh, elems::PrimitiveType::Plane); 
+
                 //mViewport.AddEntity(elems::EntityType::mesh);
                /* if (mViewport.getInstance) {
                   

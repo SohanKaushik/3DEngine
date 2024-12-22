@@ -19,6 +19,7 @@ namespace elems {
 
 		//Primitive();
 		void render();
+		void plane();
 		void cube();
 
 		const std::vector<glm::vec3>& getVertices() const;

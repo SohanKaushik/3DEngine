@@ -28,4 +28,5 @@ void main() {
     // Set final color with fade applied 
 // Replace with your actual base color
     fragColor = vec4(fragClr, baseColor.a * opacity);
+  
 };

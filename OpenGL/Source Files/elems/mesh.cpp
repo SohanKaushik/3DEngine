@@ -8,15 +8,14 @@ elems::Mesh::Mesh(PrimitiveType type)
         mPrimitives->cube();
         break;
     case PrimitiveType::Plane:
-        std::cerr << "PrimitiveType::Plane is not yet implemented.\n";
-        return;
+        mPrimitives->plane();
+        break;
     case PrimitiveType::Sphere:
         std::cerr << "PrimitiveType::Sphere is not yet implemented.\n";
         return;
     default:
         throw std::runtime_error("Unsupported PrimitiveType!");
     }
-
 	mBuffer->create(mPrimitives->getVertices(), mPrimitives->getIndices());
 };
 

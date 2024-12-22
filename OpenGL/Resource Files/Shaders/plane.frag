@@ -1,10 +1,10 @@
 #version 330 core
-
-in vec3 aPlaneColor;
+in vec2 TexCoords;
 out vec4 FragColor;
 
+uniform sampler2D shadowMap;
 
-void main()
-{
-	FragColor = vec4(aPlaneColor, 1.0f);
+void main() {
+    float depth = texture(shadowMap, TexCoords).r;  // Depth value from the shadow map
+    FragColor = vec4(vec3(depth), 1.0);  // Visualize the depth value in grayscale
 }

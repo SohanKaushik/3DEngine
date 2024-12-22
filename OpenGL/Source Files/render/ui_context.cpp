@@ -143,7 +143,7 @@ void render::UIXContext::render_toolbar()
                // std::cout << "Adding mesh entity..." << std::endl;
                 //mViewport.AddEntity(elems::EntityType::mesh);
                 //std::cout << "Viewport Address: " << &ui::Viewport::getInstance() << std::endl;
-                mViewport->AddEntity(elems::EntityType::mesh, elems::PrimitiveType::Plane); 
+                mViewport->AddEntity(elems::EntityType::mesh, elems::PrimitiveType::Cube); 
 
                 //mViewport.AddEntity(elems::EntityType::mesh);
                /* if (mViewport.getInstance) {

@@ -1,19 +1,16 @@
 #version 330 core
 
-layout (location = 0) in vec3 aPlanePos;
+layout (location = 0) in vec3 aPos;       // Vertex position
+layout (location = 1) in vec2 aTexCoords; // Texture coordinates (optional)
 
-// Uniforms
-uniform mat4 model;           
-uniform mat4 view;              
-uniform mat4 projection;        
+uniform mat4 model;       // Model transformation matrix
+uniform mat4 view;        // View transformation matrix
+uniform mat4 projection;  // Projection transformation matrix
 
-uniform vec3 planeColor;
+out vec2 TexCoords;       // Pass to fragment shader
 
+void main() {
 
-out vec3 aPlaneColor;
-
-void main()
-{
-	gl_Position = projection * view * model * vec4(aPlanePos, 1.0f);
-	aPlaneColor = planeColor;
+    TexCoords = aTexCoords;                                   
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

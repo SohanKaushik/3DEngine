@@ -23,19 +23,21 @@ out vec3 aColor;     // Output color for the fragment shader
 uniform mat4 DirLightSpaceMatrix;
 out vec4 FragPosDirLightSpace; 
 
+out vec2 TexCoord;
 
 
 void main()
 {
 
 
-    //FragPosDirLightSpace = DirLightSpaceMatrix * model * vec4(aPos, 1.0f);
+    FragPosDirLightSpace = DirLightSpaceMatrix * vec4(aPos, 1.0f);
 
 
     // Pass data to the fragment shader
     FragPos = vec3(model * vec4(aPos, 1.0));  // Transform vertex to world space
     Normal = mat3(transpose(inverse(model))) * aNormal;  // Transform normal to world space
     aColor = color;  
+    TexCoord = aTexture;
 
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

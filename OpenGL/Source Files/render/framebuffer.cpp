@@ -29,7 +29,8 @@ void render::Framebuffer::create_buffer(int width, int height)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-}
+};
+
 void render::Framebuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

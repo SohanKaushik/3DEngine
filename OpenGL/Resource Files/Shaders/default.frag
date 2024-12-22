@@ -1,10 +1,10 @@
 #version 330 core
 
-in vec3 aColor;  // Color passed from the vertex shader
+in vec3 aColor; 
+in vec2 TexCoord;
+
 out vec4 FragColor;
 
-
-// Directional light structure
 struct DirectionalLight {
     vec3 direction;
     vec3 ambient;
@@ -12,7 +12,6 @@ struct DirectionalLight {
     vec3 specular;
 }; 
 
-// Spotlight light structure
 struct SpotLight {
     vec3 ambient;
     vec3 diffuse;
@@ -23,48 +22,41 @@ struct SpotLight {
     float outer;
 }; 
 
-// PointLight light structure
 struct PointLight {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
     vec3 position;
-}; 
+};
+
+// Uniforms
+uniform DirectionalLight dirLight;
+uniform SpotLight spotLight;
+uniform PointLight pointLight;
+uniform vec3 viewPos;  // View position
+
+uniform sampler2D shadowMap;  // Shadow map texture
+
+// Inputs from vertex shader
+in vec3 FragPos;  // Fragment position in world space
+in vec3 Normal;   // Normal vector in world space
+in vec4 FragPosDirLightSpace; // Fragment position in light space for shadow calculation
 
 
 
-uniform DirectionalLight dirLight;  
-uniform SpotLight spotLight;        
-uniform PointLight pointLight;      
-
-uniform vec3 viewPos;              // View position
-in vec3 FragPos;                   // Fragment position in world space
-in vec3 Normal;                    // Normal vector in world space
-
-/*
-//Shadows
-uniform sampler2D shadowMap;
-in FragPosLightSpace;
-
-
-float ShadowCalculation(vec4 fragPosLightSpace){
-
-     // Perform perspective divide
-     vec3 ProjCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
-     ProjCoords = ProjCoords * 0.5 + 0.5;
-
-     // Get closest depth value from shadow map
-     float closestDepth = texture(shadowMap, ProjCoords.xy).r;
-
-     // Current Depth
-     float currentDepth = ProjCoords.z;
-
-     // Shadow Calculation
-     float shadow = currentDepth > closestDepth + 0.005 ? 1.0 : 0.0;         // Bias to prevent bias artifacts
-
-     return shadow;
+float ShadowCalculation() {
+    // Perspective divide to get normalized device coordinates
+    vec3 ProjCoords = FragPosDirLightSpace.xyz / FragPosDirLightSpace.w;
+    ProjCoords = ProjCoords * 0.5 + 0.5; // Transform to [0, 1] range
+    
+    // Compare depth value from shadow map
+    float closestDepth = texture(shadowMap, ProjCoords.xy).r;
+    float currentDepth = ProjCoords.z;
+    
+    // Apply bias to avoid shadow acne
+    return currentDepth > closestDepth + 0.005 ? 1.0 : 0.0;
 }
-*/
+
 
 vec3 DirectLightCalc() {
 
@@ -81,12 +73,12 @@ vec3 DirectLightCalc() {
     vec3 specular = dirLight.specular * pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
     //Shadow
-    //float Shadow = ShadowCalculation(FragPosLightSpace);
+    float shadow = ShadowCalculation();
 
 
     // Combine the lighting components with the input color
-    //return  (ambient +  ( 1.0 - shadow) * (specular + diffuse));
-      return  (ambient + ( specular + diffuse) * aColor);
+    return ambient + (specular + diffuse) * (1- shadow);
+      //return  (ambient + ( specular + diffuse) * aColor);
 }
 
 
@@ -170,13 +162,22 @@ vec3 PointLightCalc() {
     return ambient + (diffuseColor) * inten * 10;
 }
 
+float far = 100.0f;
+float linearizeDepth(float depth){
+        return (2.0f* 0.1 * far) / (far + 0.1 - (depth * 2.0f -1.0f) * (far - 0.1f));
+}
+
 void main()
 {
     // Calculate the lighting using DirectLight function
     vec3 color2 = DirectLightCalc();
 
  
+    float depth = texture(shadowMap, gl_FragCoord.xy).r;
+    // FragColor = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.0f);
+
     // Final output color with the calculated lighting
     FragColor = vec4(color2 * aColor, 1.0);
+    //FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
 
 }

@@ -8,7 +8,9 @@
 #include "ui/grid.h"
 #include "elems/Mesh.h"
 #include "elems/entity.h"
+
 #include "render/framebuffer.h"
+#include "render/ShadowMap.h"
 
 namespace ui {
 
@@ -37,7 +39,8 @@ namespace ui {
 		void AddEntities();
 		void RenderEntities();
 
-		void AddEntity(elems::EntityType type);
+		void AddEntity(elems::EntityType type, elems::PrimitiveType meshtype);
+		void renderQuad();
 		void GetViewport();
 
 	private:
@@ -48,7 +51,9 @@ namespace ui {
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<elems::Camera> mCamera;
+
 		std::unique_ptr<render::Framebuffer> mFramebuffer = std::make_unique<render::Framebuffer>();
+		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
 
 		std::vector<std::shared_ptr<elems::Entity>> mEntity;
 		//std::unique_ptr<elems::DirectionalLight> mLight;

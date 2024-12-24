@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "shader/shader.h"  // Include the Shader class
-
+#include "render/ShadowMap.h"
 
 //enum class LightType {
 //    Directional,
@@ -47,13 +47,14 @@ namespace elems {
 
     public:
         glm::vec3 m_direction;
-
+        glm::mat4 m_lightSpaceMatrix;
+        std::unique_ptr<render::ShadowMap> mShadowFBO = std::make_unique<render::ShadowMap>();
     public:
         DirectionalLight(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec, const glm::vec3& dir);
 
         void SetLightUniform(Shader& shader, const std::string& uniformName) const override;
+        void UpdadeShadowMatrices(Shader& shadowShader); 
     };
-
 
 
     class SpotLight : public Light {

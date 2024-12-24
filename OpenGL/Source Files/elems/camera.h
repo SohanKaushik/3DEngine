@@ -25,7 +25,7 @@ namespace elems {
 		float m_near;
 		float m_far;
 
-		float m_aspectRatio = 1.246f;
+		float m_aspectRatio = 1.0f;
 		
 
 	public:

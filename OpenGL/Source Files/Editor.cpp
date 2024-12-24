@@ -5,7 +5,7 @@
 
 Editor::Editor(const std::string& app_name)
 {
-    mWindow->Init(3820, 2160, app_name);
+    mWindow->Init(1000, 800, app_name);
 };
 
 

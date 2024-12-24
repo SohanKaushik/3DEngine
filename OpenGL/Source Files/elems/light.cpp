@@ -23,7 +23,13 @@ void elems::Light::render(const std::vector<std::unique_ptr<elems::Light>> light
 
 DirectionalLight::DirectionalLight(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec, const glm::vec3& dir)
 	: Light(amb, diff, spec), m_direction(dir)
-{};
+{
+    /*mShadowFBO->create_buffer(1024, 1024);
+    mShadowFBO->bind();*/
+
+    // Updating Matrices
+    //this->UpdadeShadowMatrices();
+};
 
 
 
@@ -44,7 +50,22 @@ void DirectionalLight::SetLightUniform(Shader& shader, const std::string& unifor
     shader.SetUniform3fv(uniformName + ".ambient", m_ambient);
     shader.SetUniform3fv(uniformName + ".diffuse", m_diffuse);
     shader.SetUniform3fv(uniformName + ".specular", m_specular);
+}
+
+void elems::DirectionalLight::UpdadeShadowMatrices(Shader& shadowShader)
+{
+    // Projecting light as a Camera
+    glm::mat4 orthogonalProj = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+    glm::vec3 lightPos = -2.0f * m_direction;
+    glm::vec3 lightTarget = glm::vec3(0.0f);            
+    glm::vec3 lightUp = glm::vec3(0.0f, 1.0f, 0.0f);    
+    glm::mat4 lightView = glm::lookAt(lightPos, lightTarget, lightUp);
+    glm::mat4 lightSpaceMatrix = orthogonalProj * lightView;
+
+    shadowShader.use();
+    shadowShader.SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 };
+
 
 
 void SpotLight::SetLightUniform(Shader& shader, const std::string& uniformName) const {

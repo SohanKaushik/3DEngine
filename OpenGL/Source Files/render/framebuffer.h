@@ -7,13 +7,43 @@ namespace render {
 
 	public:
 
-		void create_buffer(int width, int height);
-		void bind();
-		void unbind();
-		unsigned int get_texture();
+		virtual void create_buffer(int width, int height) = 0;
+		virtual void bind() = 0;
+		virtual void unbind() = 0;
+		virtual unsigned int get_texture() = 0;
+		virtual unsigned int getID() = 0;
+		//virtual void create_multisample_buffer(int width, int height, int samples) = 0;
+
+	};
+
+
+	class DefualtFrameBuffer : Framebuffer{
+
+	public:
+		void create_buffer(int width, int height) override;
+		void bind() override;
+		void unbind() override;
+
+		unsigned int getID() override;
+		unsigned int get_texture() override;
 
 	private:
 		unsigned framebuffer, texture, rbo;
 		int m_height, m_widht;
+	};
+
+	class AntiAliasingFrameBuffer : Framebuffer {
+
+	public:
+		void create_buffer(int width, int height) override;
+		void bind() override;
+		void unbind() override;
+		unsigned int get_texture() override;
+		unsigned int getID() override;
+
+	private:
+
+		unsigned multisamplefbo, texture, rbo;
+		int aa_height, aa_widht;
 	};
 };

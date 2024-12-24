@@ -50,6 +50,9 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
 
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Multi-Sampling 
+    glEnable(GL_MULTISAMPLE);
 
     // Full Screen
     set_fullscreen(false);
@@ -69,7 +72,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     input.Initialize(this->m_window);
 
     // UI context
-    mUIx->init(this->m_window, mViewport.get());
+    //mUIx->init(this->m_window, mViewport.get());
 
     return true;
 }
@@ -125,7 +128,7 @@ void WindowManager::pre_render()
     glClearColor(0.247, 0.247, 0.247, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mUIx->pre_render();
+    //mUIx->pre_render();
 }
 
 
@@ -137,7 +140,7 @@ void WindowManager::render()
 
     mViewport->render();
 
-    mUIx->render();
+    //mUIx->render();
 
     this->UpdateWindowSize();
 
@@ -148,7 +151,7 @@ void WindowManager::render()
 
 void WindowManager::post_render()
 {
-    mUIx->post_render();
+   // mUIx->post_render();
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 };

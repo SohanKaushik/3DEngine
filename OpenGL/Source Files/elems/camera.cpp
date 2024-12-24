@@ -15,7 +15,7 @@ elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, 
 
 glm::mat4 elems::Camera::GetProjectionMatrix() {
 
-	return glm::perspective(glm::radians(m_fov), this->GetAspectRatio(), m_near, m_far);
+	return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
 };
 
 
@@ -86,7 +86,6 @@ void  elems::Camera::UpdateCameraMatrix(Shader& shader)
 {
 	glm::mat4 view = this->GetViewMatrix();
 	glm::mat4 projection = this->GetProjectionMatrix();
-
 	// Set matrices in the shader
 	shader.use();
 	shader.SetUniformMat4f("view", view);

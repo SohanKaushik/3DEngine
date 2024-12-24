@@ -49,11 +49,14 @@ namespace ui {
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<elems::Camera> mCamera;
+		std::vector<std::shared_ptr<elems::Entity>> mEntity;
 
-		std::unique_ptr<render::Framebuffer> mFramebuffer = std::make_unique<render::Framebuffer>();
+		// Frame-Buffers
+		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
+		std::unique_ptr<render::AntiAliasingFrameBuffer> mMultiSampleFramebuffer = std::make_unique<render::AntiAliasingFrameBuffer>();
+
 		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
 
-		std::vector<std::shared_ptr<elems::Entity>> mEntity;
 		
 	};
 }

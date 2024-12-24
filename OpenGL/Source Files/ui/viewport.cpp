@@ -3,133 +3,119 @@
 #include "Object.h"
 
 using namespace elems;
-GLuint quadVAO, quadVBO, quadEBO;
 
+GLuint FBO, depthMap;
+
+// Shadow map dimensions
+const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+
+// Initialize quad vertices and indices (optional rendering)
 std::vector<float> quadVertices = {
-	// Positions        // Texture coordinates
-	-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,  // Bottom-left
-	 1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // Bottom-right
-	 1.0f,  1.0f, 0.0f, 1.0f, 0.0f,  // Top-right
-	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f   // Top-left
+	-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+	 1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+	 1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f
 };
-
-
-
-// Indices for the quad (2 triangles)
 std::vector<unsigned int> quadIndices = { 0, 2, 1, 2, 0, 3 };
 
-
-
-void ui::Viewport::Init()
-{
-
+void ui::Viewport::Init() {
+	// Load shaders
 	mShader[0].load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
 	mShader[1].load("Resource Files/Shaders/grid.vert", "Resource Files/Shaders/grid.frag");
 	mShader[2].load("Resource Files/Shaders/DirectionalShadowMap.vert", "Resource Files/Shaders/DirectionalShadowMap.frag");
 	mShader[3].load("Resource Files/Shaders/plane.vert", "Resource Files/Shaders/plane.frag");
 
+	// Initialize shadow map framebuffer
+	glGenFramebuffers(1, &FBO);
 
-	//Shadow Frame Buffer
-	mShadowFrameBuffer->create_buffer(2048, 2048);
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	// Frame Buffer
-	mFramebuffer->create_buffer(1000, 800);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-	// Camera
+	// Initialize camera and grid
 	mCamera = std::make_unique<elems::Camera>(
-		glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 45.0f, 0.1, 1000.0f);
+		glm::vec3(0.0f, 0.0f, -10.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		-90.0f, 0.0f, 45.0f, 0.1, 1000.0f
+	);
 
-	// Grid Axes
 	mGrid->Init();
 
-	// Entities
-	this->AddEntity(mesh, PrimitiveType::Plane); 
-	this->AddEntity(mesh, PrimitiveType::Cube); 
-	this->AddEntity(mesh, PrimitiveType::Cube); 
-
-	//this->AddEntity(light);
-
-
-	//dump
-	//renderQuad();
-
-	// Enables the Depth Buffer 
-	glEnable(GL_DEPTH_TEST); 
-	 
-	// Enables Multisampling 
-	glEnable(GL_MULTISAMPLE); 
-
-	// Enables Cull Facing
-	glEnable(GL_CULL_FACE); 
-	
-	// Uses counter clock-wise standard
-	glFrontFace(GL_CCW);
-	  
-};
-
+	// Add entities
+	this->AddEntity(mesh, PrimitiveType::Plane);
+	this->AddEntity(mesh, PrimitiveType::Cube);
+	this->AddEntity(mesh, PrimitiveType::Cube);
+	//this->AddEntity(mesh, PrimitiveType::Cube);
+}
 void ui::Viewport::render() {
+	// Configure light direction and position
+	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed
+	glm::vec3 sceneCenter = glm::vec3(0.0f, 0.0f, 0.0f);
+	float lightDistance = 15.0f; // Adjust distance from scene center
+	glm::vec3 lightPos = sceneCenter - lightDirection * lightDistance;
 
-	
-	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::vec3 lightPos = glm::vec3(10.0f, 10.0f, 0.0f); // Light position
-	glm::vec3 lightTarget = glm::vec3(0.0f);            // Target of the light
-	glm::vec3 lightUp = glm::vec3(0.0f, 1.0f, 0.0f);    // Up direction
-	glm::mat4 lightView = glm::lookAt(lightPos, lightTarget, lightUp);
-	glm::mat4 lightSpaceMatrix = orthgonalProjection * lightView;
+	// Light projection and view matrices
+	float near_plane = 1.0f, far_plane = 50.0f;
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	glm::mat4 lightView = glm::lookAt(lightPos, sceneCenter, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
+	// Step 1: Shadow map pass
+	glViewport(0, 0, 2048, 2048); // Match shadow map resolution
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 	mShader[2].use();
 	mShader[2].SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
+	RenderEntities(mShader[2]); // Render the scene to the shadow map
 
-	// Pre-Shadow pass
-	//glDepthFunc(GL_LESS);
-	mShadowFrameBuffer->bind();   
-	RenderEntities(mShader[2]);
-	mShadowFrameBuffer->unbind();    
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-	// Main rendering
-	mFramebuffer->bind();
-
+	// Step 2: Main rendering pass
+	glViewport(0, 0, 1000, 800); // Match viewport resolution
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mShader[0].use();
-	mCamera->UpdateCameraMatrix(mShader[0]);
-	mShader[0].SetUniformMat4f("DirLightSpaceMatrix", lightSpaceMatrix);
+	mCamera->UpdateCameraMatrix(mShader[0]); // Update camera matrix
+	mShader[0].SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 
-
-	// Bind the shadow map
+	// Bind the shadow map texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mShadowFrameBuffer->get_dtexture());  
+	glBindTexture(GL_TEXTURE_2D, depthMap);
 	mShader[0].SetUniform1i("shadowMap", 0);
 
-	//renderQuad();
-	RenderEntities(mShader[0]);
+	// Set up directional light
+	DirectionalLight dirLight(
+		glm::vec3(0.2f),              // Ambient
+		glm::vec3(1.0f),              // Diffuse
+		glm::vec3(0.0f),              // Specular
+		lightDirection                // Direction
+	);
+	dirLight.SetLightUniform(mShader[0], "dirLight");
 
+	RenderEntities(mShader[0]); // Render the scene with shadows
 
-
-	// Render Grid
+	// Step 3: Render grid and UI
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
 	mCamera->UpdateCameraMatrix(mShader[1]);
 
-	// Lights 
-	//mLight.push_back(std::make_unique<DirectionalLight>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f)));
-	mShader[0].use();
-	glm::vec3 lightDirection = glm::normalize(glm::vec3(0.0f, -1.0f, 0.0f));
+	// Optional: Render UI or additional elements here
+	// this->RenderSceneUI();
+}
 
-	DirectionalLight dirLight(
-		glm::vec3(0.2),              // ambient 
-		glm::vec3(1.0f),             // diffuse 
-		glm::vec3(0),                // specular
-		lightDirection   // direction
-	);
 
-	dirLight.SetLightUniform(mShader[0], "dirLight");
-	
-	// Frame Buffer End
-	mFramebuffer->unbind();
-	this->RenderSceneUI();
-};
 
 void ui::Viewport::destroy()
 {
@@ -158,7 +144,7 @@ void ui::Viewport::RenderSceneUI() {
 	ImVec4* colors = style.Colors;
 
 	// Set dark theme
-	colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+	colors[ImGuiCol_WindowBg] = ImVec4(0.f, 0.1f, 0.1f, 1.0f);
 	colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
 	colors[ImGuiCol_Button] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 	colors[ImGuiCol_ButtonHovered] = ImVec4(0.35f, 0.35f, 0.35f, 1.0f);
@@ -208,10 +194,10 @@ void ui::Viewport::AddEntity(elems::EntityType type, PrimitiveType meshtype) {
 		case elems::mesh: {
 			auto cube = std::make_shared<MeshEntity>(
 				meshtype,
-				Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
+				Transform{ glm::vec3(xOffset, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
 				glm::vec3(1.0f, 0.0f, 0.0f)
 			);
-			xOffset += 3.0f;
+			xOffset += 1.1f;
 			mEntity.push_back(cube);
 			std::cout << "Added entity to mEntity. Size: " << mEntity.size() << std::endl;
 			break;
@@ -226,34 +212,34 @@ void ui::Viewport::AddEntity(elems::EntityType type, PrimitiveType meshtype) {
 
 void ui::Viewport::renderQuad() {
 
-	//mShader[3].use();
-	mShader[3].SetUniformMat4f("model", glm::mat4(1.0f));
+	////mShader[3].use();
+	//mShader[3].SetUniformMat4f("model", glm::mat4(1.0f));
 
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glGenBuffers(1, &quadEBO);
+	//glGenVertexArrays(1, &quadVAO);
+	//glGenBuffers(1, &quadVBO);
+	//glGenBuffers(1, &quadEBO);
 
-	// Bind VAO
-	glBindVertexArray(quadVAO);
-	// Bind VBO and upload data
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, quadVertices.size() * sizeof(float), quadVertices.data(), GL_STATIC_DRAW);
+	//// Bind VAO
+	//glBindVertexArray(quadVAO);
+	//// Bind VBO and upload data
+	//glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	//glBufferData(GL_ARRAY_BUFFER, quadVertices.size() * sizeof(float), quadVertices.data(), GL_STATIC_DRAW);
 
-	// Bind EBO and upload data
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, quadIndices.size() * sizeof(unsigned int), quadIndices.data(), GL_STATIC_DRAW);
+	//// Bind EBO and upload data
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, quadIndices.size() * sizeof(unsigned int), quadIndices.data(), GL_STATIC_DRAW);
 
-	// Set position attribute (location 0)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	//// Set position attribute (location 0)
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
 
-	// Set texture coordinate attribute (location 2)
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	//// Set texture coordinate attribute (location 2)
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
 
-	glBindVertexArray(quadVAO);  // Bind the quad VAO
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  // Draw the full-screen quad
-	glBindVertexArray(0);   // Unbind the VAO
+	//glBindVertexArray(quadVAO);  // Bind the quad VAO
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  // Draw the full-screen quad
+	//glBindVertexArray(0);   // Unbind the VAO
 };
 
 void ui::Viewport::RenderEntities(Shader& shader) {
@@ -261,15 +247,18 @@ void ui::Viewport::RenderEntities(Shader& shader) {
 	for (const auto& entity : mEntity) {
 		if (entity) {
 			entity->render(shader);
-			mEntity[0]->setPosition(glm::vec3(0.0, 0.0f, -1.0f));
+			mEntity[0]->setPosition(glm::vec3(0.0, 0.0f, -1.0f)); 
 			mEntity[0]->setScale(glm::vec3(5.0f, 5.0f, 1.0f));               //z = y , y = z only for planes might be cuz of clockwise vertices
-			mEntity[0]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
+			mEntity[0]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f)); 
 
-			mEntity[1]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-			mEntity[1]->setPosition(glm::vec3(0.0, 3.0f, 0.1f));
+			mEntity[1]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));  
+			mEntity[1]->setPosition(glm::vec3(0.0, 2.0f, 0.0f)); 
 
-			mEntity[2]->setPosition(glm::vec3(0.0, 1.0f, 0.1f));
-			mEntity[2]->setScale(glm::vec3(5.0f, 0.1f, 5.0f));            
+			mEntity[2]->setPosition(glm::vec3(0.0, 1.0f, 0.1f)); 
+			mEntity[2]->setScale(glm::vec3(5.0f, 0.1f, 5.0f));       
+
+			/*mEntity[3]->setPosition(glm::vec3(0.0, 1.0f, 0.0f)); 
+			mEntity[3]->setScale(glm::vec3(1.0f, 1.0f, 1.0f));   */           
 
 		}
 		else std::cerr << "Null entity encountered in mEntity!" << std::endl;

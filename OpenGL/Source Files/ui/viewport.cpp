@@ -4,11 +4,6 @@
 
 using namespace elems;
 
-GLuint FBO, depthMap;
-
-// Shadow map dimensions
-const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-
 // Initialize quad vertices and indices (optional rendering)
 std::vector<float> quadVertices = {
 	-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
@@ -25,27 +20,11 @@ void ui::Viewport::Init() {
 	mShader[2].load("Resource Files/Shaders/DirectionalShadowMap.vert", "Resource Files/Shaders/DirectionalShadowMap.frag");
 	mShader[3].load("Resource Files/Shaders/plane.vert", "Resource Files/Shaders/plane.frag");
 
-	// Initialize shadow map framebuffer
-	glGenFramebuffers(1, &FBO);
-
-	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	mFramebuffer->create_buffer(1000, 800);
+	mShadowFrameBuffer->create_buffer(2048, 2048);
 
 	// Initialize camera and grid
-	mCamera = std::make_unique<elems::Camera>(
+	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		-90.0f, 0.0f, 45.0f, 0.1, 1000.0f
@@ -54,11 +33,13 @@ void ui::Viewport::Init() {
 	mGrid->Init();
 
 	// Add entities
-	this->AddEntity(mesh, PrimitiveType::Plane);
-	this->AddEntity(mesh, PrimitiveType::Cube);
-	this->AddEntity(mesh, PrimitiveType::Cube);
+	this->AddEntity(PrimitiveType::Plane);
+	this->AddEntity(PrimitiveType::Cube);
+	this->AddEntity(PrimitiveType::Cube);
+	//this->AddEntity(ProjectionType::Perspective); 
 	//this->AddEntity(mesh, PrimitiveType::Cube);
-}
+};
+
 void ui::Viewport::render() {
 	// Configure light direction and position
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed
@@ -72,28 +53,28 @@ void ui::Viewport::render() {
 	glm::mat4 lightView = glm::lookAt(lightPos, sceneCenter, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
+
+
 	// Step 1: Shadow map pass
-	glViewport(0, 0, 2048, 2048); // Match shadow map resolution
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	mShadowFrameBuffer->bind();
 
 	mShader[2].use();
 	mShader[2].SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 	RenderEntities(mShader[2]); // Render the scene to the shadow map
+	mShadowFrameBuffer->unbind();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	// Step 2: Main rendering pass
-	glViewport(0, 0, 1000, 800); // Match viewport resolution
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	mFramebuffer->bind();
 
 	mShader[0].use();
-	mCamera->UpdateCameraMatrix(mShader[0]); // Update camera matrix
+	mCamera->UpdateCameraMatrix(mShader[0]);                         // Update camera matrix
 	mShader[0].SetUniformMat4f("lightSpaceMatrix", lightSpaceMatrix);
 
 	// Bind the shadow map texture
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glBindTexture(GL_TEXTURE_2D, mShadowFrameBuffer->get_dtexture());
 	mShader[0].SetUniform1i("shadowMap", 0);
 
 	// Set up directional light
@@ -110,10 +91,11 @@ void ui::Viewport::render() {
 	// Step 3: Render grid and UI
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
 	mCamera->UpdateCameraMatrix(mShader[1]);
+	mFramebuffer->unbind();
 
 	// Optional: Render UI or additional elements here
-	// this->RenderSceneUI();
-}
+	this->RenderSceneUI();
+};
 
 
 
@@ -132,7 +114,7 @@ void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool cons
 	mCamera->on_mouse_move(deltaYaw, deltaPitch, constraint);
 };
 
-void ui::Viewport::on_zoom(float offset, float senst){
+void ui::Viewport::on_zoom(float offset, float senst) {
 
 	mCamera->UpdateZoom(static_cast<float>(offset) * senst, mShader[0]);
 };
@@ -144,7 +126,7 @@ void ui::Viewport::RenderSceneUI() {
 	ImVec4* colors = style.Colors;
 
 	// Set dark theme
-	colors[ImGuiCol_WindowBg] = ImVec4(0.f, 0.1f, 0.1f, 1.0f);
+	colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
 	colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.0f);
 	colors[ImGuiCol_Button] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 	colors[ImGuiCol_ButtonHovered] = ImVec4(0.35f, 0.35f, 0.35f, 1.0f);
@@ -188,27 +170,21 @@ void ui::Viewport::RenderSceneUI() {
 }
 
 static float xOffset = 0.0f;
-void ui::Viewport::AddEntity(elems::EntityType type, PrimitiveType meshtype) {
+void ui::Viewport::AddEntity(PrimitiveType meshtype) {
 
-	switch (type) {
-		case elems::mesh: {
-			auto cube = std::make_shared<MeshEntity>(
-				meshtype,
-				Transform{ glm::vec3(xOffset, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)},
-				glm::vec3(1.0f, 0.0f, 0.0f)
-			);
-			xOffset += 1.1f;
-			mEntity.push_back(cube);
-			std::cout << "Added entity to mEntity. Size: " << mEntity.size() << std::endl;
-			break;
-		}
-		case elems::light:
-			std::cerr << "Light is not yet available" << std::endl;
-			break;
-		default:
-			break;
-	}
-}
+	auto cube = std::make_shared<MeshEntity>(meshtype,
+		Transform{ glm::vec3(xOffset, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f) }, glm::vec3(1.0f, 0.0f, 0.0f));
+	mEntity.push_back(cube); xOffset +=2;
+	std::cout << "New Added Entity: " << "Mesh" << ", [" << mEntity.size() << "]" << std::endl;
+};
+
+void ui::Viewport::AddEntity(elems::ProjectionType type) {
+
+	auto camera = std::make_shared<CameraEntity>(type, 45.0f, Transform{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0) }, 0.1f, 1000.0f);
+	mEntity.push_back(camera);
+	std::cout << "New Added Entity: " << "Camera" << ", [" << mEntity.size() << "]" << std::endl;
+};
+
 
 void ui::Viewport::renderQuad() {
 
@@ -247,24 +223,23 @@ void ui::Viewport::RenderEntities(Shader& shader) {
 	for (const auto& entity : mEntity) {
 		if (entity) {
 			entity->render(shader);
-			mEntity[0]->setPosition(glm::vec3(0.0, 0.0f, -1.0f)); 
+			mEntity[0]->setPosition(glm::vec3(0.0, 0.0f, -1.0f));
 			mEntity[0]->setScale(glm::vec3(5.0f, 5.0f, 1.0f));               //z = y , y = z only for planes might be cuz of clockwise vertices
-			mEntity[0]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f)); 
+			mEntity[0]->setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 
-			mEntity[1]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));  
-			mEntity[1]->setPosition(glm::vec3(0.0, 2.0f, 0.0f)); 
+			mEntity[1]->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+			mEntity[1]->setPosition(glm::vec3(0.0, 2.0f, 0.0f));
 
-			mEntity[2]->setPosition(glm::vec3(0.0, 1.0f, 0.1f)); 
-			mEntity[2]->setScale(glm::vec3(5.0f, 0.1f, 5.0f));       
+			mEntity[2]->setPosition(glm::vec3(0.0, 1.0f, 0.1f));
+			mEntity[2]->setScale(glm::vec3(5.0f, 0.1f, 5.0f));
 
-			/*mEntity[3]->setPosition(glm::vec3(0.0, 1.0f, 0.0f)); 
-			mEntity[3]->setScale(glm::vec3(1.0f, 1.0f, 1.0f));   */           
+			/*mEntity[3]->setPosition(glm::vec3(0.0, 1.0f, 0.0f));
+			mEntity[3]->setScale(glm::vec3(1.0f, 1.0f, 1.0f));   */
 
 		}
 		else std::cerr << "Null entity encountered in mEntity!" << std::endl;
 	}
 
 };
-
 
 

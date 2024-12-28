@@ -9,7 +9,7 @@ WindowManager::WindowManager()
 
 WindowManager::~WindowManager() {
  
-   // mUIx->end();
+    mUIx->end();
     mViewport->destroy();
     glfwDestroyWindow(m_window);
     glfwTerminate();
@@ -17,8 +17,8 @@ WindowManager::~WindowManager() {
 
 bool WindowManager::Init(int width, int height , const std::string& appName)
 {
-
     std::cout << "Window Init" << std::endl;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -72,7 +72,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     input.Initialize(this->m_window);
 
     // UI context
-    //mUIx->init(this->m_window, mViewport.get());
+    mUIx->init(this->m_window, mViewport.get());
 
     return true;
 }
@@ -128,8 +128,8 @@ void WindowManager::pre_render()
     glClearColor(0.247, 0.247, 0.247, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //mUIx->pre_render();
-}
+    mUIx->pre_render();
+};
 
 
 void WindowManager::end()
@@ -140,7 +140,7 @@ void WindowManager::render()
 
     mViewport->render();
 
-    //mUIx->render();
+    mUIx->render();
 
     this->UpdateWindowSize();
 
@@ -151,7 +151,7 @@ void WindowManager::render()
 
 void WindowManager::post_render()
 {
-   // mUIx->post_render();
+    mUIx->post_render();
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 };

@@ -2,7 +2,7 @@
 
 void render::DefualtFrameBuffer::create_buffer(int width, int height)
 {
-	m_widht = width;
+	m_width = width;
 	m_height = height;
 
 	// Create framebuffer
@@ -25,18 +25,24 @@ void render::DefualtFrameBuffer::create_buffer(int width, int height)
 
 	// Check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
 		std::cerr << "Error: Framebuffer is not complete!" << std::endl;
+		// Consider throwing an exception or returning an error code here
+	}
 
+	// Unbind resources
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 };
 
 void render::DefualtFrameBuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glViewport(0, 0, m_widht, m_height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-};
+	glViewport(0, 0, m_width, m_height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+}; 
 
 void render::DefualtFrameBuffer::unbind()
 {

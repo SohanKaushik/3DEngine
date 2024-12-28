@@ -29,7 +29,7 @@ namespace render {
 
 	private:
 		unsigned framebuffer, texture, rbo;
-		int m_height, m_widht;
+		int m_height, m_width = 0;
 	};
 
 	class AntiAliasingFrameBuffer : Framebuffer {

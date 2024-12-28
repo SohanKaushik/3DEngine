@@ -10,18 +10,39 @@ elems::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, 
 {
 	//UpdateCameraVectors();
 	
-};
+}
+elems::Camera::Camera(ProjectionType type, float fov, float nearDis, float farDis)
+	: m_fov(fov), m_near(nearDis), m_far(farDis), m_projection(type)
+{};
 
 
 glm::mat4 elems::Camera::GetProjectionMatrix() {
 
-	return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
+	switch (m_projection)
+	{
+	case ProjectionType::Orthographic: 
+		std::cout << "Orthographic not available!!" << std::endl;
+		break;
+
+	case ProjectionType::Perspective: 
+		return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
+
+	default:
+		break;
+	};
 };
 
 
-glm::mat4  elems::Camera::GetViewMatrix() const {
+void elems::Camera::SetViewMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 target_pos) {
 	//return glm::lookAt(m_position, m_position + m_front, m_up);
-	return glm::lookAt(m_position, m_targetPos, m_up);
+	m_position = position;
+	m_targetPos = target_pos;
+	m_view = glm::lookAt(m_position, m_targetPos, m_up);
+};
+
+glm::mat4 elems::Camera::GetViewMatrix() const
+{
+	return m_view;
 };
 
 
@@ -32,18 +53,16 @@ void elems::Camera::set_aspect(float size) {
 
 	if (height == 0) height = 1;
 	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);*/
-}
+};
 
 float  elems::Camera::GetAspectRatio() {
 	return m_aspectRatio;
 };
 
-
 glm::vec3 elems::Camera::GetCameraFront() const {
 	// Direction is the vector from camera position to the target
 	return m_front;
-}
-
+};
 
 glm::vec3 elems::Camera::GetCameraRight() const {
 	// Direction is the vector from camera position to the target
@@ -54,32 +73,6 @@ glm::vec3 elems::Camera::GetCameraRight() const {
 glm::vec3  elems::Camera::GetCameraPosition() const {
 	return m_position;
 };
-
-
-void  elems::Camera::CalKeyboardMovement(glm::vec3 direction, float deltaTime) {
-	float velocity = m_moveSpeed * deltaTime;
-	m_position += direction * velocity;    // Move in the specified direction
-};
-
-void elems::Camera::on_mouse_move(float deltaYaw, float deltaPitch, bool constrainPitch) {
-	m_yaw += deltaYaw;    // Rotate horizontally (yaw)
-	m_pitch += deltaPitch; // Rotate vertically (pitch)
-
-	// Constrain pitch to avoid gimbal lock (this can be removed for unrestricted pitch rotation)
-	if (constrainPitch) {
-		if (m_pitch > 89.0f) m_pitch = 89.0f;
-		if (m_pitch < -89.0f) m_pitch = -89.0f;
-	}
-
-	// Normalize yaw to ensure it stays within the 0 - 360 degree range
-	if (m_yaw > 360.0f) {
-		m_yaw -= 360.0f;
-	}
-
-	UpdateOrbit();  // Update camera position and orientation
-	// Fix Gimble Lock 
-};
-
 
 
 void  elems::Camera::UpdateCameraMatrix(Shader& shader)
@@ -115,42 +108,6 @@ void elems::Camera::UpdateCameraVectors() {
 	std::cout << "Up: " << glm::to_string(m_up) << "\n";*/
 
 
-};
-
-void elems::Camera::UpdateOrbit() {
-	// Spherical to Cartesian conversion
-	float radius = glm::length(m_position - m_targetPos);  // Distance to the target
-
-	glm::vec3 offset;
-	offset.x = radius * cos(glm::radians(m_pitch)) * cos(glm::radians(m_yaw));
-	offset.y = radius * sin(glm::radians(m_pitch));
-	offset.z = radius * cos(glm::radians(m_pitch)) * sin(glm::radians(m_yaw));
-
-	// Update camera position
-	m_position = m_targetPos + offset;
-
-	// Update camera orientation vectors
-	m_front = glm::normalize(m_targetPos - m_position); // Look direction
-	m_right = glm::normalize(glm::cross(m_front, m_worldUP)); // Right direction
-	m_up = glm::normalize(glm::cross(m_right, m_front)); // Up direction
-};
-
-void elems::Camera::UpdateZoom(float offset, Shader& shader) {
-	glm::vec3 forward = glm::normalize(m_targetPos - m_position);
-
-	// Move the camera closer/farther from the target
-	m_position += forward * offset;
-
-	// Clamp the zoom distance
-	float distance = glm::length(m_targetPos - m_position);
-	if (distance < m_near) {
-		m_position = m_targetPos - forward * m_near;
-	}
-	else if (distance > m_far) {
-		m_position = m_targetPos - forward * m_far;
-	}
-
-	this->UpdateCameraMatrix(shader);
 };
 
 

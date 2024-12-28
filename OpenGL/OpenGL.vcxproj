@@ -167,6 +167,8 @@
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source Files\Editor.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
+    <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
+    <ClCompile Include="Source Files\Editor\EditorCamera.h" />
     <ClCompile Include="Source Files\elems\entity.cpp" />
     <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />

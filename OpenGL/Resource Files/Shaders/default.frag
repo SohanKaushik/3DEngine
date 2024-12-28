@@ -54,7 +54,7 @@ float ShadowCalculation() {
     float currentDepth = ProjCoords.z;
     
     // Apply bias to avoid shadow acne
-    return currentDepth > closestDepth + 0.005 ? 1.0 : 0.0;
+    return currentDepth > closestDepth + 0.0005 ? 1.0 : 0.0;
 }
 
 

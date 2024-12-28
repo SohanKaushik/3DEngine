@@ -10,7 +10,12 @@
 //    Spotlight
 //};
 
+namespace ui {
+    class Viewport;
+}
+
 namespace elems {
+
     class Light {
 
         enum class LightType {
@@ -23,6 +28,9 @@ namespace elems {
         glm::vec3 m_diffuse;
         glm::vec3 m_ambient;
         glm::vec3 m_specular;
+       // std::unique_ptr<render::ShadowMap> mShadowFBO = std::make_unique<render::ShadowMap>();
+
+        //std::shared_ptr<ui::Viewport> mViewport = std::make_shared<ui::Viewport>();
 
         Light(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec);
 
@@ -38,6 +46,8 @@ namespace elems {
 
         // Common lighting computation to be reused in derived classes
         virtual void SetLightUniform(Shader& shader, const std::string& uniformName) const = 0;
+        virtual glm::mat4 getLightMatrix() = 0;
+        //virtual void UpdadeShadowMatrices(Shader& shader, ui::Viewport& viewport) = 0;
 
         static void render(const std::vector<std::unique_ptr<elems::Light>> lights, Shader& shader);
 
@@ -49,11 +59,14 @@ namespace elems {
         glm::vec3 m_direction;
         glm::mat4 m_lightSpaceMatrix;
         std::unique_ptr<render::ShadowMap> mShadowFBO = std::make_unique<render::ShadowMap>();
+
     public:
         DirectionalLight(const glm::vec3& amb, const glm::vec3& diff, const glm::vec3& spec, const glm::vec3& dir);
 
         void SetLightUniform(Shader& shader, const std::string& uniformName) const override;
-        void UpdadeShadowMatrices(Shader& shadowShader); 
+        unsigned int GetShadowMapTexture() const;
+        void UpdadeShadowMatrices(Shader& shadowShader, ui::Viewport& viewport);
+        glm::mat4 getLightMatrix() override;
     };
 
 

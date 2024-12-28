@@ -1,21 +1,12 @@
 #pragma once
-
-
-#include <glm/gtc/matrix_transform.hpp> 
-#include <string>
-#include <GLFW/glfw3.h>
+#include "pch.h"
 #include "shader/shader.h"
 
-namespace elems {
-
-	enum class ProjectionType { Orthographic, Perspective };
+namespace Editor {
 
 	class Camera {
 
 	private:
-		
-		ProjectionType m_projection;
-		glm::mat4 m_view;
 
 		glm::vec3 m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);  // Camera looks at the origin
 
@@ -31,7 +22,7 @@ namespace elems {
 		float m_far;
 
 		float m_aspectRatio = 1.0f;
-		
+
 
 	public:
 		float m_yaw;
@@ -43,27 +34,20 @@ namespace elems {
 	public:
 
 		Camera() = default;
-
-		// Viewport Camera
 		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis);
-
-		// Perspective Projection
-		Camera(ProjectionType type, float fov, float clip_start, float clip_end);
-
-		//Orthographic Projection
-		//Camera(float aspect, float fov, float nearDis, float farDis);
 
 		glm::vec3 GetCameraPosition() const;
 		glm::mat4 GetProjectionMatrix();
-
-		void SetViewMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 target_pos); 
-		glm::mat4 GetViewMatrix() const; 
-
+		glm::mat4 GetViewMatrix() const;
 		glm::vec3 GetCameraFront() const;
 		glm::vec3 GetCameraRight() const;
-		
+
 		float GetAspectRatio();
-		
+
+
+		void CalKeyboardMovement(glm::vec3 direction, float deltaTime);
+		void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
+
 		void UpdateCameraMatrix(Shader& shader);
 
 		void on_mouse_move(float xOffset, float yOffset, bool constrainPitch);
@@ -73,6 +57,10 @@ namespace elems {
 		void set_aspect(float size);
 
 		void UpdateCameraVectors();      // for camera fly cam
+
+		void UpdateOrbit();
+
+		void UpdateZoom(float offset, Shader& shader);
 
 		float GetDistance();
 

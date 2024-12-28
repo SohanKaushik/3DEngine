@@ -3,13 +3,13 @@
 #include "Editor.h"
 #include "window/window.h"
 
-Editor::Editor(const std::string& app_name)
+Editor::Application::Application(const std::string& app_name)
 {
     mWindow->Init(1000, 800, app_name);
 };
 
 
-void Editor::loop()
+void Editor::Application::loop()
 {   
     while (mWindow->isRunning()) {
        
@@ -24,6 +24,6 @@ void Editor::loop()
     };
 };
 
-void Editor::shutdown() {
+void Editor::Application::shutdown() {
     mWindow->end();
 };

@@ -126,6 +126,17 @@ void render::UIXContext::render_toolbar()
             ImGui::EndMenu();
         }
 
+        // **Help Menu**
+        if (ImGui::BeginMenu("Render")) {
+            if (ImGui::MenuItem("Render Image")) {
+                std::cout << "Render Image" << std::endl;
+            }
+            if (ImGui::MenuItem("Null")) {
+                // Action for About
+            }
+            ImGui::EndMenu();
+        }
+
         // **View Menu**
         if (ImGui::BeginMenu("View")) {
             if (ImGui::MenuItem("Show Grid")) {
@@ -140,23 +151,14 @@ void render::UIXContext::render_toolbar()
         // **Window Menu**
         if (ImGui::BeginMenu("Add")) {
             if (ImGui::MenuItem("Mesh")) {
-               // std::cout << "Adding mesh entity..." << std::endl;
-                //mViewport.AddEntity(elems::EntityType::mesh);
-                //std::cout << "Viewport Address: " << &ui::Viewport::getInstance() << std::endl;
-                mViewport->AddEntity(elems::EntityType::mesh, elems::PrimitiveType::Cube); 
+                mViewport->AddEntity(elems::PrimitiveType::Cube); 
+                // more obj....
+            };
 
-                //mViewport.AddEntity(elems::EntityType::mesh);
-               /* if (mViewport.getInstance) {
-                  
-                }
-                else {
-                    std::cerr << "Error: Viewport is not initialized!" << std::endl;
-                }*/
-            }
+            if (ImGui::MenuItem("Camera")) {
+                mViewport->AddEntity(elems::ProjectionType::Perspective);
+            };
 
-            if (ImGui::MenuItem("Close Window")) {
-                // Action for Close Window
-            }
             ImGui::EndMenu();
         }
 

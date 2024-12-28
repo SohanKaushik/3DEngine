@@ -3,20 +3,23 @@
 #include "window/window.h"
 #include "elems/camera.h"
 
-class Editor
-{
+namespace Editor {
 
-public:
-	Editor(const std::string& app_name);
+	class Application
+	{
 
-	static Editor& Instance() { return *sInstance; }
+	public:
+		Application(const std::string& app_name);
 
-	void init();
-	void loop();                   
-	void shutdown();
+		static Application& Instance() { return *sInstance; }
 
-private:
-	static Editor* sInstance;
+		void init();
+		void loop();
+		void shutdown();
 
-	std::unique_ptr<WindowManager> mWindow = std::make_unique<WindowManager>();
-};
+	private:
+		static Application* sInstance;
+
+		std::unique_ptr<WindowManager> mWindow = std::make_unique<WindowManager>();
+	};
+}

@@ -8,22 +8,15 @@
 #include "ui/grid.h"
 #include "elems/Mesh.h"
 #include "elems/entity.h"
-
+#include "Editor/EditorCamera.h"
 #include "render/framebuffer.h"
 #include "render/ShadowMap.h"
 
 namespace ui {
-
+	
 	class Viewport {
 
 	public:
-
-		/*static Viewport& getInstance() {
-			static Viewport instance;
-			return instance;
-		};
-
-		Viewport() {}*/
 
 		void Init();
 		void render();
@@ -38,7 +31,10 @@ namespace ui {
 
 		void RenderEntities(Shader& shader);
 
-		void AddEntity(elems::EntityType type, elems::PrimitiveType meshtype);
+
+
+		void AddEntity(elems::PrimitiveType meshtype);
+		void AddEntity(elems::ProjectionType type);
 		void renderQuad();
 
 	private:
@@ -48,7 +44,7 @@ namespace ui {
 		std::unique_ptr<ui::Grid> mGrid = std::make_unique<ui::Grid>();
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
-		std::unique_ptr<elems::Camera> mCamera;
+		std::unique_ptr<Editor::Camera> mCamera;
 		std::vector<std::shared_ptr<elems::Entity>> mEntity;
 
 		// Frame-Buffers

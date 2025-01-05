@@ -166,6 +166,8 @@
     <ClCompile Include="dependencies\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source Files\Editor.cpp" />
+    <ClCompile Include="Source Files\Editor\EntityHandler.h" />
+    <ClCompile Include="Source Files\Editor\system.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.h" />
@@ -179,6 +181,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Source Files\render\camera_uniforms.cpp" />
     <ClCompile Include="Source Files\render\framebuffer.cpp" />
     <ClCompile Include="Source Files\render\ShadowMap.cpp" />
     <ClCompile Include="Source Files\render\ui_context.cpp" />
@@ -496,6 +499,10 @@
     <ClInclude Include="dependencies\include\imgui\imstb_truetype.h" />
     <ClInclude Include="dependencies\include\KHR\khrplatform.h" />
     <ClInclude Include="Source Files\Editor.h" />
+    <ClInclude Include="Source Files\Editor\component.h" />
+    <ClInclude Include="Source Files\Editor\entity.h" />
+    <ClInclude Include="Source Files\Editor\ErrorHandler.h" />
+    <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
     <ClInclude Include="Source Files\elems\entity.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />
@@ -503,6 +510,7 @@
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />
     <ClInclude Include="Source Files\pch.h" />
+    <ClInclude Include="Source Files\render\camera_uniforms.h" />
     <ClInclude Include="Source Files\render\framebuffer.h" />
     <ClInclude Include="Source Files\render\ShadowMap.h" />
     <ClInclude Include="Source Files\render\ui_context.h" />

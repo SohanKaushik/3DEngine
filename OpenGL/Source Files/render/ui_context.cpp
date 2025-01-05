@@ -151,12 +151,11 @@ void render::UIXContext::render_toolbar()
         // **Window Menu**
         if (ImGui::BeginMenu("Add")) {
             if (ImGui::MenuItem("Mesh")) {
-                mViewport->AddEntity(elems::PrimitiveType::Cube); 
+                mViewport->AddEntity();
                 // more obj....
             };
 
             if (ImGui::MenuItem("Camera")) {
-                mViewport->AddEntity(elems::ProjectionType::Perspective);
             };
 
             ImGui::EndMenu();

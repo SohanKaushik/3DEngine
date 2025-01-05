@@ -12,6 +12,9 @@
 #include "render/framebuffer.h"
 #include "render/ShadowMap.h"
 
+#include "Editor/EntityHandler.h"
+
+
 namespace ui {
 	
 	class Viewport {
@@ -28,14 +31,8 @@ namespace ui {
 
 		void RenderSceneUI();
 
+		Editor::Entity& AddEntity();
 
-		void RenderEntities(Shader& shader);
-
-
-
-		void AddEntity(elems::PrimitiveType meshtype);
-		void AddEntity(elems::ProjectionType type);
-		void renderQuad();
 
 	private:
 		double lastX = 400.0, lastY = 300.0; // Default mouse position
@@ -45,7 +42,9 @@ namespace ui {
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<Editor::Camera> mCamera;
-		std::vector<std::shared_ptr<elems::Entity>> mEntity;
+	
+		Editor::EntityHandler* m_entity = new Editor::EntityHandler();
+
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
@@ -53,6 +52,5 @@ namespace ui {
 
 		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
 
-		
 	};
 }

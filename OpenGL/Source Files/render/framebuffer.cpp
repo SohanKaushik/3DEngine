@@ -61,6 +61,7 @@ unsigned int render::DefualtFrameBuffer::get_texture()
 
 
 
+
 // Anti- Aliasing Frame-Buffer
 void render::AntiAliasingFrameBuffer::create_buffer(int width, int height) {
 
@@ -122,3 +123,42 @@ unsigned int render::AntiAliasingFrameBuffer::get_texture()
 {
 	return texture;
 };
+
+
+//void render::CameraUniformFrameBuffer::create_buffer(const elems::CameraUniforms& uniforms)
+//{
+//	// Generating a uniform object framebuffer
+//	glGenBuffers(1, &cameraUBO);
+//	glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+//
+//	// Allocate memory for the UBO (but don't fill it yet)
+//	glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraUniforms), nullptr, GL_DYNAMIC_DRAW);
+//
+//	// Unbind the buffer
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//};
+//
+//
+//void render::CameraUniformFrameBuffer::update_buffer(const elems::CameraUniforms& uniforms)
+//{
+//	// Bind the existing UBO
+//	glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+//
+//	// Update the buffer's contents
+//	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraUniforms), &uniforms);
+//
+//	// Unbind the buffer
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//}
+//
+//
+//
+//void render::CameraUniformFrameBuffer::bind()
+//{
+//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
+//};
+//
+//void render::CameraUniformFrameBuffer::unbind()
+//{
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//};

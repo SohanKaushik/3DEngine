@@ -8,9 +8,9 @@
 namespace elems {
 
     enum class PrimitiveType {
-        Cube,
-        Plane,
-        Sphere
+        cube,
+        plane,
+        sphere
     };
 
     class Mesh {

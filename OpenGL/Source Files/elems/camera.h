@@ -1,21 +1,27 @@
 #pragma once
+#include "pch.h"
 
-
-#include <glm/gtc/matrix_transform.hpp> 
-#include <string>
-#include <GLFW/glfw3.h>
 #include "shader/shader.h"
+#include "render/camera_uniforms.h"
+#include "render/framebuffer.h"
 
 namespace elems {
 
 	enum class ProjectionType { Orthographic, Perspective };
+
+	struct CameraUniforms {
+		glm::mat4 view;
+		glm::mat4 proj;
+		glm::vec3 pos;
+		glm::vec3 rot;
+		float padding; // Ensure 16-byte alignment if needed
+	};
 
 	class Camera {
 
 	private:
 		
 		ProjectionType m_projection;
-		glm::mat4 m_view;
 
 		glm::vec3 m_targetPos = glm::vec3(0.0f, 0.0f, 0.0f);  // Camera looks at the origin
 
@@ -25,27 +31,15 @@ namespace elems {
 		glm::vec3 m_worldUP = glm::vec3(0.0f, 1.0f, 0.0f);    // Explicitly set world up
 		glm::vec3 m_position = glm::vec3(0.0f, 0.0f, -1.0f);  // Camera starts at (0, 0, -1)
 
+		bool isActive;
 
 		float m_fov;
 		float m_near;
 		float m_far;
 
-		float m_aspectRatio = 1.0f;
-		
-
 	public:
-		float m_yaw;
-		float m_pitch;
-
-		float m_moveSpeed;
-		float m_senstivity;
-
-	public:
-
+		CameraUniforms mCameraUniforms;
 		Camera() = default;
-
-		// Viewport Camera
-		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis);
 
 		// Perspective Projection
 		Camera(ProjectionType type, float fov, float clip_start, float clip_end);
@@ -55,27 +49,15 @@ namespace elems {
 
 		glm::vec3 GetCameraPosition() const;
 		glm::mat4 GetProjectionMatrix();
+		glm::mat4 GetViewMatrix() const;
 
-		void SetViewMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 target_pos); 
-		glm::mat4 GetViewMatrix() const; 
-
-		glm::vec3 GetCameraFront() const;
-		glm::vec3 GetCameraRight() const;
-		
-		float GetAspectRatio();
-		
+		void SetViewMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 target_pos);
 		void UpdateCameraMatrix(Shader& shader);
 
-		void on_mouse_move(float xOffset, float yOffset, bool constrainPitch);
-		//void on_mouse_scroll();
-
-	public:
-		void set_aspect(float size);
-
-		void UpdateCameraVectors();      // for camera fly cam
-
-		float GetDistance();
-
+		
+	private:
+		//std::unique_ptr<render::CameraUniforms> mCmaeraUniforms; 
+		//std::unique_ptr<render::CameraUniformFrameBuffer> mCameraFrameBuffer; 
 	};
 
 }

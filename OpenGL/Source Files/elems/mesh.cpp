@@ -4,13 +4,13 @@
 elems::Mesh::Mesh(PrimitiveType type)
 {
     switch (type) {
-    case PrimitiveType::Cube:
+    case PrimitiveType::cube:
         mPrimitives->cube();
         break;
-    case PrimitiveType::Plane:
+    case PrimitiveType::plane:
         mPrimitives->plane();
         break;
-    case PrimitiveType::Sphere:
+    case PrimitiveType::sphere:
         std::cerr << "PrimitiveType::Sphere is not yet implemented.\n";
         return;
     default:

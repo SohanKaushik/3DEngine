@@ -4,6 +4,7 @@
 #include "elems/camera.h"
 #include "shader/shader.h"
 #include "elems/entity.h"
+#include "render/camera_uniforms.h"
 
 namespace elems {
 
@@ -71,9 +72,8 @@ namespace elems {
 
         void render(Shader& shader) override {
 
-            m_model = glm::mat4(1.0f);
-
-            m_model = glm::translate(m_model, m_transform.position);
+             
+            m_model = glm::translate(glm::mat4(1.0f), m_transform.position);
 
        
             glm::mat4 rotMatrix = glm::mat4(1.0f);
@@ -83,70 +83,65 @@ namespace elems {
             rotMatrix = glm::rotate(rotMatrix, glm::radians(m_transform.rotation.z), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotate around Z
             
 
-           /* m_transform.rotation = rotx * m_transform.rotation;
-            m_transform.rotation = roty * m_transform.rotation;
-            m_transform.rotation = rotz * m_transform.rotation;*/
-
-
-           
-            m_model = rotMatrix * m_model;
-            m_model = glm::scale(m_model, m_transform.scale);
+           // m_model = rotMatrix * m_model;
+            //m_model = glm::scale(m_model, m_transform.scale);
 
             // Pass the model matrix and color to the shader
             shader.SetUniformMat4f("model", m_model);
             shader.SetUniform3fv("color", mColor);
 
-            // Draw the mesh
-            mMesh->draw();
+            //// Draw the mesh
+           // mMesh->draw();
         }
     };
     
-   class CameraEntity : public Entity {
+   //class CameraEntity : public Entity {
 
-      private:
-        Transform m_transform;
+   //   private:
+   //     Transform m_transform;
 
-   public:
-        float m_fov;
-        float m_clipStart;
-        float m_clipEnd;
-        std::unique_ptr<elems::Camera> mCamera;
+   //public:
+   //     float m_fov;
+   //     float m_clipStart;
+   //     float m_clipEnd;
+   //     std::unique_ptr<elems::Camera> mCamera;
+   //     std::unique_ptr<render::CameraUniforms> mCmaeraUniforms;
+   //     std::unique_ptr<render::CameraUniformFrameBuffer> mCameraFrameBuffer;
 
-        CameraEntity(elems::ProjectionType type, float fov, const Transform& transform, float startclip, float endclip)
-            :m_transform(transform), m_fov(fov), m_clipStart(startclip), m_clipEnd(m_clipEnd){
-            mCamera = std::make_unique<elems::Camera>(type, m_fov,  m_clipStart, m_clipEnd);
-        };
+   //     CameraEntity(elems::ProjectionType type, float fov, const Transform& transform, float startclip, float endclip)
+   //         :m_transform(transform), m_fov(fov), m_clipStart(startclip), m_clipEnd(m_clipEnd){
+   //         mCamera = std::make_unique<elems::Camera>(type, m_fov,  m_clipStart, m_clipEnd);
 
-        void init(){}
-        void render(Shader& shader) {
+   //     };
 
-            glm::mat4 view = glm::mat4(1.0f);
-            view = glm::rotate(view, glm::radians(m_transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-            view = glm::rotate(view, glm::radians(m_transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-            view = glm::rotate(view, glm::radians(m_transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-            view = glm::translate(view, -m_transform.position);
+   //     void init(){}
+   //     void render(Shader& shader) {
 
-            //mCamera->SetViewMatrix(m_transform.position, m_transform.rotation, glm::vec3(0.0f, 0.0f, 0.0f));
+   //         glm::mat4 view = glm::mat4(1.0f);
+   //         view = glm::rotate(view, glm::radians(m_transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+   //         view = glm::rotate(view, glm::radians(m_transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+   //         view = glm::rotate(view, glm::radians(m_transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+   //         view = glm::translate(view, -m_transform.position);
 
-            shader.SetUniformMat4f("view", mCamera->GetViewMatrix()); 
-            shader.SetUniformMat4f("projection", mCamera->GetProjectionMatrix()); 
-        };
-        
-        void update() {
+   //         
+   //     };
+   //     
+   //     void update() {
 
-        };
+   //     };
 
+   //     void setPosition(const glm::vec3& position) {
+   //         m_transform.position = position;
+   //         //mCamera->SetViewMatrix(position, m_transform.rotation, glm::vec3(0.0f, 0.0f, 0.0f));
+   //     };
 
-        void setPosition(const glm::vec3& position) {
-            m_transform.position = position;
-        };
+   //     void setScale(const glm::vec3& scale) {
+   //         //m_transform.scale = scale;
+   //     };
 
-        void setScale(const glm::vec3& scale) {
-            m_transform.scale = scale;
-        };
-
-        void setRotation(const glm::vec3& rot) {
-            m_transform.rotation = rot;
-        };
-    };
+   //     void setRotation(const glm::vec3& rot) {
+   //         m_transform.rotation = rot;
+   //         //mCamera->SetViewMatrix(m_transform.position, rot, glm::vec3(0.0f, 0.0f, 0.0f
+   //     };
+   // };
 }

@@ -117,6 +117,15 @@
     <ClCompile Include="Source Files\Editor\EditorCamera.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\render\camera_uniforms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Editor\EntityHandler.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Editor\system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1065,6 +1074,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\render\ShadowMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\render\camera_uniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\ErrorHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

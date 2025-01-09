@@ -28,6 +28,10 @@ namespace ui {
 
 		void on_orbit(float xOffset, float yOffset, float speed, bool constraint);
 		void on_zoom(float offset, float senst);
+		void on_mouse_click(double mouse_x, double mouse_y, GLFWwindow* window) {};
+
+		//glm::vec3 get_ray_from_mouse(double mouse_x, double mouse_y, GLFWwindow* window);
+
 
 		void RenderSceneUI();
 
@@ -43,8 +47,7 @@ namespace ui {
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<Editor::Camera> mCamera;
 	
-		Editor::EntityHandler* m_entity = new Editor::EntityHandler();
-
+		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();

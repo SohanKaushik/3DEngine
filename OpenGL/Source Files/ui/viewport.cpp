@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ui/viewport.h"
 #include "Editor/system.h"
+#include "Editor/maths/ray_intersection.h"
+#include <Editor/maths/intersection_handler.h>
 
 using namespace elems;
 using namespace Editor;
@@ -14,7 +16,7 @@ void ui::Viewport::Init() {
 
 	mFramebuffer->create_buffer(1000, 800);
 	mShadowFrameBuffer->create_buffer(2048, 2048);
-
+	
 	// Initialize camera and grid
 	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
@@ -34,7 +36,7 @@ void ui::Viewport::render() {
 	
 	mFramebuffer->bind();
 
-	m_entity->update(mShader[0]);
+	mEntityHandler->update(mShader[0]);
 
 	mShader[0].use();
 	mCamera->UpdateCameraMatrix(mShader[0]);                   
@@ -62,10 +64,6 @@ void ui::Viewport::render() {
 void ui::Viewport::destroy()
 {
 	mGrid->destroy();
-	if (m_entity) {
-		delete m_entity; 
-		m_entity = nullptr; 
-	}
 };
 
 void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool constraint) {
@@ -79,7 +77,41 @@ void ui::Viewport::on_orbit(float xOffset, float yOffset, float speed, bool cons
 void ui::Viewport::on_zoom(float offset, float senst) {
 
 	mCamera->UpdateZoom(static_cast<float>(offset) * senst, mShader[0]);
-};
+}
+
+//void ui::Viewport::on_mouse_click(double mouse_x, double mouse_y, GLFWwindow* window) {
+//	// Get the ray from the mouse click position
+//	glm::vec3 ray_direction = get_ray_from_mouse(mouse_x, mouse_y, window);
+//	glm::vec3 ray_origin = glm::vec3(0.0f, 0.0f, 0.0f); // Camera position (or viewport position)
+//
+//	// Create an IntersectionHandler instance
+//	IntersectionHandler intersectionHandler(mEntityHandler);
+//
+//	// Check if the ray intersects with any entity
+//	Editor::Entity* selectedEntity = intersectionHandler.CheckIntersection(ray_origin, ray_direction);
+//	if (selectedEntity) {
+//		// Handle the selected entity (e.g., highlight, select, etc.)
+//		mSelectedEntity = selectedEntity;  // Update the selected entity
+//	}
+//}
+//
+//glm::vec3 ui::Viewport::get_ray_from_mouse(double mouse_x, double mouse_y, GLFWwindow* window) {
+//	// Get the window size
+//	int window_width, window_height;
+//	glfwGetWindowSize(window, &window_width, &window_height);
+//
+//	// Normalize mouse coordinates to NDC (-1 to 1)
+//	float normalized_x = (2.0f * static_cast<float>(mouse_x) / window_width) - 1.0f;
+//	float normalized_y = 1.0f - (2.0f * static_cast<float>(mouse_y) / window_height);
+//
+//	// Assuming a basic camera setup (forward-looking, no specific camera class)
+//	glm::vec3 ray_origin(0.0f, 0.0f, 0.0f); // Origin of the ray (e.g., camera position)
+//	glm::vec3 ray_direction(normalized_x, normalized_y, -1.0f); // Ray direction (e.g., forward)
+//
+//	// Optionally apply any transformations based on viewport or camera perspective
+//	return glm::normalize(ray_direction);
+//}
+
 
 void ui::Viewport::RenderSceneUI() {
 
@@ -118,7 +150,7 @@ void ui::Viewport::RenderSceneUI() {
 	m_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 	// Resize Image Texture too .......(needs to be done)
-	mCamera->set_aspect(m_size.x / m_size.y);
+	mCamera->set_aspect(800.0f/600.0f);
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// add rendered texture to ImGUI scene window
@@ -131,8 +163,7 @@ void ui::Viewport::RenderSceneUI() {
 }
 
 Editor::Entity& ui::Viewport::AddEntity() {
-
-	auto entity = m_entity->CreateEntity();
+	auto entity = mEntityHandler->CreateEntity();
 	entity->AddComponent<TransformComponent>();
 	entity->AddComponent<MeshComponent>(); 
 	return *entity;

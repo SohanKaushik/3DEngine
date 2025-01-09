@@ -126,6 +126,9 @@
     <ClCompile Include="Source Files\Editor\system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\render\render_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1091,6 +1094,15 @@
     <ClInclude Include="Source Files\Editor\ErrorHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\render\render_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\maths\ray_intersection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\maths\intersection_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc">
@@ -1534,6 +1546,8 @@
     <None Include="Resource Files\Shaders\grid.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Resource Files\Shaders\texture.frag" />
+    <None Include="Resource Files\Shaders\texture.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

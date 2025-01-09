@@ -7,14 +7,21 @@
 namespace Editor {
 
     class EntityHandler {
+
     public:
+    public:
+        static std::shared_ptr<EntityHandler> GetInstance() {
+            static EntityHandler* instance = new EntityHandler();
+            return std::shared_ptr<EntityHandler>(instance);
+        }
 
         // Create a new entity
-        Entity* CreateEntity() {
-            int entityId = nextEntId++;
-            auto entity = std::make_unique<Entity>(entityId);
-            Entity* entityPtr = entity.get();
-            entities.push_back(std::move(entity));
+        std::shared_ptr<Entity> CreateEntity() {
+            int entityId = ID++; 
+            entities.emplace_back(std::make_unique<Entity>(entityId));
+            std::shared_ptr<Entity> entityPtr = entities.back();
+
+            std::cout << "Entity: [" << ID  << "]" << std::endl;
             return entityPtr;
         }
 
@@ -45,16 +52,31 @@ namespace Editor {
         }
 
         void update(Shader& shader) {
-            entities[0]->GetComponent<TransformComponent>()->SetPosition(glm::vec3(5.0f, 0.0f, 0.0f));
             m_tsystem->update(entities, shader);
             m_msytem->update(entities, shader);
         }
 
+        auto GetSelectedEntity() const {
+           
+            if (entities.empty()) {
+                std::cerr << "Entity is Empty!! \n";
+                throw std::runtime_error("No selected entity");
+            }
+            return entities[0]->GetComponent<TransformComponent>();
+        }
+
+
     private:
-        int nextEntId = 0;  // To generate unique IDs for entities
+        int ID = 0;  // To generate unique IDs for entities
         std::vector<std::shared_ptr<Entity>> entities;
+
         std::unique_ptr<Editor::TransformSystem> m_tsystem = std::make_unique<Editor::TransformSystem>();
         std::unique_ptr<Editor::MeshSystem> m_msytem = std::make_unique<Editor::MeshSystem>();
+
+        EntityHandler() = default;  
+        // Prevent copying
+        EntityHandler(const EntityHandler&) = delete;
+        EntityHandler& operator=(const EntityHandler&) = delete;
     };
 
 }

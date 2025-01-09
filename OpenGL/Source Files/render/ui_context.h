@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "elems/mesh.h"
 #include "ui/viewport.h"
+#include "Editor/EntityHandler.h"
 
 namespace render {
 
@@ -28,8 +29,7 @@ namespace render {
 		void ShowAddMenu();
 
 	private:
-		//ui::Viewport& mViewport;
-		//ui::Viewport& mViewport = ui::Viewport::getInstance();
+		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
 		ui::Viewport* mViewport = nullptr;
 	};
 }

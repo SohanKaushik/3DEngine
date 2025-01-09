@@ -191,4 +191,12 @@ void WindowManager::handleInputs() {
         }
     };
 
+
+    // Check for mouse click for selection (left mouse button)
+    if (input.isMousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        // Pass the mouse position to the viewport for entity selection
+        mViewport->on_mouse_click(static_cast<float>(mouseX), static_cast<float>(mouseY), this->GetWindow());
+    }
+
+
 };

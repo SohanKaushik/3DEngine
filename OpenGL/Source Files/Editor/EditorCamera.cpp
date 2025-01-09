@@ -15,7 +15,7 @@ Editor::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch,
 
 glm::mat4 Editor::Camera::GetProjectionMatrix() {
 
-	return glm::perspective(glm::radians(m_fov), 1.0f, m_near, m_far);
+	return glm::perspective(glm::radians(m_fov), this->GetAspectRatio(), m_near, m_far);
 };
 
 

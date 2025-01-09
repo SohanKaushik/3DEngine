@@ -25,8 +25,10 @@ namespace Editor {
                      continue;
                   }
                    
-                //std::cout << "Entity ID: [" << index << "] " << "Position: " << glm::to_string(transform->m_transform.position) << std::endl;
                 auto transform = entity->GetComponent<TransformComponent>();
+                //std::cout << "Entity ID: [" << index << "] " << "Position: " << glm::to_string(transform->m_transform.position) << std::endl;
+
+                //std::cout << glm::to_string(transform->GetPosition()) << std::endl;
                 shader.SetUniformMat4f("model", transform->GetModelUniforms());
             }
         }

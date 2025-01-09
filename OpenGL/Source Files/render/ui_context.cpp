@@ -68,10 +68,10 @@ void render::UIXContext::pre_render() {
 void render::UIXContext::render() {
  
     render_toolbar();
-    ImGui::ShowDemoWindow();
-   // render_inspector();
+    //ImGui::ShowDemoWindow();
+    render_inspector();
     //render_hierarchy();
-   // render_assets_hierarchy();
+    //render_assets_hierarchy();
 };
 
 void render::UIXContext::post_render() {
@@ -156,6 +156,10 @@ void render::UIXContext::render_toolbar()
             };
 
             if (ImGui::MenuItem("Camera")) {
+                //...
+                auto entity = mEntityHandler->GetSelectedEntity();
+
+               // std::cout << glm::to_string(entity->GetPosition()) << std::endl;
             };
 
             ImGui::EndMenu();
@@ -202,8 +206,9 @@ void render::UIXContext::ShowFileMenu()
         }
 
         ImGui::Separator();
-        if (ImGui::MenuItem("Exit")) {
-            // Action for Exit
+        if (ImGui::MenuItem("Quit")) {
+            std::cout << "...shutdown..." << std::endl;
+            exit(0); 
         }
 
         ImGui::EndMenu();
@@ -214,18 +219,54 @@ void render::UIXContext::ShowFileMenu()
 }
 
 
+glm::vec3 position, rotation, scale = glm::vec3(0.0f);
+
 void render::UIXContext::render_inspector()
 {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.5f, 0.5f));          // Override for one window
+    // Push custom background color for the window body
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.08f, 1.0f));
 
-    // Create main dock space
-    ImGui::Begin("Inspector");
+    // Push custom background color for the title bar (both active and inactive)
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); // Inactive title bar color
+    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); // Active title bar color
 
-    ImGui::DockSpace(ImGui::GetID("Inspector"));
+    // Create the Inspector window (no docking here)
+    if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
+    {
+        auto entity = mEntityHandler->GetSelectedEntity();
+        glm::vec3& position = entity->GetPosition();
+        glm::vec3& scale = entity->GetScale();
 
+        ImGui::Text("Transform");
+        ImGui::Separator();
+        // Position Controls (X, Y, Z)
+        ImGui::Text("Position");
+        ImGui::SliderFloat("x###position_x", &position.x, -10.0f, 10.0f);
+        ImGui::SliderFloat("y###position_y", &position.y, -10.0f, 10.0f);
+        ImGui::SliderFloat("z###position_z", &position.z, -10.0f, 10.0f);
+
+        // Rotation Controls (X, Y, Z)
+        ImGui::Text("Rotation");
+        ImGui::SliderFloat("x###rotation_x", &rotation.x, 0.0f, 360.0f);
+        ImGui::SliderFloat("y###rotation_y", &rotation.y, 0.0f, 360.0f);
+        ImGui::SliderFloat("z###rotation_z", &rotation.z, 0.0f, 360.0f);
+
+        // Scale Controls (X, Y, Z)
+        ImGui::Text("Scale");
+        ImGui::SliderFloat("x###scale_x", &scale.x, 0.0f, 10.0f);
+        ImGui::SliderFloat("y###scale_y", &scale.y, 0.0f, 10.0f);
+        ImGui::SliderFloat("z###scale_z", &scale.z, 0.0f, 10.0f);
+
+        // You can add more controls or placeholders as needed
+
+    }
     ImGui::End();
-    ImGui::PopStyleVar();
+
+    // Pop the style colors to restore previous settings
+    ImGui::PopStyleColor(3); // Pop all three style colors
 }
+
+
 void render::UIXContext::render_hierarchy()
 {
     ImGui::Begin("Hierarchy");

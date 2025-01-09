@@ -25,7 +25,6 @@ namespace Editor {
             auto component = std::make_shared<T>(std::forward<Args>(args)...);
             components[type] = component;
 
-            std::cout << "New Component: " << type.name() << " added!" << std::endl;
             return *component;
         }
 
@@ -53,6 +52,7 @@ namespace Editor {
 
     private:
         int id;
+
         std::unordered_map<std::type_index, std::shared_ptr<Component>> components;
     };
 

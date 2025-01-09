@@ -163,6 +163,7 @@ void ui::Viewport::RenderSceneUI() {
 }
 
 Editor::Entity& ui::Viewport::AddEntity() {
+
 	auto entity = mEntityHandler->CreateEntity();
 	entity->AddComponent<TransformComponent>();
 	entity->AddComponent<MeshComponent>(); 

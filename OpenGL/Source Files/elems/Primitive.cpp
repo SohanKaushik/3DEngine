@@ -88,6 +88,8 @@ void elems::Primitive::cube()
     
 
 }
+
+
 const std::vector<glm::vec3>& elems::Primitive::getVertices() const {
     return m_vertices;
 };

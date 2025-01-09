@@ -60,7 +60,7 @@ namespace Editor {
 		}
 
 		auto& GetScale() {
-			m_model = glm::scale(glm::mat4(1.0f), m_transform.scale);
+			m_model = glm::scale(m_model, m_transform.scale);
 			return m_transform.scale;
 		}
 

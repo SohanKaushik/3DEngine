@@ -56,14 +56,18 @@ namespace Editor {
             m_msytem->update(entities, shader);
         }
 
-        auto GetSelectedEntity() const {
+       auto GetSelectedEntity() const {
            
             if (entities.empty()) {
                 std::cerr << "Entity is Empty!! \n";
                 throw std::runtime_error("No selected entity");
             }
-            return entities[0]->GetComponent<TransformComponent>();
+            return entities[ID - 1];
         }
+
+       /* auto GetSelectedEntity() const {
+            return entities;
+        }*/
 
 
     private:

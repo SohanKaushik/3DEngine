@@ -11,7 +11,7 @@ elems::Mesh::Mesh(PrimitiveType type)
         mPrimitives->plane();
         break;
     case PrimitiveType::sphere:
-        std::cerr << "PrimitiveType::Sphere is not yet implemented.\n";
+        std::cerr << "Sphere is not yet been implemented.\n";
         return;
     default:
         throw std::runtime_error("Unsupported PrimitiveType!");

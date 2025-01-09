@@ -150,10 +150,37 @@ void render::UIXContext::render_toolbar()
 
         // **Window Menu**
         if (ImGui::BeginMenu("Add")) {
-            if (ImGui::MenuItem("Mesh")) {
-                mViewport->AddEntity();
-                // more obj....
-            };
+
+            if (ImGui::BeginMenu("Mesh")) {
+                ImGui::PushID("Plane");
+                if (ImGui::MenuItem("Plane")) {
+                    auto plane = mEntityHandler->CreateEntity();
+                    plane->AddComponent<Editor::TransformComponent>();
+                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::plane);
+                }
+                ImGui::PopID();  // Pop the ID after rendering
+
+                ImGui::PushID("Sphere");
+                if (ImGui::MenuItem("Sphere")) {
+                    auto plane = mEntityHandler->CreateEntity();
+                    plane->AddComponent<Editor::TransformComponent>();
+                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);
+                }
+                ImGui::PopID();
+
+                ImGui::PushID("Cube");
+                if (ImGui::MenuItem("Cube")) {
+                    auto cube = mEntityHandler->CreateEntity();
+                    cube->AddComponent<Editor::TransformComponent>();
+                    cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::cube);
+                }
+                ImGui::PopID();
+
+                ImGui::EndMenu();
+            }
+
+            // Now the mesh subsets should appear in the correct order above
+
 
             if (ImGui::MenuItem("Camera")) {
                 //...
@@ -219,8 +246,6 @@ void render::UIXContext::ShowFileMenu()
 }
 
 
-glm::vec3 position, rotation, scale = glm::vec3(0.0f);
-
 void render::UIXContext::render_inspector()
 {
     // Push custom background color for the window body
@@ -233,31 +258,33 @@ void render::UIXContext::render_inspector()
     // Create the Inspector window (no docking here)
     if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
     {
-        auto entity = mEntityHandler->GetSelectedEntity();
+        auto entity = mEntityHandler->GetSelectedEntity()->GetComponent<Editor::TransformComponent>();
+        
         glm::vec3& position = entity->GetPosition();
-        glm::vec3& scale = entity->GetScale();
+        glm::vec3& scale = entity->GetScale();  
+        glm::vec3& rotation = entity->GetRotation();  
+
+        float drag_senstivity = 0.5f;
 
         ImGui::Text("Transform");
         ImGui::Separator();
         // Position Controls (X, Y, Z)
         ImGui::Text("Position");
-        ImGui::SliderFloat("x###position_x", &position.x, -10.0f, 10.0f);
-        ImGui::SliderFloat("y###position_y", &position.y, -10.0f, 10.0f);
-        ImGui::SliderFloat("z###position_z", &position.z, -10.0f, 10.0f);
+        ImGui::DragFloat("x###position_x", &position.x, drag_senstivity, -1000.0f, 1000.0f);
+        ImGui::DragFloat("y###position_y", &position.y, drag_senstivity, -1000.0f, 1000.0f);
+        ImGui::DragFloat("z###position_z", &position.z, drag_senstivity, -1000.0f, 1000.0f);
 
         // Rotation Controls (X, Y, Z)
         ImGui::Text("Rotation");
-        ImGui::SliderFloat("x###rotation_x", &rotation.x, 0.0f, 360.0f);
-        ImGui::SliderFloat("y###rotation_y", &rotation.y, 0.0f, 360.0f);
-        ImGui::SliderFloat("z###rotation_z", &rotation.z, 0.0f, 360.0f);
+        ImGui::DragFloat("x###rotation_x", &rotation.x, drag_senstivity, 0.0f, 360.0f); 
+        ImGui::DragFloat("y###rotation_y", &rotation.y, drag_senstivity, 0.0f, 360.0f); 
+        ImGui::DragFloat("z###rotation_z", &rotation.z, drag_senstivity, 0.0f, 360.0f); 
 
         // Scale Controls (X, Y, Z)
         ImGui::Text("Scale");
-        ImGui::SliderFloat("x###scale_x", &scale.x, 0.0f, 10.0f);
-        ImGui::SliderFloat("y###scale_y", &scale.y, 0.0f, 10.0f);
-        ImGui::SliderFloat("z###scale_z", &scale.z, 0.0f, 10.0f);
-
-        // You can add more controls or placeholders as needed
+        ImGui::DragFloat("x###scale_x", &scale.x, drag_senstivity * 0.2f, 0.0f, 100.0f);
+        ImGui::DragFloat("y###scale_y", &scale.y, drag_senstivity * 0.2f, 0.0f, 100.0f);
+        ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
 
     }
     ImGui::End();

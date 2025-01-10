@@ -1,18 +1,7 @@
 #include "pch.h"
 #include "Primitive.h"
 
-//elems::Primitive::Primitive()
-//{
-//    cube();
-//   //m_buffer->create(m_vertices, m_indices);
-//};
 
-void elems::Primitive::render()
-{
-    //m_buffer->bind();
-   // m_buffer->draw(m_indices.size());
-
-}
 void elems::Primitive::plane()
 {
     m_vertices = {
@@ -30,7 +19,6 @@ void elems::Primitive::plane()
 
 void elems::Primitive::cube()
 {
-   // m_buffer->create(vertices, indices);
     m_vertices = {
     // Front face
     {-1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},

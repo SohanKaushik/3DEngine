@@ -1097,6 +1097,9 @@
     <ClInclude Include="Source Files\Editor\maths\intersection_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\elems\input_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc">

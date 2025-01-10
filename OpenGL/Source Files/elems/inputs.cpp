@@ -37,6 +37,15 @@ bool InputManager::isKeyPressed(int key) {
 };
 
 
+bool InputManager::isKeyPressedDown(int key) {
+	// Check if the key is pressed and hasn't been processed yet
+	if (keyStates[key] && !keyPressFlags[key]) {
+		keyPressFlags[key] = true;  // Set flag so it only registers once
+		return true;
+	}
+	return false;
+}
+
 // Checks if a specific mouse button is pressed
 bool InputManager::isMousePressed(int button) {
 	return mouseButtonStates[button];
@@ -49,6 +58,9 @@ void InputManager::getMousePosition(double& x, double& y) {
 
 // Processes key events (key press/release)
 void InputManager::processKeyCallBack(int key, int scancode, int action, int mods) {
+	if (action == GLFW_RELEASE) {
+		keyPressFlags[key] = false;  // Reset flag when key is released
+	}
 	keyStates[key] = (action != GLFW_RELEASE);		             // If the action is not RELEASE, mark the key as pressed
 };
 

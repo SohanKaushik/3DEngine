@@ -44,30 +44,34 @@ namespace Editor {
             }*/
         }
 
-        void RemoveEntity(int entityId) {
-           /* entities.erase(std::remove_if(entities.begin(), entities.end(),
-                [entityId](const std::unique_ptr<Entity>& entity) {
-                    return entity->GetID() == entityId;
-                }), entities.end());*/
-        }
-
         void update(Shader& shader) {
             m_tsystem->update(entities, shader);
             m_msytem->update(entities, shader);
         }
 
-       auto GetSelectedEntity() const {
-           
-            if (entities.empty()) {
-                std::cerr << "Entity is Empty!! \n";
-                throw std::runtime_error("No selected entity");
+        auto GetSelectedEntity() const {
+            if (ID - 1 >= 0 && ID - 1 < entities.size()) {
+                return entities[ID - 1];
             }
-            return entities[ID - 1];
+            else {
+                return std::shared_ptr<Entity>(); // Return an empty shared pointer
+            }
         }
 
-       /* auto GetSelectedEntity() const {
-            return entities;
-        }*/
+       void TerminateEntity() {
+           if (ID > 0 && ID <= entities.size()) {
+               entities.erase(entities.begin() + (ID - 1));
+               std::cout << "Entity: [" << ID << "] : Removed" << std::endl;
+
+               // Decrement ID if needed
+               if (ID > 0) {
+                   --ID;
+               }
+           }
+           else {
+               std::cerr << "Error: Invalid entity ID." << std::endl;
+           }
+       }
 
 
     private:

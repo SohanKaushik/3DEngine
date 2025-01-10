@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "grid.h"
 
-ui::Grid::Grid(): m_size(1000), m_spacing(5.0f), m_color(glm::vec3(0.4, 0.4, 0.4)), m_dMin(10.0f), m_dMax(300.0f)  
+ui::Grid::Grid(): m_size(1000), m_spacing(1.0f), m_color(glm::vec3(0.4, 0.4, 0.4)), m_dMin(10.0f), m_dMax(100.0f)  
 {}
 
 void ui::Grid::Init()
 {   
-    std::cout << "grid" << std::endl;
-
     std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indices;
     int gridSize = m_size;
@@ -61,7 +59,10 @@ void ui::Grid::render(Shader& shader, glm::vec3 camPosition) {
     shader.use();
     shader.SetUniformMat4f("model", glm::mat4(1.0f));
     shader.SetUniform3fv("u_cameraPosition", camPosition);
-    //shader.SetUniform3fv("uGridColor", m_color);     
+
+    // Minma and Maxima for grid lines
+    shader.SetUniform1f("dMin", 10.0f);
+    shader.SetUniform1f("dMax", 100.0f);
 
     mVertexIndexBuffer->bind();
     mVertexIndexBuffer->draw(GL_LINES);

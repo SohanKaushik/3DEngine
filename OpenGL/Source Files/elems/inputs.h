@@ -12,6 +12,7 @@ public:
 
 	void Initialize(GLFWwindow* window);
 	bool isKeyPressed(int key);
+	bool isKeyPressedDown(int key);
 	bool isMousePressed(int button);
 	void getMousePosition(double& x, double& y);
 
@@ -23,7 +24,9 @@ private:
 
 	GLFWwindow* window;
 	std::unordered_map<int, bool> keyStates;
+	std::unordered_map<int, bool> keyPressFlags;      
 	std::unordered_map<int, bool> mouseButtonStates;
+
 	double mouseX, mouseY;
 
 

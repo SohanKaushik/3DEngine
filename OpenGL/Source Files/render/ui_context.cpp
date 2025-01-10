@@ -162,9 +162,9 @@ void render::UIXContext::render_toolbar()
 
                 ImGui::PushID("Sphere");
                 if (ImGui::MenuItem("Sphere")) {
-                    auto plane = mEntityHandler->CreateEntity();
+                   /* auto plane = mEntityHandler->CreateEntity();
                     plane->AddComponent<Editor::TransformComponent>();
-                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);
+                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);*/
                 }
                 ImGui::PopID();
 
@@ -248,21 +248,23 @@ void render::UIXContext::ShowFileMenu()
 
 void render::UIXContext::render_inspector()
 {
-    // Push custom background color for the window body
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.08f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); 
+    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
 
-    // Push custom background color for the title bar (both active and inactive)
-    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); // Inactive title bar color
-    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); // Active title bar color
 
-    // Create the Inspector window (no docking here)
     if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
     {
-        auto entity = mEntityHandler->GetSelectedEntity()->GetComponent<Editor::TransformComponent>();
-        
-        glm::vec3& position = entity->GetPosition();
-        glm::vec3& scale = entity->GetScale();  
-        glm::vec3& rotation = entity->GetRotation();  
+        auto entity = mEntityHandler->GetSelectedEntity();
+        if (!entity) {
+            ImGui::End();
+            ImGui::PopStyleColor(3); 
+            return;
+        }
+        auto transform = entity->GetComponent<Editor::TransformComponent>();
+        glm::vec3& position = transform->GetPosition();
+        glm::vec3& scale = transform->GetScale();
+        glm::vec3& rotation = transform->GetRotation();
 
         float drag_senstivity = 0.5f;
 
@@ -285,12 +287,9 @@ void render::UIXContext::render_inspector()
         ImGui::DragFloat("x###scale_x", &scale.x, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("y###scale_y", &scale.y, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
-
     }
     ImGui::End();
-
-    // Pop the style colors to restore previous settings
-    ImGui::PopStyleColor(3); // Pop all three style colors
+    ImGui::PopStyleColor(3);
 }
 
 

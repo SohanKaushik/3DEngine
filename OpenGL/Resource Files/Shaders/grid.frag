@@ -12,8 +12,8 @@ in vec3 fragClr;
 out vec4 fragColor;            // Final color output
 
 // Hardcoded fade distances
-const float dMin = 10.0;       // Fade start distance
-const float dMax = 300.0;       // Fade end distance
+uniform float dMin;
+uniform float dMax;
 
 void main() {
 
@@ -26,7 +26,6 @@ void main() {
     float opacity = clamp((dMax - distance) / (dMax - dMin), 0.0, 1.0);
 
     // Set final color with fade applied 
-// Replace with your actual base color
     fragColor = vec4(fragClr, baseColor.a * opacity);
   
 };

@@ -171,7 +171,6 @@
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.h" />
-    <ClCompile Include="Source Files\elems\entity.cpp" />
     <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
@@ -507,7 +506,6 @@
     <ClInclude Include="Source Files\Editor\maths\ray_intersection.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
-    <ClInclude Include="Source Files\elems\entity.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />
     <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />

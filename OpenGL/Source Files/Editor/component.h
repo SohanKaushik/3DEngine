@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "elems/mesh.h"
+#include "Editor/EditorCamera.h"
 
 namespace Editor {
 
@@ -104,4 +105,18 @@ namespace Editor {
 
 		}
 	};
+
+
+	class CameraComponent {
+	public:
+		CameraComponent() = default;
+
+		std::shared_ptr<Camera> GetCamera() const {
+			return m_camera;
+		}
+
+	private:
+		std::shared_ptr<Editor::Camera> m_camera;  
+	};
+
 };

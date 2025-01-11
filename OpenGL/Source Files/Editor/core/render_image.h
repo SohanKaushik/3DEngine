@@ -1,15 +1,13 @@
 #pragma once
 #include "pch.h"
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
+#include "render/framebuffer.h"
+#include <Editor/EntityHandler.h>
 
 namespace core {
 
     class RenderImage {
     public:
-        RenderImage() : m_window(nullptr) {}
+        RenderImage() : m_window(nullptr) {  }
         ~RenderImage() {
             std::cout << "Closed." << std::endl;
             if (m_window) {
@@ -49,12 +47,13 @@ namespace core {
                 return;
             }
 
-            loop(); // Start rendering immediately
+
+            this->loop(); // Start rendering immediately
         }
 
+    private:
         void render();
 
-    private:
         void loop() {
             while (m_window && !glfwWindowShouldClose(m_window)) {
                 glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -72,6 +71,8 @@ namespace core {
         }
 
     private:
+        std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
+        std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
         GLFWwindow* m_window;
     };
 }

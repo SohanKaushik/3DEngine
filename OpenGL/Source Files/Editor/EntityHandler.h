@@ -45,8 +45,20 @@ namespace Editor {
         }
 
         void update(Shader& shader) {
-            m_tsystem->update(entities, shader);
-            m_msytem->update(entities, shader);
+            this->RenderEntities(shader);
+        }
+
+        void RenderEntities(Shader& shader) {
+            for (const auto& entity : entities) {
+                // If you have a TransformComponent, update it here
+                if (entity->HasComponent<TransformComponent>()) {
+                    m_tsystem->update(entities, shader);
+                }
+
+                if (entity->HasComponent<MeshComponent>()) {
+                    m_msytem->update(entities, shader);
+                }
+            }
         }
 
         auto GetSelectedEntity() const {

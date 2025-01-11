@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "mesh.h"
+#include "shader/shader.h"
 
 elems::Mesh::Mesh(PrimitiveType type)
 {
@@ -22,6 +23,8 @@ elems::Mesh::Mesh(PrimitiveType type)
 
 void elems::Mesh::draw()
 {
+   // Shader mesh_shader;
+
 	//Bind and render
 	mBuffer->bind();
 	mBuffer->draw(GL_TRIANGLES);

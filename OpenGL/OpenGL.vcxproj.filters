@@ -1545,6 +1545,12 @@
     </None>
     <None Include="Resource Files\Shaders\texture.frag" />
     <None Include="Resource Files\Shaders\texture.vert" />
+    <None Include="Resource Files\Shaders\image_render.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\image_render.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

@@ -166,6 +166,7 @@
     <ClCompile Include="dependencies\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source Files\Editor.cpp" />
+    <ClCompile Include="Source Files\Editor\core\render_image.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.h" />
     <ClCompile Include="Source Files\Editor\system.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
@@ -182,7 +183,6 @@
     </ClCompile>
     <ClCompile Include="Source Files\render\camera_uniforms.cpp" />
     <ClCompile Include="Source Files\render\framebuffer.cpp" />
-    <ClCompile Include="Source Files\render\render_image.cpp" />
     <ClCompile Include="Source Files\render\ShadowMap.cpp" />
     <ClCompile Include="Source Files\render\ui_context.cpp" />
     <ClCompile Include="Source Files\render\VertexIndexBuffer.cpp" />
@@ -514,7 +514,7 @@
     <ClInclude Include="Source Files\pch.h" />
     <ClInclude Include="Source Files\render\camera_uniforms.h" />
     <ClInclude Include="Source Files\render\framebuffer.h" />
-    <ClInclude Include="Source Files\render\render_image.h" />
+    <ClInclude Include="Source Files\Editor\core\render_image.h" />
     <ClInclude Include="Source Files\render\ShadowMap.h" />
     <ClInclude Include="Source Files\render\ui_context.h" />
     <ClInclude Include="Source Files\render\VertexIndexBuffer.h" />

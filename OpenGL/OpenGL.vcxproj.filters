@@ -123,7 +123,7 @@
     <ClCompile Include="Source Files\Editor\system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\render\render_image.cpp">
+    <ClCompile Include="Source Files\Editor\core\render_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1088,7 +1088,7 @@
     <ClInclude Include="Source Files\Editor\ErrorHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\render\render_image.h">
+    <ClInclude Include="Source Files\Editor\core\render_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Editor\maths\ray_intersection.h">

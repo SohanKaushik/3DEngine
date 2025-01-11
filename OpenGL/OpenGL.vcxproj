@@ -675,6 +675,8 @@
     <None Include="Resource Files\Shaders\DirectionalShadowMap.vert" />
     <None Include="Resource Files\Shaders\grid.frag" />
     <None Include="Resource Files\Shaders\grid.vert" />
+    <None Include="Resource Files\Shaders\image_render.frag" />
+    <None Include="Resource Files\Shaders\image_render.vert" />
     <None Include="Resource Files\Shaders\light.frag" />
     <None Include="Resource Files\Shaders\light.vert" />
     <None Include="Resource Files\Shaders\plane.frag" />

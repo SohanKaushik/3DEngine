@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "render/ui_context.h"
+#include <thread>
 
 void render::UIXContext::init(GLFWwindow* window, ui::Viewport* vp) {
 
@@ -126,11 +127,14 @@ void render::UIXContext::render_toolbar()
             ImGui::EndMenu();
         }
 
-        // **Help Menu**
         if (ImGui::BeginMenu("Render")) {
             if (ImGui::MenuItem("Render Image")) {
-                std::cout << "Render Image" << std::endl;
+                std::thread renderThread([&]() {
+                    rendr_image->create_rendrwin();
+                    });
+                renderThread.detach();
             }
+
             if (ImGui::MenuItem("Null")) {
                 // Action for About
             }

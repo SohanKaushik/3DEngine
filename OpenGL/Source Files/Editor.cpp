@@ -2,6 +2,7 @@
 
 #include "Editor.h"
 #include "window/window.h"
+#include "Editor/core/render_image.h"
 
 Editor::Application::Application(const std::string& app_name)
 {
@@ -18,6 +19,7 @@ void Editor::Application::loop()
 
         // Render Scene
         mWindow->render();
+
 
         // Render end, swap buffers
         mWindow->post_render();

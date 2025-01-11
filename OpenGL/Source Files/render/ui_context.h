@@ -3,6 +3,7 @@
 #include "elems/mesh.h"
 #include "ui/viewport.h"
 #include "Editor/EntityHandler.h"
+#include "Editor/core/render_image.h"
 
 namespace render {
 
@@ -30,6 +31,7 @@ namespace render {
 
 	private:
 		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
+		std::unique_ptr<core::RenderImage> rendr_image = std::make_unique<core::RenderImage>();
 		ui::Viewport* mViewport = nullptr;
 	};
 }

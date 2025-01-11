@@ -17,8 +17,6 @@ WindowManager::~WindowManager() {
 
 bool WindowManager::Init(int width, int height , const std::string& appName)
 {
-    std::cout << "Window Init" << std::endl;
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

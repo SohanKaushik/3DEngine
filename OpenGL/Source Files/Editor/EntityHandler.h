@@ -44,20 +44,12 @@ namespace Editor {
             }*/
         }
 
-        void update(Shader& shader) {
-            this->RenderEntities(shader);
-        }
+        void update(Shader& shader);
 
         void RenderEntities(Shader& shader) {
             for (const auto& entity : entities) {
-                // If you have a TransformComponent, update it here
-                if (entity->HasComponent<TransformComponent>()) {
-                    m_tsystem->update(entities, shader);
-                }
-
-                if (entity->HasComponent<MeshComponent>()) {
-                    m_msytem->update(entities, shader);
-                }
+                m_tsystem->update(entities, shader); 
+                m_msytem->update(entities, shader);
             }
         }
 
@@ -68,6 +60,10 @@ namespace Editor {
             else {
                 return std::shared_ptr<Entity>(); // Return an empty shared pointer
             }
+        }
+
+        auto GetSelectedEntityById(int id) {
+            return entities[0];
         }
 
        void TerminateEntity() {

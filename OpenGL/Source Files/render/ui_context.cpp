@@ -266,9 +266,11 @@ void render::UIXContext::render_inspector()
             return;
         }
         auto transform = entity->GetComponent<Editor::TransformComponent>();
+        auto mesh = entity->GetComponent<Editor::MeshComponent>();
         glm::vec3& position = transform->GetPosition();
         glm::vec3& scale = transform->GetScale();
         glm::vec3& rotation = transform->GetRotation();
+        glm::vec3& color = mesh->GetColor();
 
         float drag_senstivity = 0.5f;
 
@@ -291,6 +293,18 @@ void render::UIXContext::render_inspector()
         ImGui::DragFloat("x###scale_x", &scale.x, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("y###scale_y", &scale.y, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
+
+        // Display a small color box
+        if (ImGui::ColorButton("##color_button", ImVec4(color.r, color.g, color.b, 1.0f), ImGuiColorEditFlags_NoTooltip, ImVec2(150, 15))) {
+            // When clicked, show the color picker
+            ImGui::OpenPopup("Color Picker");
+        }
+
+        // Display the color picker if the box was clicked
+        if (ImGui::BeginPopup("Color Picker")) {
+            ImGui::ColorPicker3("##picker", glm::value_ptr(color));
+            ImGui::EndPopup();
+        }
     }
     ImGui::End();
     ImGui::PopStyleColor(3);

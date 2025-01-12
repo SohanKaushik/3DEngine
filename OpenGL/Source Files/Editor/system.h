@@ -42,12 +42,12 @@ namespace Editor {
                     continue;
                }
 
-                auto transform = entity->GetComponent<TransformComponent>();
                 auto mesh_com = entity->GetComponent<Editor::MeshComponent>();
+                auto transform = entity->GetComponent<TransformComponent>();
                 auto* meshes = mesh_com->GetMesh();
                 if (meshes) {
-                    shader.SetUniform3fv("color", glm::vec3(1.0f, 0.0f, 0.0f));
                     shader.SetUniformMat4f("model", transform->GetModelUniforms());
+                    shader.SetUniform3fv("color", mesh_com->GetColor());
                     meshes->draw();
                 }
             }

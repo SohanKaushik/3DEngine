@@ -6,15 +6,14 @@
 
 void core::RenderImage::render()
 {
-    // Define vertices and indices for a quad
     float quadVertices[] = {
-        // Positions        // Colors
-        -0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // Top Left - Red
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // Bottom Left - Green
-         0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // Bottom Right - Blue
-         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f    // Top Right - Yellow
+        // Positions          // Normals
+        -0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // Top-left
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // Bottom-left
+         0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // Bottom-right
+         0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // Top-right
     };
-    
+
     unsigned int quadIndices[] = {
         0, 1, 2,   // First Triangle
         0, 2, 3    // Second Triangle
@@ -37,8 +36,9 @@ void core::RenderImage::render()
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // Color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    //Normals
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Normal
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -46,11 +46,12 @@ void core::RenderImage::render()
 
     // Load the shader
     Shader image_shader;
-    image_shader.load("Resource Files/Shaders/image_render.vert", "Resource Files/Shaders/image_render.frag");
+    image_shader.load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
+
 
     // Editor Camera for now
     Editor::Camera mCamera(
-        glm::vec3(7.35889f, -6.92579f, 4.95831f),
+        glm::vec3(5.35f, -4.92f, 2.95f),
         glm::vec3(0.0f, 1.0f, 0.0f),
         -90.0f, 0.0f, 45.0f, 0.1, 1000.0f
     );
@@ -59,7 +60,8 @@ void core::RenderImage::render()
     image_shader.use();
     mCamera.UpdateCameraMatrix(image_shader);
 
-    mEntityHandler->RenderEntities(image_shader);
+    mEntityHandler->RenderEntities(image_shader); 
+
     // Draw the quad
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the screen
     glBindVertexArray(VAO);

@@ -50,7 +50,7 @@ void ui::Viewport::render() {
 	);
 	dirLight.SetLightUniform(mShader[0], "dirLight");
 
-	
+
 
 	// Step 3: Render grid and UI
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
@@ -59,7 +59,8 @@ void ui::Viewport::render() {
 
 	// Optional: Render UI or additional elements here
 	this->RenderSceneUI();
-};
+}
+
 
 void ui::Viewport::destroy()
 {

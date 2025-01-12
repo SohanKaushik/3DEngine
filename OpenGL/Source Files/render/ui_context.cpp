@@ -284,9 +284,9 @@ void render::UIXContext::render_inspector()
 
         // Rotation Controls (X, Y, Z)
         ImGui::Text("Rotation");
-        ImGui::DragFloat("x###rotation_x", &rotation.x, drag_senstivity, 0.0f, 360.0f); 
-        ImGui::DragFloat("y###rotation_y", &rotation.y, drag_senstivity, 0.0f, 360.0f); 
-        ImGui::DragFloat("z###rotation_z", &rotation.z, drag_senstivity, 0.0f, 360.0f); 
+        ImGui::DragFloat("x###rotation_x", &rotation.x, drag_senstivity, -360.0f, 360.0f); 
+        ImGui::DragFloat("y###rotation_y", &rotation.y, drag_senstivity, -360.0f, 360.0f); 
+        ImGui::DragFloat("z###rotation_z", &rotation.z, drag_senstivity, -360.0f, 360.0f); 
 
         // Scale Controls (X, Y, Z)
         ImGui::Text("Scale");
@@ -295,6 +295,7 @@ void render::UIXContext::render_inspector()
         ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
 
         // Display a small color box
+        ImGui::Text("Color");
         if (ImGui::ColorButton("##color_button", ImVec4(color.r, color.g, color.b, 1.0f), ImGuiColorEditFlags_NoTooltip, ImVec2(150, 15))) {
             // When clicked, show the color picker
             ImGui::OpenPopup("Color Picker");
@@ -307,7 +308,7 @@ void render::UIXContext::render_inspector()
         }
     }
     ImGui::End();
-    ImGui::PopStyleColor(3);
+    ImGui::PopStyleColor(3);  
 }
 
 

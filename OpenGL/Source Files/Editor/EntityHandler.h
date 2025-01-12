@@ -21,7 +21,7 @@ namespace Editor {
             entities.emplace_back(std::make_unique<Entity>(entityId));
             std::shared_ptr<Entity> entityPtr = entities.back();
 
-            std::cout << "Entity: [" << ID  << "]" << std::endl;
+            std::cout << "Entity: [" << ID  << "] : Added" << std::endl;
             return entityPtr;
         }
 

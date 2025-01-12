@@ -87,14 +87,25 @@ namespace Editor {
 	class MeshComponent : public Component {
 	private: 
 		std::unique_ptr<elems::Mesh> mesh; 
+		glm::vec3 m_color;
+
 	public:
 		MeshComponent() {
-			mesh = std::make_unique<elems::Mesh>(elems::PrimitiveType::cube);   
+			mesh = std::make_unique<elems::Mesh>(elems::PrimitiveType::cube);  
+			m_color = glm::vec3(1.0f);
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}
 
 		void SetMesh(const elems::PrimitiveType& primitive) {
 			mesh = std::make_unique<elems::Mesh>(primitive);
+		}
+
+		void SetMaterial(const glm::vec3& color) {
+			m_color = color;
+		}
+
+		auto& GetColor() {
+			return m_color;
 		}
 
 		auto GetMesh() { 

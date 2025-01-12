@@ -30,9 +30,6 @@ namespace ui {
 		void on_zoom(float offset, float senst);
 		void on_mouse_click(double mouse_x, double mouse_y, GLFWwindow* window) {};
 
-		//glm::vec3 get_ray_from_mouse(double mouse_x, double mouse_y, GLFWwindow* window);
-
-
 		void RenderSceneUI();
 
 		Editor::Entity& AddEntity();

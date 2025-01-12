@@ -27,7 +27,7 @@
     <ClCompile Include="Source Files\shader\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\stp.cpp">
+    <ClCompile Include="Source Files\render\stp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\include\glm\detail\glm.cpp">
@@ -1103,6 +1103,9 @@
     <ClInclude Include="Source Files\elems\input_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\render\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL.rc">
@@ -1563,6 +1566,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resource Files\Textures\image.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource Files\Textures\chill_guy.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

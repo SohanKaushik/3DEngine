@@ -198,7 +198,7 @@
     </ClCompile>
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\shader\shader.cpp" />
-    <ClCompile Include="Source Files\stp.cpp" />
+    <ClCompile Include="Source Files\render\stp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\glad\glad.h" />
@@ -517,6 +517,7 @@
     <ClInclude Include="Source Files\render\framebuffer.h" />
     <ClInclude Include="Source Files\Editor\core\render_image.h" />
     <ClInclude Include="Source Files\render\ShadowMap.h" />
+    <ClInclude Include="Source Files\render\Texture.h" />
     <ClInclude Include="Source Files\render\ui_context.h" />
     <ClInclude Include="Source Files\render\VertexIndexBuffer.h" />
     <ClInclude Include="Source Files\shader\shader.h" />
@@ -690,6 +691,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Downloads\image.jpg" />
+    <Image Include="Resource Files\Textures\chill_guy.png" />
     <Image Include="Resource Files\Textures\image.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

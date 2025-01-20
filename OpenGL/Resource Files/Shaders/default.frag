@@ -37,7 +37,7 @@ uniform vec3 viewPos;
 
 uniform sampler2D shadowMap;  // Shadow map texture
 
-// Inputs from vertex shader
+// Inputs from VertexHolder shader
 in vec3 FragPos;                           // Fragment position in world space
 in vec3 Normal;                 
 in vec4 FragPosDirLightSpace;              // Fragment position in light space for shadow calculation

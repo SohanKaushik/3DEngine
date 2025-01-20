@@ -4,7 +4,7 @@
 uniform vec3 u_cameraPosition; // Camera's world-space position
 
 // Inputs
-in vec3 FragPos;               // World-space position from the vertex shader
+in vec3 FragPos;               // World-space position from the VertexHolder shader
 in vec3 fragClr;
 
 

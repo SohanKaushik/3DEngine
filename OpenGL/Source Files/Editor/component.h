@@ -2,6 +2,12 @@
 #include "pch.h"
 #include "elems/mesh.h"
 #include "Editor/EditorCamera.h"
+#include "thread"
+#include "future"
+
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 namespace Editor {
 
@@ -91,7 +97,7 @@ namespace Editor {
 
 	public:
 		MeshComponent() {
-			mesh = std::make_unique<elems::Mesh>(elems::PrimitiveType::cube);  
+			//mesh = std::make_unique<elems::Mesh>(elems::PrimitiveType::cube);  
 			m_color = glm::vec3(1.0f);
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}
@@ -100,6 +106,11 @@ namespace Editor {
 			mesh = std::make_unique<elems::Mesh>(primitive);
 		}
 
+		
+		void load(const std::string& path) {
+			mesh->load(path);
+		}
+		
 		void SetMaterial(const glm::vec3& color) {
 			m_color = color;
 		}

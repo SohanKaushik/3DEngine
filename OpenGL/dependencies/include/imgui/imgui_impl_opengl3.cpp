@@ -41,13 +41,13 @@
 //  2022-10-11: Using 'nullptr' instead of 'NULL' as per our switch to C++11.
 //  2022-09-27: OpenGL: Added ability to '#define IMGUI_IMPL_OPENGL_DEBUG'.
 //  2022-05-23: OpenGL: Reworking 2021-12-15 "Using buffer orphaning" so it only happens on Intel GPU, seems to cause problems otherwise. (#4468, #4825, #4832, #5127).
-//  2022-05-13: OpenGL: Fixed state corruption on OpenGL ES 2.0 due to not preserving GL_ELEMENT_ARRAY_BUFFER_BINDING and vertex attribute states.
+//  2022-05-13: OpenGL: Fixed state corruption on OpenGL ES 2.0 due to not preserving GL_ELEMENT_ARRAY_BUFFER_BINDING and VertexHolder attribute states.
 //  2021-12-15: OpenGL: Using buffer orphaning + glBufferSubData(), seems to fix leaks with multi-viewports with some Intel HD drivers.
 //  2021-08-23: OpenGL: Fixed ES 3.0 shader ("#version 300 es") use normal precision floats to avoid wobbly rendering at HD resolutions.
 //  2021-08-19: OpenGL: Embed and use our own minimal GL loader (imgui_impl_opengl3_loader.h), removing requirement and support for third-party loader.
 //  2021-06-29: Reorganized backend to pull data from a single structure to facilitate usage with multiple-contexts (all g_XXXX access changed to bd->XXXX).
 //  2021-06-25: OpenGL: Use OES_vertex_array extension on Emscripten + backup/restore current state.
-//  2021-06-21: OpenGL: Destroy individual vertex/fragment shader objects right after they are linked into the main shader.
+//  2021-06-21: OpenGL: Destroy individual VertexHolder/fragment shader objects right after they are linked into the main shader.
 //  2021-05-24: OpenGL: Access GL_CLIP_ORIGIN when "GL_ARB_clip_control" extension is detected, inside of just OpenGL 4.5 version.
 //  2021-05-19: OpenGL: Replaced direct access to ImDrawCmd::TextureId with a call to ImDrawCmd::GetTexID(). (will become a requirement)
 //  2021-04-06: OpenGL: Don't try to read GL_CLIP_ORIGIN unless we're OpenGL 4.5 or greater.
@@ -173,7 +173,7 @@
 #include "imgui_impl_opengl3_loader.h"
 #endif
 
-// Vertex arrays are not supported on ES2/WebGL1 unless Emscripten which uses an extension
+// VertexHolder arrays are not supported on ES2/WebGL1 unless Emscripten which uses an extension
 #ifndef IMGUI_IMPL_OPENGL_ES2
 #define IMGUI_IMPL_OPENGL_USE_VERTEX_ARRAY
 #elif defined(__EMSCRIPTEN__)
@@ -233,7 +233,7 @@ struct ImGui_ImplOpenGL3_Data
     GLuint          ShaderHandle;
     GLint           AttribLocationTex;       // Uniforms location
     GLint           AttribLocationProjMtx;
-    GLuint          AttribLocationVtxPos;    // Vertex attributes location
+    GLuint          AttribLocationVtxPos;    // VertexHolder attributes location
     GLuint          AttribLocationVtxUV;
     GLuint          AttribLocationVtxColor;
     unsigned int    VboHandle, ElementsHandle;
@@ -257,7 +257,7 @@ static ImGui_ImplOpenGL3_Data* ImGui_ImplOpenGL3_GetBackendData()
 static void ImGui_ImplOpenGL3_InitMultiViewportSupport();
 static void ImGui_ImplOpenGL3_ShutdownMultiViewportSupport();
 
-// OpenGL vertex attribute state (for ES 1.0 and ES 2.0 only)
+// OpenGL VertexHolder attribute state (for ES 1.0 and ES 2.0 only)
 #ifndef IMGUI_IMPL_OPENGL_USE_VERTEX_ARRAY
 struct ImGui_ImplOpenGL3_VtxAttribState
 {
@@ -483,7 +483,7 @@ static void ImGui_ImplOpenGL3_SetupRenderState(ImDrawData* draw_data, int fb_wid
     glBindVertexArray(vertex_array_object);
 #endif
 
-    // Bind vertex/index buffers and setup attributes for ImDrawVert
+    // Bind VertexHolder/index buffers and setup attributes for ImDrawVert
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, bd->VboHandle));
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bd->ElementsHandle));
     GL_CALL(glEnableVertexAttribArray(bd->AttribLocationVtxPos));
@@ -564,7 +564,7 @@ void    ImGui_ImplOpenGL3_RenderDrawData(ImDrawData* draw_data)
     {
         const ImDrawList* draw_list = draw_data->CmdLists[n];
 
-        // Upload vertex/index buffers
+        // Upload VertexHolder/index buffers
         // - OpenGL drivers are in a very sorry state nowadays....
         //   During 2021 we attempted to switch from glBufferData() to orphaning+glBufferSubData() following reports
         //   of leaks on Intel GPU when using multi-viewports on Windows.
@@ -910,7 +910,7 @@ bool    ImGui_ImplOpenGL3_CreateDeviceObjects()
     GL_CALL(vert_handle = glCreateShader(GL_VERTEX_SHADER));
     glShaderSource(vert_handle, 2, vertex_shader_with_version, nullptr);
     glCompileShader(vert_handle);
-    CheckShader(vert_handle, "vertex shader");
+    CheckShader(vert_handle, "VertexHolder shader");
 
     const GLchar* fragment_shader_with_version[2] = { bd->GlslVersionString, fragment_shader };
     GLuint frag_handle;

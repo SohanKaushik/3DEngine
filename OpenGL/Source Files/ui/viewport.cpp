@@ -26,7 +26,7 @@ void ui::Viewport::Init() {
 
 	mGrid->Init();
 
-	this->AddEntity();
+	//this->AddEntity();
 };
 
 
@@ -117,7 +117,7 @@ void ui::Viewport::RenderSceneUI() {
 	m_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 	// Resize Image Texture too .......(needs to be done)
-	mCamera->set_aspect(800.0f/600.0f);
+	mCamera->set_aspect(m_size.x/ m_size.y);
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// add rendered texture to ImGUI scene window
@@ -133,6 +133,6 @@ Editor::Entity& ui::Viewport::AddEntity() {
 
 	auto entity = mEntityHandler->CreateEntity();
 	entity->AddComponent<TransformComponent>();
-	entity->AddComponent<MeshComponent>(); 
+	entity->AddComponent<MeshComponent>().load("Resource Files/Textures/monkey.obj");
 	return *entity;
 }

@@ -1,6 +1,6 @@
 #version 330 core
 
-layout (location = 0) in vec3 aPos;       // Vertex position
+layout (location = 0) in vec3 aPos;       // VertexHolder position
 layout (location = 1) in vec2 aTexCoords; // Texture coordinates (optional)
 
 uniform mat4 model;       // Model transformation matrix

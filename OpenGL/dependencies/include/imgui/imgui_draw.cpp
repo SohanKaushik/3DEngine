@@ -840,11 +840,11 @@ void ImDrawList::AddPolyline(const ImVec2* points, const int points_count, ImU32
             // Generate the indices to form a number of triangles for each line segment, and the vertices for the line edges
             // This takes points n and n+1 and writes into n+1, with the first point in a closed line being generated from the final one (as n+1 wraps)
             // FIXME-OPT: Merge the different loops, possibly remove the temporary buffer.
-            unsigned int idx1 = _VtxCurrentIdx; // Vertex index for start of line segment
+            unsigned int idx1 = _VtxCurrentIdx; // VertexHolder index for start of line segment
             for (int i1 = 0; i1 < count; i1++) // i1 is the first point of the line segment
             {
                 const int i2 = (i1 + 1) == points_count ? 0 : i1 + 1; // i2 is the second point of the line segment
-                const unsigned int idx2 = ((i1 + 1) == points_count) ? _VtxCurrentIdx : (idx1 + (use_texture ? 2 : 3)); // Vertex index for end of segment
+                const unsigned int idx2 = ((i1 + 1) == points_count) ? _VtxCurrentIdx : (idx1 + (use_texture ? 2 : 3)); // VertexHolder index for end of segment
 
                 // Average normals
                 float dm_x = (temp_normals[i1].x + temp_normals[i2].x) * 0.5f;
@@ -904,7 +904,7 @@ void ImDrawList::AddPolyline(const ImVec2* points, const int points_count, ImU32
             }
             else
             {
-                // If we're not using a texture, we need the center vertex as well
+                // If we're not using a texture, we need the center VertexHolder as well
                 for (int i = 0; i < points_count; i++)
                 {
                     _VtxWritePtr[0].pos = points[i];              _VtxWritePtr[0].uv = opaque_uv; _VtxWritePtr[0].col = col;       // Center of line
@@ -936,11 +936,11 @@ void ImDrawList::AddPolyline(const ImVec2* points, const int points_count, ImU32
             // Generate the indices to form a number of triangles for each line segment, and the vertices for the line edges
             // This takes points n and n+1 and writes into n+1, with the first point in a closed line being generated from the final one (as n+1 wraps)
             // FIXME-OPT: Merge the different loops, possibly remove the temporary buffer.
-            unsigned int idx1 = _VtxCurrentIdx; // Vertex index for start of line segment
+            unsigned int idx1 = _VtxCurrentIdx; // VertexHolder index for start of line segment
             for (int i1 = 0; i1 < count; i1++) // i1 is the first point of the line segment
             {
                 const int i2 = (i1 + 1) == points_count ? 0 : (i1 + 1); // i2 is the second point of the line segment
-                const unsigned int idx2 = (i1 + 1) == points_count ? _VtxCurrentIdx : (idx1 + 4); // Vertex index for end of segment
+                const unsigned int idx2 = (i1 + 1) == points_count ? _VtxCurrentIdx : (idx1 + 4); // VertexHolder index for end of segment
 
                 // Average normals
                 float dm_x = (temp_normals[i1].x + temp_normals[i2].x) * 0.5f;
@@ -1932,7 +1932,7 @@ void ImTriangulator::FlipNodeList()
     _Nodes = prev;
 }
 
-// A triangle is an ear is no other vertex is inside it. We can test reflexes vertices only (see reference algorithm)
+// A triangle is an ear is no other VertexHolder is inside it. We can test reflexes vertices only (see reference algorithm)
 bool ImTriangulator::IsEar(int i0, int i1, int i2, const ImVec2& v0, const ImVec2& v1, const ImVec2& v2) const
 {
     ImTriangulatorNode** p_end = _Reflexes.Data + _Reflexes.Size;
@@ -2249,7 +2249,7 @@ void ImGui::AddDrawListToDrawDataEx(ImDrawData* draw_data, ImVector<ImDrawList*>
     // - If you want large meshes with more than 64K vertices, you can either:
     //   (A) Handle the ImDrawCmd::VtxOffset value in your renderer backend, and set 'io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset'.
     //       Most example backends already support this from 1.71. Pre-1.71 backends won't.
-    //       Some graphics API such as GL ES 1/2 don't have a way to offset the starting vertex so it is not supported for them.
+    //       Some graphics API such as GL ES 1/2 don't have a way to offset the starting VertexHolder so it is not supported for them.
     //   (B) Or handle 32-bit indices in your renderer backend, and uncomment '#define ImDrawIdx unsigned int' line in imconfig.h.
     //       Most example backends already support this. For example, the OpenGL example code detect index size at compile-time:
     //         glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, idx_buffer_offset);
@@ -2352,13 +2352,13 @@ void ImGui::ShadeVertsLinearUV(ImDrawList* draw_list, int vert_start_idx, int ve
     {
         const ImVec2 min = ImMin(uv_a, uv_b);
         const ImVec2 max = ImMax(uv_a, uv_b);
-        for (ImDrawVert* vertex = vert_start; vertex < vert_end; ++vertex)
-            vertex->uv = ImClamp(uv_a + ImMul(ImVec2(vertex->pos.x, vertex->pos.y) - a, scale), min, max);
+        for (ImDrawVert* VertexHolder = vert_start; VertexHolder < vert_end; ++VertexHolder)
+            VertexHolder->uv = ImClamp(uv_a + ImMul(ImVec2(VertexHolder->pos.x, VertexHolder->pos.y) - a, scale), min, max);
     }
     else
     {
-        for (ImDrawVert* vertex = vert_start; vertex < vert_end; ++vertex)
-            vertex->uv = uv_a + ImMul(ImVec2(vertex->pos.x, vertex->pos.y) - a, scale);
+        for (ImDrawVert* VertexHolder = vert_start; VertexHolder < vert_end; ++VertexHolder)
+            VertexHolder->uv = uv_a + ImMul(ImVec2(VertexHolder->pos.x, VertexHolder->pos.y) - a, scale);
     }
 }
 
@@ -2366,8 +2366,8 @@ void ImGui::ShadeVertsTransformPos(ImDrawList* draw_list, int vert_start_idx, in
 {
     ImDrawVert* vert_start = draw_list->VtxBuffer.Data + vert_start_idx;
     ImDrawVert* vert_end = draw_list->VtxBuffer.Data + vert_end_idx;
-    for (ImDrawVert* vertex = vert_start; vertex < vert_end; ++vertex)
-        vertex->pos = ImRotate(vertex->pos- pivot_in, cos_a, sin_a) + pivot_out;
+    for (ImDrawVert* VertexHolder = vert_start; VertexHolder < vert_end; ++VertexHolder)
+        VertexHolder->pos = ImRotate(VertexHolder->pos- pivot_in, cos_a, sin_a) + pivot_out;
 }
 
 //-----------------------------------------------------------------------------

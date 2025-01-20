@@ -1,7 +1,7 @@
 #version 330 core 
 
-layout(location = 0) in vec3 aPos;         // Vertex position attribute
-layout(location = 1) in vec3 aNormal;      // Vertex normal attribute
+layout(location = 0) in vec3 aPos;         // VertexHolder position attribute
+layout(location = 1) in vec3 aNormal;      // VertexHolder normal attribute
 layout(location = 2) in vec2 aTexture;
 
 // Uniforms                    
@@ -30,7 +30,7 @@ void main()
 {
 
     // Pass data to the fragment shader
-    FragPos = vec3(model * vec4(aPos, 1.0));                          // Transform vertex to world space
+    FragPos = vec3(model * vec4(aPos, 1.0));                          // Transform VertexHolder to world space
     Normal = mat3(transpose(inverse(model))) * aNormal;               // Transform normal to world space
     aColor = color;  
     TexCoord = aTexture;

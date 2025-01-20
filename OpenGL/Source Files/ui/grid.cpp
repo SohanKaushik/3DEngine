@@ -22,12 +22,12 @@ void ui::Grid::Init()
     // Draw vertical lines (XZ plane)
     for (float x = -gridSize; x <= gridSize; x += m_spacing) {
         glm::vec3 color = (fabs(x) == 0) ? xColor : lineColor; // Red if x is near origin
-        // Start vertex
+        // Start VertexHolder
         vertices.push_back(glm::vec3(x, 0.0f, -gridSize));  // Position
         vertices.push_back(color);                           // Color
         indices.push_back(index++);
 
-        // End vertex
+        // End VertexHolder
         vertices.push_back(glm::vec3(x, 0.0f, gridSize));   // Position
         vertices.push_back(color);                           // Color
         indices.push_back(index++);
@@ -36,12 +36,12 @@ void ui::Grid::Init()
     // Draw horizontal lines (XZ plane)
     for (float z = -gridSize; z <= gridSize; z += m_spacing) {
         glm::vec3 color = (fabs(z) == 0) ? yColor : lineColor; // Red if z is near origin
-        // Start vertex
+        // Start VertexHolder
         vertices.push_back(glm::vec3(-gridSize, 0.0f, z));   // Position
         vertices.push_back(color);                             // Color
         indices.push_back(index++);
 
-        // End vertex
+        // End VertexHolder
         vertices.push_back(glm::vec3(gridSize, 0.0f, z));      // Position
         vertices.push_back(color);                             // Color
         indices.push_back(index++);

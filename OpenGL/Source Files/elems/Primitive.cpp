@@ -5,14 +5,14 @@
 void elems::Primitive::plane()
 {
     m_vertices = {
-        // Position              // Normal
-        {-1.0f, 0.0f,  1.0f},    {0.0f, 1.0f, 0.0f},  // Bottom-left
-        { 1.0f, 0.0f,  1.0f},    {0.0f, 1.0f, 0.0f},  // Bottom-right
-        { 1.0f, 0.0f, -1.0f},    {0.0f, 1.0f, 0.0f},  // Top-right
-        {-1.0f, 0.0f, -1.0f},    {0.0f, 1.0f, 0.0f}   // Top-left
+        // Position              // Normal               // TexCoords
+        {{-1.0f, 0.0f,  1.0f},    {0.0f, 1.0f, 0.0f}  },  // Bottom-left
+        {{ 1.0f, 0.0f,  1.0f},    {0.0f, 1.0f, 0.0f}  },  // Bottom-right
+        {{ 1.0f, 0.0f, -1.0f},    {0.0f, 1.0f, 0.0f}  },  // Top-right
+        {{-1.0f, 0.0f, -1.0f},    {0.0f, 1.0f, 0.0f}  }   // Top-left
     };
 
-   // m_indices = { 0, 2, 1, 2, 0, 3 };  // Clockwise winding
+   // m_indices = { 0, 2, 1, 2, 0, 3 };  // Clockwise winding 
     m_indices = { 0, 1, 2, 2, 3, 0 };
 
 };
@@ -21,41 +21,41 @@ void elems::Primitive::cube()
 {
     m_vertices = {
     // Front face
-    {-1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},
-    { 1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},
-    { 1.0f,  1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},
-    {-1.0f,  1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f},
-
-    // Back face
-    {-1.0f, -1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f},
-    {-1.0f,  1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f},
-    { 1.0f,  1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f},
-    { 1.0f, -1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f},
-
-    // Right face
-    { 1.0f, -1.0f, -1.0f}, { 1.0f,  0.0f,  0.0f},
-    { 1.0f,  1.0f, -1.0f}, { 1.0f,  0.0f,  0.0f},
-    { 1.0f,  1.0f,  1.0f}, { 1.0f,  0.0f,  0.0f},
-    { 1.0f, -1.0f,  1.0f}, { 1.0f,  0.0f,  0.0f},
-
-    // Left face
-    {-1.0f, -1.0f, -1.0f}, {-1.0f,  0.0f,  0.0f},
-    {-1.0f, -1.0f,  1.0f}, {-1.0f,  0.0f,  0.0f},
-    {-1.0f,  1.0f,  1.0f}, {-1.0f,  0.0f,  0.0f},
-    {-1.0f,  1.0f, -1.0f}, {-1.0f,  0.0f,  0.0f},
-
-    // Top face
-    {-1.0f,  1.0f,  1.0f}, { 0.0f,  1.0f,  0.0f},
-    { 1.0f,  1.0f,  1.0f}, { 0.0f,  1.0f,  0.0f},
-    { 1.0f,  1.0f, -1.0f}, { 0.0f,  1.0f,  0.0f},
-    {-1.0f,  1.0f, -1.0f}, { 0.0f,  1.0f,  0.0f},
-
-    // Bottom face
-    {-1.0f, -1.0f,  1.0f}, { 0.0f, -1.0f,  0.0f},
-    {-1.0f, -1.0f, -1.0f}, { 0.0f, -1.0f,  0.0f},
-    { 1.0f, -1.0f, -1.0f}, { 0.0f, -1.0f,  0.0f},
-    { 1.0f, -1.0f,  1.0f}, { 0.0f, -1.0f,  0.0f}
-};
+    {{-1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f} },
+    {{ 1.0f, -1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f} },
+    {{ 1.0f,  1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f} },
+    {{-1.0f,  1.0f,  1.0f}, { 0.0f,  0.0f,  1.0f} },
+                                                  
+    // Back face                                  
+    {{-1.0f, -1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f} },
+    {{-1.0f,  1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f} },
+    {{ 1.0f,  1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f} },
+    {{ 1.0f, -1.0f, -1.0f}, { 0.0f,  0.0f, -1.0f} },
+                                                  
+    // Right face                                
+    {{ 1.0f, -1.0f, -1.0f}, { 1.0f,  0.0f,  0.0f} },
+    {{ 1.0f,  1.0f, -1.0f}, { 1.0f,  0.0f,  0.0f} },
+    {{ 1.0f,  1.0f,  1.0f}, { 1.0f,  0.0f,  0.0f} },
+    {{ 1.0f, -1.0f,  1.0f}, { 1.0f,  0.0f,  0.0f} },
+                                                  
+    // Left face                                 
+    {{-1.0f, -1.0f, -1.0f}, {-1.0f,  0.0f,  0.0f} },
+    {{-1.0f, -1.0f,  1.0f}, {-1.0f,  0.0f,  0.0f} },
+    {{-1.0f,  1.0f,  1.0f}, {-1.0f,  0.0f,  0.0f} },
+    {{-1.0f,  1.0f, -1.0f}, {-1.0f,  0.0f,  0.0f} },
+                                                  
+    // Top face                                  
+    {{-1.0f,  1.0f,  1.0f}, { 0.0f,  1.0f,  0.0f} },
+    {{ 1.0f,  1.0f,  1.0f}, { 0.0f,  1.0f,  0.0f} },
+    {{ 1.0f,  1.0f, -1.0f}, { 0.0f,  1.0f,  0.0f} },
+    {{-1.0f,  1.0f, -1.0f}, { 0.0f,  1.0f,  0.0f} },
+                                                  
+    // Bottom face                               
+    {{-1.0f, -1.0f,  1.0f}, { 0.0f, -1.0f,  0.0f} },
+    {{-1.0f, -1.0f, -1.0f}, { 0.0f, -1.0f,  0.0f} },
+    {{ 1.0f, -1.0f, -1.0f}, { 0.0f, -1.0f,  0.0f} },
+    {{ 1.0f, -1.0f,  1.0f}, { 0.0f, -1.0f,  0.0f} }
+};                                                
 
 
     m_indices = {
@@ -79,10 +79,14 @@ void elems::Primitive::cube()
 
 
 const std::vector<glm::vec3>& elems::Primitive::getVertices() const {
+    return m_verticesz;
+};
+
+const std::vector<VertexHolder>& elems::Primitive::get_vertx() const {
     return m_vertices;
 };
 
-const std::vector<unsigned int> elems::Primitive::getIndices() const
+const std::vector<unsigned int> elems::Primitive::get_indices() const
 {
     return m_indices;
 };

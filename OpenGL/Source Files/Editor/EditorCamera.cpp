@@ -5,7 +5,7 @@
 namespace Editor {
 	Editor::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis)
 		: m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
-		m_moveSpeed(10.0f), m_senstivity(0.1f),
+		m_moveSpeed(10.0f), m_senstivity(0.67f),
 		m_fov(fov), m_near(nearDis), m_far(farDis)
 	{
 		//UpdateCameraVectors();
@@ -105,26 +105,21 @@ namespace Editor {
 		front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
 		m_front = glm::normalize(front); // Normalize front vector
-
-
 		m_right = glm::normalize(glm::cross(m_front, m_worldUP));   // Right is the cross product of front and world up
 		m_up = glm::normalize(glm::cross(m_right, m_front));        // Up is the cross product of right and front
-
-		/*std::cout << "Front: " << glm::to_string(m_front) << "\n";
-		std::cout << "Right: " << glm::to_string(m_right) << "\n";
-		std::cout << "Up: " << glm::to_string(m_up) << "\n";*/
-
-
 	};
 
 	void Editor::Camera::UpdateOrbit() {
 		// Spherical to Cartesian conversion
 		float radius = glm::length(m_position - m_targetPos);  // Distance to the target
 
+		float ad_yaw = m_yaw * m_senstivity;
+		float ad_pitch = m_pitch * m_senstivity;
+
 		glm::vec3 offset;
-		offset.x = radius * cos(glm::radians(m_pitch)) * cos(glm::radians(m_yaw));
-		offset.y = radius * sin(glm::radians(m_pitch));
-		offset.z = radius * cos(glm::radians(m_pitch)) * sin(glm::radians(m_yaw));
+		offset.x = radius * cos(glm::radians(ad_pitch)) * cos(glm::radians(ad_yaw));
+		offset.y = radius * sin(glm::radians(ad_pitch));
+		offset.z = radius * cos(glm::radians(ad_pitch)) * sin(glm::radians(ad_yaw));
 
 		// Update camera position
 		m_position = m_targetPos + offset;

@@ -36,30 +36,30 @@ void Shader::load(const char* vertexFile, const char* fragmentFile) {
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
 
-	// Create Vertex Shader Object and get its reference
+	// Create VertexHolder Shader Object and get its reference
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	// Attach Vertex Shader source to the Vertex Shader Object
+	// Attach VertexHolder Shader source to the VertexHolder Shader Object
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
-	// Compile the Vertex Shader into machine code
+	// Compile the VertexHolder Shader into machine code
 	glCompileShader(vertexShader);
 
 	// Create Fragment Shader Object and get its reference
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Attach Fragment Shader source to the Fragment Shader Object
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-	// Compile the Vertex Shader into machine code
+	// Compile the VertexHolder Shader into machine code
 	glCompileShader(fragmentShader);
 
 	// Create Shader Program Object and get its reference
 	mProgramID = glCreateProgram();
-	// Attach the Vertex and Fragment Shaders to the Shader Program
+	// Attach the VertexHolder and Fragment Shaders to the Shader Program
 	glAttachShader(mProgramID, vertexShader);
 	glAttachShader(mProgramID, fragmentShader);
 	// Wrap-up/Link all the shaders together into the Shader Program
 	glLinkProgram(mProgramID);
 
 
-	// Delete the now useless Vertex and Fragment Shader objects
+	// Delete the now useless VertexHolder and Fragment Shader objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 

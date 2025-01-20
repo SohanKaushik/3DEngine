@@ -53,9 +53,6 @@ namespace core {
             this->loop(); // Start rendering immediately
         }
 
-    private:
-        void render();
-
         void loop() {
             while (m_window && !glfwWindowShouldClose(m_window)) {
                 glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -71,6 +68,9 @@ namespace core {
             glfwDestroyWindow(m_window);
             m_window = nullptr;
         }
+    private:
+        void render();
+
 
     private:
         std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();

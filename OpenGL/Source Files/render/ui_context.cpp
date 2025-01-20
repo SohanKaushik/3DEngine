@@ -131,6 +131,7 @@ void render::UIXContext::render_toolbar()
             if (ImGui::MenuItem("Render Image")) {
                 std::thread renderThread([&]() {
                     rendr_image->create_rendrwin();
+                    rendr_image->loop(); 
                     });
                 renderThread.detach();
             }
@@ -177,6 +178,14 @@ void render::UIXContext::render_toolbar()
                     auto cube = mEntityHandler->CreateEntity();
                     cube->AddComponent<Editor::TransformComponent>();
                     cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::cube);
+                }
+                ImGui::PopID();
+
+                ImGui::PushID("Monkey");
+                if (ImGui::MenuItem("Monkey")) {
+                    auto monkey = mEntityHandler->CreateEntity();
+                    monkey->AddComponent<Editor::TransformComponent>();
+                    monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/Textures/monkey.obj"); 
                 }
                 ImGui::PopID();
 

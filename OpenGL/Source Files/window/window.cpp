@@ -42,7 +42,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     
     glEnable(GL_DEPTH_TEST);
 
-    glfwSwapInterval(0);
+    //glfwSwapInterval(0);
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
     glEnable(GL_CULL_FACE);       // Optional: Enable backface culling
 

@@ -185,7 +185,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Monkey")) {
                     auto monkey = mEntityHandler->CreateEntity();
                     monkey->AddComponent<Editor::TransformComponent>();
-                    monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/Textures/monkey.obj"); 
+                    monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj"); 
                 }
                 ImGui::PopID();
 

@@ -25,8 +25,10 @@ void ui::Viewport::Init() {
 	);
 
 	mGrid->Init();
+	
 
-	//this->AddEntity();
+	// default entity
+	this->def_enit();
 };
 
 
@@ -129,10 +131,10 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::PopStyleColor(3);
 }
 
-Editor::Entity& ui::Viewport::AddEntity() {
+Editor::Entity& ui::Viewport::def_enit() {
 
 	auto entity = mEntityHandler->CreateEntity();
 	entity->AddComponent<TransformComponent>();
-	entity->AddComponent<MeshComponent>().load("Resource Files/Textures/monkey.obj");
+	entity->AddComponent<MeshComponent>().SetMesh(elems::PrimitiveType::cube);
 	return *entity;
 }

@@ -791,7 +791,7 @@
     <Image Include="Resource Files\Textures\image.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Resource Files\Textures\monkey.obj">
+    <Media Include="Resource Files\models\monkey.obj">
       <FileType>Document</FileType>
     </Media>
   </ItemGroup>

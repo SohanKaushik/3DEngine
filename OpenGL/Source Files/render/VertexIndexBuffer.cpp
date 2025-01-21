@@ -54,12 +54,12 @@ void render::VertexIndexBuffer::create(const std::vector<glm::vec3>& vertices, c
 void render::VertexIndexBuffer::create(const std::vector<VertexHolder>& vertices, const std::vector<unsigned int>& indices)
 {
     if (vertices.empty()) {
-        std::cerr << "Error : [ VertexHolder is Empty ]" << std::endl;
+        std::cerr << "Error : [VertexHolder is Empty]" << std::endl;
         return;
     } 
     
     if (indices.empty()) {
-        std::cerr << "Error : [ Indices are Empty ]" << std::endl;
+        std::cerr << "Error : [Indices are Empty]" << std::endl;
         return;
     }
 

@@ -32,7 +32,7 @@ namespace ui {
 
 		void RenderSceneUI();
 
-		Editor::Entity& AddEntity();
+		Editor::Entity& def_enit();
 
 
 	private:

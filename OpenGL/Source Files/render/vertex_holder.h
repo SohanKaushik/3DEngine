@@ -2,7 +2,7 @@
 #include "pch.h"
 
 struct VertexHolder {
-    glm::vec3 position;
-    glm::vec3 normal;
+    float position[3] = { 0,0,0 };
+    float normal[3] =  { 0,0,0 };
    // glm::vec2 texCoords;
 };

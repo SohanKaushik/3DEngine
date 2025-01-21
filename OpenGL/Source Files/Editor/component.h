@@ -70,6 +70,8 @@ namespace Editor {
 
 		glm::mat4 GetModelUniforms() {
 
+			/* Euler Rotation*/ 
+
 			// position
 			m_model = glm::translate(glm::mat4(1.0f), m_transform.position);
 
@@ -97,7 +99,7 @@ namespace Editor {
 
 	public:
 		MeshComponent() {
-			//mesh = std::make_unique<elems::Mesh>(elems::PrimitiveType::cube);  
+			mesh = std::make_unique<elems::Mesh>();  // this just makes an container and not actually output any mesh
 			m_color = glm::vec3(1.0f);
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}

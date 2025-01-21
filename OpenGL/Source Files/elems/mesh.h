@@ -7,6 +7,7 @@
 
 #include "assimp/scene.h"
 #include "render/vertex_holder.h"
+#include "vector"
 
 namespace elems {
 
@@ -21,27 +22,25 @@ namespace elems {
     public:
 
         Mesh(PrimitiveType type);
+        Mesh() = default;
+
 
         void proc_nodes(aiNode* node, const aiScene* scene);
         void proc_mesh(aiMesh* mesh, const aiScene* scene);
 
-        void o_data();
+        void comp_mesh_data();
+        void initialize_primitive(PrimitiveType type);
 
-        void set_prim(PrimitiveType type);
-
-
-
-        bool load(const std::string& path);
+        void load(const std::string& path);
         void draw();
 
     private:
 
         std::unique_ptr<render::VertexIndexBuffer> mBuffer = std::make_unique<render::VertexIndexBuffer>();
-        std::unique_ptr<elems::Primitive> m_primtv = std::make_unique<elems::Primitive>();
-        std::unique_ptr<Shader> mShader = std::make_unique<Shader>();
+        std::unique_ptr<elems::Primitive> m_primtv;
                                                   
-    private:
-        std::vector<VertexHolder> m_vertices;
-        std::vector<unsigned int> m_indices;
+    
+        std::vector<VertexHolder> m_vertices;       // Vertex data
+        std::vector<unsigned int> m_indices;        // Index data
     };
 }

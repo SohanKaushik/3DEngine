@@ -1,138 +1,91 @@
+#include "pch.h"
 #include "mesh.h"
-#include "shader/shader.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "render/vertex_holder.h"
+
 namespace elems {
 
     // Constructor for primitives
-    Mesh::Mesh(PrimitiveType type){
+    Mesh::Mesh(PrimitiveType type): m_vertices(0), m_indices(0){
 
-        this->set_prim(type);
-        this->o_data();
+        this->initialize_primitive(type);
         mBuffer->create(m_vertices, m_indices);
     }
 
     // Load mesh using Assimp
-    bool Mesh::load(const std::string& filepath) {
-        // Define Assimp import flags
+    void Mesh::load(const std::string& filepath) {
+
+        //// Define Assimp import flags
         const uint32_t cMeshImportFlags =
-            aiProcess_CalcTangentSpace | // Calculate tangent space for normal mapping
-            aiProcess_Triangulate |       // Triangulate meshes for rendering
-            aiProcess_GenNormals;         // Generate normals for meshes
+          aiProcess_CalcTangentSpace | // Calculate tangent space for normal mapping
+          aiProcess_Triangulate |       // Triangulate meshes for rendering
+          aiProcess_GenNormals;         // Generate normals for meshes
 
-        Assimp::Importer Importer;
-        const aiScene* pScene = Importer.ReadFile(filepath.c_str(), cMeshImportFlags);
+      Assimp::Importer Importer;
 
-        if (!pScene || !pScene->HasMeshes()) {
-            // Log error and return false
-            std::cerr << "Error: Unable to load mesh from file [" << filepath << "]." << std::endl;
-            std::cerr << "Assimp Error: " << Importer.GetErrorString() << std::endl;
-            return false;
-        }
+      // Load the file
+      const aiScene* pScene = Importer.ReadFile(filepath.c_str(), cMeshImportFlags);
 
-        // Clear existing vertex and index data
-        m_vertices.clear();
-        m_indices.clear();
+      if (!pScene || !pScene->HasMeshes()) {
+          // Log error and return false
+          std::cerr << "Error: Unable to load mesh from file [" << filepath << "]." << std::endl;
+          std::cerr << "Assimp Error: " << Importer.GetErrorString() << std::endl;
+          return ;
+      }
 
-        // Get the first mesh in the scene
-        auto* mesh = pScene->mMeshes[0];
-        if (!mesh->mVertices || !mesh->mFaces) {
-            // Log error and return false
-            std::cerr << "Error: Mesh is missing essential data (vertices or faces)." << std::endl;
-            return false;
-        }
 
-        // Load vertex data
-        for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
-            VertexHolder vh;
-            vh.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-            vh.normal = mesh->mNormals ?
-                glm::vec3{ mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z } : glm::vec3(0.0f);
-            m_vertices.push_back(vh);
-        }
+      // Access the first mesh in the file
+      const aiMesh* mesh = pScene->mMeshes[0];
 
-        // Load index data
-        for (size_t i = 0; i < mesh->mNumFaces; i++) {
-            aiFace face = mesh->mFaces[i];
-            for (size_t j = 0; j < face.mNumIndices; j++) {
-                m_indices.push_back(face.mIndices[j]);
-            }
-        }
+      // Extract vertices
+      m_vertices.clear();
+      for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
+          VertexHolder vertex;
+          vertex.position[0] = mesh->mVertices[i].x;
+          vertex.position[1] = mesh->mVertices[i].y;
+          vertex.position[2] = mesh->mVertices[i].z;
 
-        // Create vertex/index buffer
-        if (!mBuffer) {
-            mBuffer = std::make_unique<render::VertexIndexBuffer>();
-        }
-        // Create vertex/index buffer
-        if (!mBuffer) {
-            mBuffer = std::make_unique<render::VertexIndexBuffer>();
-        }
-        try {
-            mBuffer->create(m_vertices, m_indices);
-        }
-        catch (const std::exception& e) {
-            // Log error and return false
-            std::cerr << "Error: Failed to create vertex/index buffer." << std::endl;
-            std::cerr << "Exception: " << e.what() << std::endl;
-            return false;
-        }
+          if (mesh->mNormals) {
+              vertex.normal[0] = mesh->mNormals[i].x;
+              vertex.normal[1] = mesh->mNormals[i].y;
+               vertex.normal[2] = mesh->mNormals[i].z;
+           }
+           else {
+               vertex.normal[0] = 0.0f;
+               vertex.normal[1] = 0.0f;
+               vertex.normal[2] = 0.0f;
+           }
 
-        return true;
+           m_vertices.push_back(vertex);
+       }
+
+       // Extract indices
+       m_indices.clear();
+       for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+           const aiFace& face = mesh->mFaces[i];
+
+           // Ensure the face is a triangle
+           if (face.mNumIndices == 3) {
+               for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+                   m_indices.push_back(face.mIndices[j]);
+               }
+           }
+       }
+       this->comp_mesh_data();
+       if (mBuffer) {
+           mBuffer->create(m_vertices, m_indices);
+       }
+       else {
+           std::cerr << "Error: mBuffer is not initialized." << std::endl;
+       }
     }
 
-    void Mesh::proc_nodes(aiNode* node, const aiScene* scene) {
-        // Process all meshes in the current node
-        for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            this->proc_mesh(mesh, scene);
-        }
-
-        // Recursively process child nodes
-        for (unsigned int i = 0; i < node->mNumChildren; i++) {
-            this->proc_nodes(node->mChildren[i], scene); 
-        }
-    }
-
-    void Mesh::proc_mesh(aiMesh* mesh, const aiScene* scene) {
-        std::cout << "Processing mesh: " << mesh->mName.C_Str() << std::endl;
-
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            glm::vec3 position(
-                mesh->mVertices[i].x,
-                mesh->mVertices[i].y,
-                mesh->mVertices[i].z
-            );
-
-            glm::vec3 normal(0.0f);
-            if (mesh->mNormals) {  // Check before accessing
-                normal = glm::vec3(
-                    mesh->mNormals[i].x,
-                    mesh->mNormals[i].y,
-                    mesh->mNormals[i].z
-                );
-            }
-
-            glm::vec2 texCoords(0.0f);
-            if (mesh->mTextureCoords[0]) {  // Check before accessing
-                texCoords = glm::vec2(
-                    mesh->mTextureCoords[0][i].x,
-                    mesh->mTextureCoords[0][i].y
-                );
-            }
-
-            // Print the VertexHolder data
-            std::cout << "VertexHolder " << i << ": Position: ("
-                << position.x << ", " << position.y << ", " << position.z
-                << "), Normal: (" << normal.x << ", " << normal.y << ", " << normal.z
-                << "), TexCoords: (" << texCoords.x << ", " << texCoords.y << ")" << std::endl;
-        }
-
-    }
-
-    void Mesh::o_data() {
+  
+    void Mesh::comp_mesh_data() {
         unsigned int vertices = m_vertices.size();
         unsigned int faces = m_indices.size() / 3;
         unsigned int edges = (3 * faces) / 2;
@@ -145,8 +98,9 @@ namespace elems {
         std::cout << "Triangles : [" << triangle << "]" << std::endl;
     }
 
-    void Mesh::set_prim(PrimitiveType type) {
+    void Mesh::initialize_primitive(PrimitiveType type) {
 
+        m_primtv = std::make_unique<elems::Primitive>(); 
         switch (type) {
         case PrimitiveType::cube:
             m_primtv->cube();
@@ -166,6 +120,10 @@ namespace elems {
 
     // Render the mesh
     void Mesh::draw() {
+
+        if (m_vertices.empty() && m_indices.empty()) {
+            return;
+        }
         mBuffer->bind();
         mBuffer->draw(GL_TRIANGLES);
         mBuffer->unbind();

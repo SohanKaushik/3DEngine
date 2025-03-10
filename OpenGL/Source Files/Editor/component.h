@@ -11,13 +11,13 @@
 
 namespace Editor {
 
-	class Component {
+	class Components {
 
 	public:
-		virtual ~Component() = default;
+		virtual ~Components() = default;
 	};
 
-	class TagComponent : Component {
+	class TagComponent : Components {
 	private:
 		std::string m_tag;
 
@@ -32,7 +32,7 @@ namespace Editor {
 		}
 	};
 
-	class TransformComponent : public Component {
+	class TransformComponent : public Components {
 
 		struct Transform {
 			glm::vec3 position = glm::vec3(0.0f);
@@ -92,7 +92,7 @@ namespace Editor {
 		glm::mat4 m_model = glm::mat4(1.0f);
 	};
 
-	class MeshComponent : public Component {
+	class MeshComponent : public Components {
 	private: 
 		std::unique_ptr<elems::Mesh> mesh; 
 		glm::vec3 m_color;
@@ -104,7 +104,7 @@ namespace Editor {
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}
 
-		void SetMesh(const elems::PrimitiveType& primitive) {
+		void SetMesh(const elems::primvtype& primitive) {
 			mesh = std::make_unique<elems::Mesh>(primitive);
 		}
 
@@ -125,22 +125,63 @@ namespace Editor {
 			return mesh.get(); 
 		}
 
-		auto GetShader() {
-
-		}
 	};
 
+	class MaterialComponent : public Components {
 
-	class CameraComponent {
 	public:
-		CameraComponent() = default;
-
-		std::shared_ptr<Camera> GetCamera() const {
-			return m_camera;
-		}
+		enum class ModelType { Phong, Lambertian, PBR };
 
 	private:
-		std::shared_ptr<Editor::Camera> m_camera;  
+		glm::vec3 m_color{ 1.0f, 1.0f, 1.0f };
+		glm::vec3 m_ambient{ 1.0f, 1.0f, 1.0f };
+		glm::vec3 m_diffuse{ 1.0f, 1.0f, 1.0f };
+		glm::vec3 m_specular{ 0.5f, 0.5f, 0.5f };
+		float m_shininess{ 32.0f }; // Higher = shinier
+		float m_alpha = 1.0f;
+
+	private:
+		Shader _shader;
+
+	public:
+		MaterialComponent() {
+			_shader.load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
+		}
+
+	public:
+		void SetAmbient(const glm::vec3& amb) { m_ambient = amb; }
+		void SetDiffuse(const glm::vec3& diff) { m_diffuse = diff; }
+		void SetSpecular(const glm::vec3& spec) { m_specular = spec; }
+		void SetShininess(float shin) { m_shininess = shin; }
+		void SetAlpha(float alpha) { m_alpha = alpha; }
+
+		auto& GetColor() { return m_color; }
+		const glm::vec3& GetAmbient() const { return m_ambient; }
+		const glm::vec3& GetDiffuse() const { return m_diffuse; }
+		const glm::vec3& GetSpecular() const { return m_specular; }
+		float GetShininess() const { return m_shininess; }
+		float& GetAlpha() { return m_alpha; }
+
+
+		auto GetShader() {
+			return _shader;
+		}
+
+		void SetShader(ModelType type) {
+			switch (type) {
+			case ModelType::Phong:
+				_shader.load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
+				break;
+
+				case ModelType::Lambertian:
+					_shader.load("Resource Files/Shaders/shadingmodels/phong.vert", "Resource Files/Shaders/shadingmodels/phong.frag");
+					break;
+				/*
+				case ModelType::PBR:
+					_shader.load("Resource Files/Shaders/pbr.vert", "Resource Files/Shaders/pbr.frag");
+					break;*/
+			}
+		}
 	};
 
 };

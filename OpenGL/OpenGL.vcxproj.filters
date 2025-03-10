@@ -1839,6 +1839,17 @@
     </None>
     <None Include="..\..\..\..\..\Program Files\Assimp\bin\x64\assimp-vc143-mt.dll" />
     <None Include="dependencies\lib\assimp-vc143-mt.dll" />
+    <None Include="Resource Files\Shaders\deferred\deferred.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\deferred\deferred.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resource Files\Shaders\deferred\deff_lightpass.frag" />
+    <None Include="Resource Files\Shaders\deferred\deff_lightpass.vert" />
+    <None Include="Resource Files\Shaders\deferred\debug.frag" />
+    <None Include="Resource Files\Shaders\shadingmodels\phong.vert" />
+    <None Include="Resource Files\Shaders\shadingmodels\phong.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

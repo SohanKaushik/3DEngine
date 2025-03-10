@@ -11,7 +11,7 @@
 
 namespace elems {
 
-    enum class PrimitiveType {
+    enum class primvtype {
         cube,
         plane,
         sphere,
@@ -21,7 +21,7 @@ namespace elems {
     class Mesh {
     public:
 
-        Mesh(PrimitiveType type);
+        Mesh(primvtype type);
         Mesh() = default;
 
 
@@ -29,7 +29,7 @@ namespace elems {
         void proc_mesh(aiMesh* mesh, const aiScene* scene);
 
         void comp_mesh_data();
-        void initialize_primitive(PrimitiveType type);
+        void initialize_primitive(primvtype type);
 
         void load(const std::string& path);
         void draw();

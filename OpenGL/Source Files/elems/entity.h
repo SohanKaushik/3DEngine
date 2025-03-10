@@ -43,7 +43,7 @@ namespace elems {
        public:
         Transform m_transform;
 
-        MeshEntity(PrimitiveType type, const Transform& transform, const glm::vec3& color)
+        MeshEntity(primvtype type, const Transform& transform, const glm::vec3& color)
             : mColor(color), m_model(glm::mat4(1.0f)), m_transform(transform){
            
             mMesh = std::make_unique<elems::Mesh>(type);

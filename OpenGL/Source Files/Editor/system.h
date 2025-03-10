@@ -10,13 +10,14 @@ namespace Editor {
     class System {
     public:
         ~System() = default;
+        //virtual void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) = 0;
     };
 
-    class TransformSystem : System{
+    class TransformSystem : public System {
     public:
 
-        void update(std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) {
-            for (auto& entity : entities) {
+        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities)  {
+            for (auto& entity : entities){
                  auto index = &entity - &entities[0] + 1;
 
 
@@ -26,6 +27,8 @@ namespace Editor {
                   }
                    
                 auto transform = entity->GetComponent<TransformComponent>();
+                auto material = entity->GetComponent<MaterialComponent>();
+                Shader shader = material->GetShader();
                 shader.SetUniformMat4f("model", transform->GetModelUniforms());
             }
         }
@@ -33,7 +36,7 @@ namespace Editor {
 
     class MeshSystem : public System {
     public:
-        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) {
+        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities)  {
             for (auto& entity : entities) {
                 auto index = &entity - &entities[0];
 
@@ -44,13 +47,38 @@ namespace Editor {
 
                 auto mesh_com = entity->GetComponent<Editor::MeshComponent>();
                 auto transform = entity->GetComponent<TransformComponent>();
+                auto material = entity->GetComponent<MaterialComponent>();
+                
+                Shader shader = material->GetShader();
                 auto* meshes = mesh_com->GetMesh();
                 if (meshes) {
                     shader.SetUniformMat4f("model", transform->GetModelUniforms());
-                    shader.SetUniform3fv("color", mesh_com->GetColor());
                     meshes->draw();
                 }
             }
         }
+    };
+
+   class MaterialSystem : public System {
+    public:
+        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities)  {
+            for (auto& entity : entities) {
+
+               if (!entity->HasComponent<MeshComponent>()) {
+                    continue;
+                }
+
+                auto material = entity->GetComponent<Editor::MaterialComponent>();
+                Shader shader = material->GetShader();
+
+                shader.SetUniform3fv("color", material->GetColor());
+                shader.SetUniform1f("material.alpha", material->GetAlpha());
+
+             /*   shader.SetUniform3fv("material.ambient", material->GetAmbient());
+                shader.SetUniform3fv("material.diffuse", material->GetAmbient());
+                shader.SetUniform3fv("material.specular", material->GetAmbient());
+                shader.SetUniform1i("material.shininess", material->GetShininess());*/
+            }
+        };
     };
 }

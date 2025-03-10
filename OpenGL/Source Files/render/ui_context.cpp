@@ -70,8 +70,8 @@ void render::UIXContext::render() {
  
     render_toolbar();
     //ImGui::ShowDemoWindow();
+    render_material();
     render_inspector();
-    //render_hierarchy();
     //render_assets_hierarchy();
 };
 
@@ -127,7 +127,10 @@ void render::UIXContext::render_toolbar()
             ImGui::EndMenu();
         }
 
+        // Render
+        //ImGui::SetNextWindowSizeConstraints(ImVec2(200, 0), ImVec2(300, FLT_MAX));
         if (ImGui::BeginMenu("Render")) {
+
             if (ImGui::MenuItem("Render Image")) {
                 std::thread renderThread([&]() {
                     rendr_image->create_rendrwin();
@@ -139,6 +142,23 @@ void render::UIXContext::render_toolbar()
             if (ImGui::MenuItem("Null")) {
                 // Action for About
             }
+
+            const char* items[] = { "Forward", "Deferred"};
+            static int selectedItem = 0;
+
+            ImGui::Text("Rendering Mode");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(100); // Set a fixed width
+
+            if (ImGui::Combo("##", &selectedItem, items, IM_ARRAYSIZE(items))) {
+                // Handle selection change
+                std::cout << "Rendering Mode : -> " << items[selectedItem] << std::endl;
+                switch (selectedItem) {
+                    case 0: mViewport->set_rmode(ui::RenderMode::Forward); break;
+                    case 1: mViewport->set_rmode(ui::RenderMode::Deferred); break;
+                }
+            }
+            ImGui::PopItemWidth();
             ImGui::EndMenu();
         }
 
@@ -149,6 +169,14 @@ void render::UIXContext::render_toolbar()
             }
             if (ImGui::MenuItem("Hide Grid")) {
                 // Action for Hide Grid
+            }
+
+            static bool _islights = false;
+
+            ImGui::Text("Lights");
+            ImGui::SameLine();
+            if (ImGui::Checkbox("##lights", &_islights)) {
+                std::cout << "Lights: ON" << std::endl;
             }
             ImGui::EndMenu();
         }
@@ -161,7 +189,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Plane")) {
                     auto plane = mEntityHandler->CreateEntity();
                     plane->AddComponent<Editor::TransformComponent>();
-                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::plane);
+                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::primvtype::plane);
                 }
                 ImGui::PopID();  // Pop the ID after rendering
 
@@ -169,7 +197,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Sphere")) {
                    /* auto plane = mEntityHandler->CreateEntity();
                     plane->AddComponent<Editor::TransformComponent>();
-                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);*/
+                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::primvtype::sphere);*/
                 }
                 ImGui::PopID();
 
@@ -177,7 +205,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Cube")) {
                     auto cube = mEntityHandler->CreateEntity();
                     cube->AddComponent<Editor::TransformComponent>();
-                    cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::cube);
+                    cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::primvtype::cube);
                 }
                 ImGui::PopID();
 
@@ -266,7 +294,7 @@ void render::UIXContext::render_inspector()
     ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
 
 
-    if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
+    if (ImGui::Begin("Inspector", nullptr))
     {
         auto entity = mEntityHandler->GetSelectedEntity();
         if (!entity) {
@@ -279,7 +307,6 @@ void render::UIXContext::render_inspector()
         glm::vec3& position = transform->GetPosition();
         glm::vec3& scale = transform->GetScale();
         glm::vec3& rotation = transform->GetRotation();
-        glm::vec3& color = mesh->GetColor();
 
         float drag_senstivity = 0.5f;
 
@@ -303,6 +330,34 @@ void render::UIXContext::render_inspector()
         ImGui::DragFloat("y###scale_y", &scale.y, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
 
+    
+    }
+    ImGui::End();
+    ImGui::PopStyleColor(3);  
+}
+
+void render::UIXContext::render_material() {
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.08f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
+
+    auto entity = mEntityHandler->GetSelectedEntity();
+    auto mat = entity->GetComponent<Editor::MaterialComponent>();
+    glm::vec3& color = mat->GetColor();
+
+    if (ImGui::Begin("Material", nullptr)) {
+
+        static int selectedModel = 0;
+        ImGui::Text("Shading Model");
+
+        const char* shadingModels[] = { "Phong", "Lambertian", "Blinn-Phong" };
+        if (ImGui::Combo("Shading Model", &selectedModel, shadingModels, IM_ARRAYSIZE(shadingModels))) {
+            Editor::MaterialComponent::ModelType modelType = static_cast<Editor::MaterialComponent::ModelType>(selectedModel);
+
+            mat->SetShader(modelType);
+        }
+
+        ImGui::Separator();
         // Display a small color box
         ImGui::Text("Color");
         if (ImGui::ColorButton("##color_button", ImVec4(color.r, color.g, color.b, 1.0f), ImGuiColorEditFlags_NoTooltip, ImVec2(150, 15))) {
@@ -315,11 +370,27 @@ void render::UIXContext::render_inspector()
             ImGui::ColorPicker3("##picker", glm::value_ptr(color));
             ImGui::EndPopup();
         }
-    }
-    ImGui::End();
-    ImGui::PopStyleColor(3);  
-}
 
+        // Assume these variables control material properties
+        static float diffuseStrength = 1.0f;
+        static float specularStrength = 0.5f;
+        static float shininess = 32.0f;
+
+        // Slider for Diffuse Strength
+        ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.0f, 1.0f);
+        
+        // Slider for Transparency
+        ImGui::SliderFloat("Transparency", &mat->GetAlpha(), 0.0f, 1.0f);
+
+        // Slider for Specular Strength
+        ImGui::SliderFloat("Specular", &specularStrength, 0.0f, 1.0f);
+
+        // Slider for Shininess
+        ImGui::SliderFloat("Shininess", &shininess, 1.0f, 128.0f);
+    }
+    ImGui::PopStyleColor(3);
+    ImGui::End();
+}
 
 void render::UIXContext::render_hierarchy()
 {

@@ -10,7 +10,7 @@
 namespace elems {
 
     // Constructor for primitives
-    Mesh::Mesh(PrimitiveType type): m_vertices(0), m_indices(0){
+    Mesh::Mesh(primvtype type): m_vertices(0), m_indices(0){
 
         this->initialize_primitive(type);
         mBuffer->create(m_vertices, m_indices);
@@ -98,21 +98,21 @@ namespace elems {
         std::cout << "Triangles : [" << triangle << "]" << std::endl;
     }
 
-    void Mesh::initialize_primitive(PrimitiveType type) {
+    void Mesh::initialize_primitive(primvtype type) {
 
         m_primtv = std::make_unique<elems::Primitive>(); 
         switch (type) {
-        case PrimitiveType::cube:
+        case primvtype::cube:
             m_primtv->cube();
             break;
-        case PrimitiveType::plane:
+        case primvtype::plane:
             m_primtv->plane();
             break;
-        case PrimitiveType::sphere:
+        case primvtype::sphere:
             std::cerr << "Sphere is not implemented yet.\n";
             return;
         default:
-            throw std::runtime_error("Unsupported PrimitiveType!");
+            throw std::runtime_error("Unsupported primvtype!");
         }
         m_vertices = m_primtv->get_vertx();
         m_indices = m_primtv->get_indices();

@@ -769,6 +769,11 @@
     <None Include="OpenGL.aps" />
     <None Include="Resource Files\Shaders\default.frag" />
     <None Include="Resource Files\Shaders\default.vert" />
+    <None Include="Resource Files\Shaders\deferred\debug.frag" />
+    <None Include="Resource Files\Shaders\deferred\deferred.frag" />
+    <None Include="Resource Files\Shaders\deferred\deferred.vert" />
+    <None Include="Resource Files\Shaders\deferred\deff_lightpass.frag" />
+    <None Include="Resource Files\Shaders\deferred\deff_lightpass.vert" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.frag" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.vert" />
     <None Include="Resource Files\Shaders\grid.frag" />
@@ -779,6 +784,8 @@
     <None Include="Resource Files\Shaders\light.vert" />
     <None Include="Resource Files\Shaders\plane.frag" />
     <None Include="Resource Files\Shaders\plane.vert" />
+    <None Include="Resource Files\Shaders\shadingmodels\phong.frag" />
+    <None Include="Resource Files\Shaders\shadingmodels\phong.vert" />
     <None Include="Resource Files\Shaders\texture.frag" />
     <None Include="Resource Files\Shaders\texture.vert" />
   </ItemGroup>

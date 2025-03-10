@@ -48,7 +48,7 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
 
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     // Multi-Sampling 
     glEnable(GL_MULTISAMPLE);
 

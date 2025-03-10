@@ -15,7 +15,7 @@ namespace Editor {
         // Add a component of type T
         template <typename T, typename... Args>
         T& AddComponent(Args&&... args) {
-            static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+            static_assert(std::is_base_of<Components, T>::value, "T must inherit from Component");
 
             auto type = std::type_index(typeid(T));
             if (components.find(type) != components.end()) {
@@ -31,7 +31,7 @@ namespace Editor {
         // Get a component of type T
         template <typename T>
         T* GetComponent() {
-            static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+            static_assert(std::is_base_of<Components, T>::value, "T must inherit from Component");
 
             auto it = components.find(std::type_index(typeid(T)));
             if (it != components.end()) {
@@ -53,7 +53,7 @@ namespace Editor {
     private:
         int id;
 
-        std::unordered_map<std::type_index, std::shared_ptr<Component>> components;
+        std::unordered_map<std::type_index, std::shared_ptr<Components>> components;
     };
 
 }

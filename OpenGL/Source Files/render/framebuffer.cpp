@@ -162,3 +162,72 @@ unsigned int render::AntiAliasingFrameBuffer::get_texture()
 //{
 //	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 //};
+void render::GeometryBuffer::create_buffer(int width, int height)
+{
+	// Generate G-Buffer
+	glGenFramebuffers(1, &gBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+
+	// Position Color Buffer
+	glGenTextures(1, &gPosition);
+	glBindTexture(GL_TEXTURE_2D, gPosition);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+
+	// Normal Buffer
+	glGenTextures(1, &gNormals);
+	glBindTexture(GL_TEXTURE_2D, gNormals);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormals, 0);
+
+	// Albedo + Specular Buffer
+	glGenTextures(1, &gAlbedo);
+	glBindTexture(GL_TEXTURE_2D, gAlbedo);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
+
+	// Set Draw Buffers
+	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
+
+	// Depth Buffer
+	glGenRenderbuffers(1, &rbo_depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
+
+	// Check Completion
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "GBuffer Framebuffer not complete!" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void render::GeometryBuffer::bind()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+};
+
+void render::GeometryBuffer::unbind()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+};
+
+unsigned int render::GeometryBuffer::getID() {
+	return gBuffer;
+}
+
+unsigned int render::GeometryBuffer::get_texture() {
+	return gAlbedo; // Or whichever texture you want to return
+}
+
+
+
+

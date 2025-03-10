@@ -47,13 +47,6 @@ namespace Editor {
 
         void update(Shader& shader);
 
-        void RenderEntities(Shader& shader) {
-            for (const auto& entity : entities) {
-                m_tsystem->update(entities, shader); 
-                m_msytem->update(entities, shader);
-            }
-        }
-
         auto GetSelectedEntity() const {
             if (ID - 1 >= 0 && ID - 1 < entities.size()) {
                 return entities[ID - 1];
@@ -89,6 +82,7 @@ namespace Editor {
 
         std::unique_ptr<Editor::TransformSystem> m_tsystem = std::make_unique<Editor::TransformSystem>();
         std::unique_ptr<Editor::MeshSystem> m_msytem = std::make_unique<Editor::MeshSystem>();
+        std::unique_ptr<Editor::MaterialSystem> _system = std::make_unique<Editor::MaterialSystem>();
 
         EntityHandler() = default;  
         // Prevent copying

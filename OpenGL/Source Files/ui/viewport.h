@@ -16,9 +16,13 @@
 
 
 namespace ui {
-	
-	class Viewport {
 
+	enum class RenderMode {
+		Forward,
+		Deferred
+	};
+
+	class Viewport {
 	public:
 
 		void Init();
@@ -32,6 +36,11 @@ namespace ui {
 
 		void RenderSceneUI();
 
+		void forward();
+		void deferred();
+		void quad();
+		void set_rmode(RenderMode mode) { _rmode = mode; }
+		RenderMode get_rmode() { return _rmode; }
 		Editor::Entity& def_enit();
 
 
@@ -48,9 +57,12 @@ namespace ui {
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
-		std::unique_ptr<render::AntiAliasingFrameBuffer> mMultiSampleFramebuffer = std::make_unique<render::AntiAliasingFrameBuffer>();
+		//::unique_ptr<render::AntiAliasingFrameBuffer> mMultiSampleFramebuffer = std::make_unique<render::AntiAliasingFrameBuffer>();
 
 		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
+		std::unique_ptr<render::GeometryBuffer> gBuffer = std::make_unique<render::GeometryBuffer>();
 
+	private:
+		RenderMode _rmode = RenderMode::Forward; // Default to Forward
 	};
 }

@@ -3,8 +3,12 @@
 
 void Editor::EntityHandler::update(Shader& shader)
 {
-	this->RenderEntities(shader);
+	for (const auto& entity : entities) {
+		m_tsystem->update(entities);
+		m_msytem->update(entities);
+		_system->update(entities);
 
+	}
 
 	// Entities Manipulations
 	// for example

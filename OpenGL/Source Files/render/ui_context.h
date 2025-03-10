@@ -10,17 +10,19 @@ namespace render {
 	class UIXContext {
 
 	public:
-		
+
 		void init(GLFWwindow* window, ui::Viewport* viewport);
 		void pre_render();
 		void render();
 		void post_render();
 		void end();
 
+
 	private:
 		void render_toolbar();
 		void render_inspector();
 		void render_hierarchy();
+		void render_material();
 		void render_assets_hierarchy();
 
 	private:
@@ -30,8 +32,10 @@ namespace render {
 		void ShowAddMenu();
 
 	private:
-		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
+		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
 		std::unique_ptr<core::RenderImage> rendr_image = std::make_unique<core::RenderImage>();
 		ui::Viewport* mViewport = nullptr;
+
+		bool is_deferred = false;
 	};
 }

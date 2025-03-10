@@ -49,19 +49,25 @@ namespace render {
 		int aa_height, aa_widht;
 	};
 
-	/*class CameraUniformFrameBuffer : Framebuffer {
+	class GeometryBuffer : public Framebuffer {
 
 	public:
-
-		void create_buffer(const elems::CameraUniforms& uniforms);
-		void update_buffer(const elems::CameraUniforms& uniforms);
+		void create_buffer(int width, int height) override;
 		void bind() override;
 		void unbind() override;
+		unsigned int get_texture() override;
+		unsigned int getID() override;
+
+		// Get specific attachments
+		unsigned int getPositionTexture() { return gPosition; }
+		unsigned int getNormalTexture() { return gNormals; }
+		unsigned int getAlbedoTexture() { return gAlbedo; }
 
 	private:
+		unsigned int gBuffer;
+		unsigned int gPosition, gNormals, gAlbedo;
+		unsigned int rbo_depth;
 
-		unsigned cameraUBO, m_texture, m_ubo;
-		int ubo_width, ubo_height;
-	};*/
+	};
 
 };

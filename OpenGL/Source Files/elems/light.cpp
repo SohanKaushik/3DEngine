@@ -45,9 +45,9 @@ PointLight::PointLight(const glm::vec3& amb, const glm::vec3& diff, const glm::v
 void DirectionalLight::SetLightUniform(Shader& shader, const std::string& uniformName) const {
 
     shader.SetUniform3fv(uniformName + ".direction", glm::normalize(m_direction));
-    shader.SetUniform3fv(uniformName + ".ambient", m_ambient);
+   /* shader.SetUniform3fv(uniformName + ".ambient", m_ambient);
     shader.SetUniform3fv(uniformName + ".diffuse", m_diffuse);
-    shader.SetUniform3fv(uniformName + ".specular", m_specular);
+    shader.SetUniform3fv(uniformName + ".specular", m_specular);*/
 };
 
 void elems::DirectionalLight::UpdadeShadowMatrices(Shader& shadowShader, ui::Viewport& viewport)

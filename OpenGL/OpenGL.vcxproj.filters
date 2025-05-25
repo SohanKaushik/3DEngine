@@ -1094,9 +1094,6 @@
     <ClInclude Include="Source Files\Editor\core\render_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\elems\input_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\render\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>

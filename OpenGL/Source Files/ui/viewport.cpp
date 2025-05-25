@@ -68,6 +68,8 @@ void ui::Viewport::render() {
 		std::cout << "Key is pressed" << std::endl;
 	}
 
+	std::cout << glm::to_string(Input::GetMousePosition())<< std::endl;
+
 	mFramebuffer->unbind();
 
 	// Optional: Render UI or additional elements here

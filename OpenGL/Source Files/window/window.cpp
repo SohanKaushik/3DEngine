@@ -170,18 +170,17 @@ bool WindowManager::isRunning()
     return !glfwWindowShouldClose(m_window);
 };
 
-double mouseX, mouseY;
 void WindowManager::handleInputs() {
-    // Retrieve current mouse position
-    glfwGetCursorPos(this->GetWindow(), &mouseX, &mouseY);
+
+    glm::vec2 _position = Input::GetMousePosition();
 
     // Calculate mouse offsets
-    float xOffset = static_cast<float>(mouseX - lastX);
-    float yOffset = static_cast<float>(lastY - mouseY);  // Inverted Y-axis
+    float xOffset = static_cast<float>(_position.x - lastX);
+    float yOffset = static_cast<float>(lastY - _position.y);  // Inverted Y-axis
 
     // Store current mouse position for next frame
-    lastX = mouseX;
-    lastY = mouseY;
+    lastX = _position.x;
+    lastY = _position.y;
 
     if (Input::isMousePressed(MouseCode::Middle)) {
         if (Engine::Inputs::Input::isKeyPressed(KeyCode::Ctrl)) {
@@ -198,7 +197,7 @@ void WindowManager::handleInputs() {
     // Check for mouse click for selection (left mouse button)
     if (Input::isMousePressed(MouseCode::Left)) {
         // Pass the mouse position to the viewport for entity selection
-        mViewport->on_mouse_click(static_cast<float>(mouseX), static_cast<float>(mouseY), this->GetWindow());
+        mViewport->on_mouse_click(static_cast<float>(_position.x), static_cast<float>(_position.y), this->GetWindow());
     }
 
     if (Input::isKeyPressedDown(KeyCode::X)) {

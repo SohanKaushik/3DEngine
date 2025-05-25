@@ -4,7 +4,6 @@
 #include "elems/camera.h"
 #include "elems/light.h"
 #include "shader/shader.h"
-#include "elems/inputs.h"
 #include "ui/grid.h"
 #include "elems/Mesh.h"
 #include "elems/entity.h"

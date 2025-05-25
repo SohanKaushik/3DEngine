@@ -77,7 +77,7 @@
     <IncludePath>C:\Users\Lexi\Desktop\3D Engine\OpenGL\Header Files;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Lexi\Desktop\3D Engine\OpenGL\Source Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\Resource Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\Header Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\dependencies\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\PZ\source\repos\3DEngine\OpenGL\Source Files;C:\Users\PZ\source\repos\3DEngine\OpenGL\Resource Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\Header Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\dependencies\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Lexi\Desktop\3D Engine\OpenGL\Source Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\Resource Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\Header Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\dependencies\include;$(IncludePath)</IncludePath>
@@ -122,7 +122,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Lexi\Desktop\3D Engine\OpenGL\Source Files;C:\Users\Lexi\Desktop\3D Engine\OpenGL\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\PZ\source\repos\3DEngine\OpenGL\Source Files;C:\Users\PZ\source\repos\3DEngine\OpenGL\dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -169,6 +169,7 @@
     <ClCompile Include="Source Files\Editor\core\render_image.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.h" />
+    <ClCompile Include="Source Files\Editor\inputs\mousecodes.h" />
     <ClCompile Include="Source Files\Editor\system.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
@@ -587,8 +588,9 @@
     <ClInclude Include="Source Files\Editor\component.h" />
     <ClInclude Include="Source Files\Editor\entity.h" />
     <ClInclude Include="Source Files\Editor\ErrorHandler.h" />
-    <ClInclude Include="Source Files\Editor\maths\intersection_handler.h" />
-    <ClInclude Include="Source Files\Editor\maths\ray_intersection.h" />
+    <ClInclude Include="Source Files\Editor\inputs\InputHandler.h" />
+    <ClInclude Include="Source Files\Editor\inputs\keycodes.h" />
+    <ClInclude Include="Source Files\Editor\maths\ray.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
     <ClInclude Include="Source Files\elems\inputs.h" />

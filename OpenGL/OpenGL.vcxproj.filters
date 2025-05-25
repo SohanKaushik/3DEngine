@@ -129,6 +129,9 @@
     <ClCompile Include="Source Files\Editor\EntityHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Editor\inputs\mousecodes.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1094,12 +1097,6 @@
     <ClInclude Include="Source Files\Editor\core\render_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Editor\maths\ray_intersection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Editor\maths\intersection_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\elems\input_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1359,6 +1356,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\render\vertex_holder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\maths\ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\inputs\InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\inputs\keycodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

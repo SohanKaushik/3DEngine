@@ -138,6 +138,9 @@ void WindowManager::render()
 
     mViewport->render();
 
+    //glfwSetKeyCallback(m_window, key_callback);
+
+  
     mUIx->render();
 
     this->UpdateWindowSize();
@@ -146,6 +149,11 @@ void WindowManager::render()
     this->handleInputs();
 };
 
+//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//{
+//    if (key == GLFW_KEY_E && action == GLFW_PRESS)
+//        std::cout << "pressed" << std::endl;
+//}
 
 void WindowManager::post_render()
 {

@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "ui/viewport.h"
 #include "Editor/system.h"
-#include "Editor/maths/ray_intersection.h"
-#include <Editor/maths/intersection_handler.h>
+#include <Editor/maths/ray.h>
 
 using namespace elems;
 using namespace Editor;
@@ -57,6 +56,18 @@ void ui::Viewport::render() {
 	// Step 3: Render grid and UI
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
 	mCamera->UpdateCameraMatrix(mShader[1]);
+	
+							
+	glm::vec3 o = glm::vec3(0, 0, 1);
+	glm::vec3 d = glm::vec3(0, 0, 1);
+
+	using namespace Engine::Maths;
+
+	Ray ray(o, d);
+
+	ray.GetPoint(4);
+	std::cout << ray.toString() << std::endl;
+
 	mFramebuffer->unbind();
 
 	// Optional: Render UI or additional elements here

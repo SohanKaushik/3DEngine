@@ -7,6 +7,7 @@
 
 using namespace elems;
 using namespace Editor;
+using namespace Engine::Inputs;
 
 void ui::Viewport::Init() {
 	// Load shaders
@@ -63,12 +64,9 @@ void ui::Viewport::render() {
 	glm::vec3 o = glm::vec3(0, 0, 1);
 	glm::vec3 d = glm::vec3(0, 0, 1);
 
-	if (Engine::Inputs::Input::isKeyPressed(GLFW_KEY_E)){
+	if (Input::isKeyPressed(KeyCode::A)) {
 		std::cout << "Key is pressed" << std::endl;
 	}
-	/*if (Engine::Inputs::Input::isMousePressed(GLFW_MOUSE_BUTTON_LEFT)){
-		std::cout << "Left Mouse button is pressed" << std::endl;
-	}*/
 
 	mFramebuffer->unbind();
 

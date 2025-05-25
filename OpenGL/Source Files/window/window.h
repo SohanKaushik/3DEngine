@@ -42,7 +42,7 @@ public:
     std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
     std::unique_ptr<render::UIXContext> mUIx = std::make_unique<render::UIXContext>();
 
-    InputManager& input = InputManager::getInstance();
+    //InputManager& input = InputManager::getInstance();
 
 private:
     double lastX, lastY;

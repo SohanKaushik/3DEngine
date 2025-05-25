@@ -4,6 +4,8 @@ using namespace Engine::Inputs;
 
 std::unordered_map<int, bool> Input::keyStates;
 std::unordered_map<int, bool> Input::mouseStates;
+std::unordered_map<int, bool> Input::keyDownFlags;
+
 
 void Engine::Inputs::Input::initialize(GLFWwindow* window)
 {
@@ -11,11 +13,19 @@ void Engine::Inputs::Input::initialize(GLFWwindow* window)
 	glfwSetMouseButtonCallback(window, MouseCallback);
 }
 
-bool Input::isKeyPressed(int key) {
-	return keyStates[key];
+bool Input::isKeyPressed(KeyCode key) {
+	return keyStates[static_cast<int>(key)];
 }
-bool Input::isMousePressed(int button) {
-	return mouseStates[button];
+bool Input::isMousePressed(MouseCode button) {
+	return mouseStates[static_cast<int>(button)];
+}
+bool Input::isKeyPressedDown(KeyCode key) {
+	int _key = static_cast<int>(key);
+	if (keyStates[_key] && !keyDownFlags[_key]) {
+		keyDownFlags[_key] = true;  // mark it as "already handled"
+		return true;
+	}
+	return false;
 }
 
 void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {

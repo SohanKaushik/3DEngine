@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <algorithm>
 
-
 #include <unordered_map>
 
 // OpenGL includes

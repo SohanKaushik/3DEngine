@@ -193,7 +193,6 @@
     <ClCompile Include="Source Files\ui\scene_hierarchy.cpp" />
     <ClCompile Include="Source Files\ui\viewport.cpp" />
     <ClCompile Include="Source Files\window\window.cpp" />
-    <ClCompile Include="Source Files\elems\inputs.cpp" />
     <ClCompile Include="Source Files\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -594,12 +593,13 @@
     <ClInclude Include="Source Files\Editor\maths\ray.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
-    <ClInclude Include="Source Files\elems\inputs.h" />
     <ClInclude Include="Source Files\elems\input_handler.h" />
     <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />
     <ClInclude Include="Source Files\Engine\inputs\inputhandler.h" />
+    <ClInclude Include="Source Files\Engine\inputs\keycodes.h" />
+    <ClInclude Include="Source Files\Engine\inputs\mousecodes.h" />
     <ClInclude Include="Source Files\pch.h" />
     <ClInclude Include="Source Files\render\camera_uniforms.h" />
     <ClInclude Include="Source Files\render\framebuffer.h" />

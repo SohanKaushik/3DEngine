@@ -4,6 +4,7 @@
 
 GLFWwindow* WindowManager::m_window = nullptr;
 
+using namespace Engine::Inputs;
 
 WindowManager::WindowManager()
     : m_windowWidth(800), m_windowHeight(800)
@@ -69,7 +70,8 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     mViewport->Init();
 
     // Inputs Init
-    input.Initialize(this->m_window);
+    Engine::Inputs::Input::initialize(m_window);
+   // input.Initialize(this->m_window);
 
     // UI context
     mUIx->init(this->m_window, mViewport.get());
@@ -148,7 +150,6 @@ void WindowManager::render()
     this->UpdateWindowSize();
 
     // Handle Input here
-    Engine::Inputs::Input::initialize(m_window);
     this->handleInputs();
 };
 
@@ -182,9 +183,8 @@ void WindowManager::handleInputs() {
     lastX = mouseX;
     lastY = mouseY;
 
-    // Check if middle mouse button is pressed and control key is held for zooming
-    if (input.isMousePressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
-        if (input.isKeyPressed(GLFW_KEY_LEFT_CONTROL)) {
+    if (Input::isMousePressed(MouseCode::Middle)) {
+        if (Engine::Inputs::Input::isKeyPressed(KeyCode::Ctrl)) {
             mViewport->on_zoom(yOffset, 0.2f);
         }
         else {
@@ -196,12 +196,12 @@ void WindowManager::handleInputs() {
 
 
     // Check for mouse click for selection (left mouse button)
-    if (InputManager::getInstance().isMousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
+    if (Input::isMousePressed(MouseCode::Left)) {
         // Pass the mouse position to the viewport for entity selection
         mViewport->on_mouse_click(static_cast<float>(mouseX), static_cast<float>(mouseY), this->GetWindow());
     }
 
-    if (input.isKeyPressedDown(GLFW_KEY_X)) {
+    if (Input::isKeyPressedDown(KeyCode::X)) {
         mEntityHandler->TerminateEntity();
     }
 };

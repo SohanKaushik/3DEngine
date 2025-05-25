@@ -5,9 +5,12 @@
 #include "elems/camera.h"
 #include "render/ui_context.h"
 
+#include <Engine/inputs/inputhandler.h>
+
+
 class WindowManager {
 private:
-    GLFWwindow* m_window;
+    static GLFWwindow* m_window;
     int m_windowWidth;
     int m_windowHeight;
 
@@ -34,7 +37,7 @@ public:
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 public:
-    GLFWwindow* GetWindow();
+    static GLFWwindow* GetWindow();
     std::unique_ptr<ui::Viewport> mViewport = std::make_unique<ui::Viewport>();
     std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
     std::unique_ptr<render::UIXContext> mUIx = std::make_unique<render::UIXContext>();
@@ -46,6 +49,6 @@ private:
     bool firstMouse;
 
 private:
-    std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();;
+    std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
     void set_fullscreen(bool isFullSrn);
 };

@@ -177,6 +177,7 @@
     <ClCompile Include="Source Files\elems\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
+    <ClCompile Include="Source Files\Engine\inputs\inputhandler.cpp" />
     <ClCompile Include="Source Files\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -598,6 +599,7 @@
     <ClInclude Include="Source Files\elems\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />
+    <ClInclude Include="Source Files\Engine\inputs\inputhandler.h" />
     <ClInclude Include="Source Files\pch.h" />
     <ClInclude Include="Source Files\render\camera_uniforms.h" />
     <ClInclude Include="Source Files\render\framebuffer.h" />

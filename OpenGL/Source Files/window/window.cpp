@@ -2,9 +2,11 @@
 
 #include "window.h"
 
+GLFWwindow* WindowManager::m_window = nullptr;
+
 
 WindowManager::WindowManager()
-    : m_windowWidth(800), m_windowHeight(600), m_window(nullptr) 
+    : m_windowWidth(800), m_windowHeight(800)
 {};
 
 WindowManager::~WindowManager() {
@@ -146,14 +148,9 @@ void WindowManager::render()
     this->UpdateWindowSize();
 
     // Handle Input here
+    Engine::Inputs::Input::initialize(m_window);
     this->handleInputs();
 };
-
-//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//{
-//    if (key == GLFW_KEY_E && action == GLFW_PRESS)
-//        std::cout << "pressed" << std::endl;
-//}
 
 void WindowManager::post_render()
 {

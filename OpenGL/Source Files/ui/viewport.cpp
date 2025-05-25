@@ -3,6 +3,8 @@
 #include "Editor/system.h"
 #include <Editor/maths/ray.h>
 
+#include <window/window.h>
+
 using namespace elems;
 using namespace Editor;
 
@@ -15,7 +17,7 @@ void ui::Viewport::Init() {
 
 	mFramebuffer->create_buffer(1000, 800);
 	mShadowFrameBuffer->create_buffer(2048, 2048);
-	
+
 	// Initialize camera and grid
 	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
@@ -24,7 +26,7 @@ void ui::Viewport::Init() {
 	);
 
 	mGrid->Init();
-	
+
 
 	// default entity
 	this->def_enit();
@@ -34,13 +36,13 @@ void ui::Viewport::Init() {
 void ui::Viewport::render() {
 
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
-	
+
 	mFramebuffer->bind();
 
 	mEntityHandler->update(mShader[0]);
 
 	mShader[0].use();
-	mCamera->UpdateCameraMatrix(mShader[0]);                   
+	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// Set up directional light
 	DirectionalLight dirLight(
@@ -56,17 +58,17 @@ void ui::Viewport::render() {
 	// Step 3: Render grid and UI
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
 	mCamera->UpdateCameraMatrix(mShader[1]);
-	
-							
+
+
 	glm::vec3 o = glm::vec3(0, 0, 1);
 	glm::vec3 d = glm::vec3(0, 0, 1);
 
-	using namespace Engine::Maths;
-
-	Ray ray(o, d);
-
-	ray.GetPoint(4);
-	std::cout << ray.toString() << std::endl;
+	if (Engine::Inputs::Input::isKeyPressed(GLFW_KEY_E)){
+		std::cout << "Key is pressed" << std::endl;
+	}
+	/*if (Engine::Inputs::Input::isMousePressed(GLFW_MOUSE_BUTTON_LEFT)){
+		std::cout << "Left Mouse button is pressed" << std::endl;
+	}*/
 
 	mFramebuffer->unbind();
 

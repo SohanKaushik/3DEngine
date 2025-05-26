@@ -70,7 +70,7 @@ void elems::DirectionalLight::UpdadeShadowMatrices(Shader& shadowShader, ui::Vie
     shadowShader.SetUniformMat4f("lightSpaceMatrix", m_lightSpaceMatrix);
 
     // Rendering Entties from light POV
-    //viewport.RenderEntities(shadowShader);
+    //viewport.render(shadowShader);
     mShadowFBO->unbind();
 };
 

@@ -12,7 +12,7 @@
 #include "render/ShadowMap.h"
 
 #include "Editor/EntityHandler.h"
-
+#include <Editor/selection.h>
 
 namespace ui {
 	
@@ -43,13 +43,15 @@ namespace ui {
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<Editor::Camera> mCamera;
 	
-		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
+		std::shared_ptr<Editor::EntityHandler> mEntityHandler;// = Editor::EntityHandler::GetInstance();
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
 		std::unique_ptr<render::AntiAliasingFrameBuffer> mMultiSampleFramebuffer = std::make_unique<render::AntiAliasingFrameBuffer>();
 
 		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
+		//std::unique_ptr<Editor::Selection> _selection = std::make_unique<Editor::Selection>();
+
 
 	};
 }

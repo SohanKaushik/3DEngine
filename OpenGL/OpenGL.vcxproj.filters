@@ -126,9 +126,6 @@
     <ClCompile Include="Source Files\Editor\EntityHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Editor\inputs\mousecodes.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Engine\inputs\inputhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1352,13 +1349,7 @@
     <ClInclude Include="Source Files\render\vertex_holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\Editor\maths\ray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Editor\inputs\InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Files\Editor\inputs\keycodes.h">
+    <ClInclude Include="Source Files\Engine\maths\ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Engine\inputs\inputhandler.h">
@@ -1368,6 +1359,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Engine\inputs\mousecodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\Editor\selection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1848,6 +1842,8 @@
     </None>
     <None Include="..\..\..\..\..\Program Files\Assimp\bin\x64\assimp-vc143-mt.dll" />
     <None Include="dependencies\lib\assimp-vc143-mt.dll" />
+    <None Include="Source Files\Editor\shaders\picking.frag" />
+    <None Include="Source Files\Editor\shaders\picking.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

@@ -169,7 +169,6 @@
     <ClCompile Include="Source Files\Editor\core\render_image.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.h" />
-    <ClCompile Include="Source Files\Editor\inputs\mousecodes.h" />
     <ClCompile Include="Source Files\Editor\system.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
@@ -588,9 +587,8 @@
     <ClInclude Include="Source Files\Editor\component.h" />
     <ClInclude Include="Source Files\Editor\entity.h" />
     <ClInclude Include="Source Files\Editor\ErrorHandler.h" />
-    <ClInclude Include="Source Files\Editor\inputs\InputHandler.h" />
-    <ClInclude Include="Source Files\Editor\inputs\keycodes.h" />
-    <ClInclude Include="Source Files\Editor\maths\ray.h" />
+    <ClInclude Include="Source Files\Editor\selection.h" />
+    <ClInclude Include="Source Files\Engine\maths\ray.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
     <ClInclude Include="Source Files\elems\light.h" />
@@ -784,6 +782,8 @@
     <None Include="Resource Files\Shaders\plane.vert" />
     <None Include="Resource Files\Shaders\texture.frag" />
     <None Include="Resource Files\Shaders\texture.vert" />
+    <None Include="Source Files\Editor\shaders\picking.frag" />
+    <None Include="Source Files\Editor\shaders\picking.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

@@ -49,6 +49,19 @@ namespace render {
 		int aa_height, aa_widht;
 	};
 
+	class PickingFramebuffer : Framebuffer {
+
+	public:
+		void create_buffer(int width, int height) override;
+		void bind() override;
+		void unbind() override;
+		unsigned int get_texture() override;
+		unsigned int getID() override;
+
+	private:
+		unsigned int picking_fbo, color_texture, depth_rbo;
+		int _height, _width;
+	};
 	/*class CameraUniformFrameBuffer : Framebuffer {
 
 	public:

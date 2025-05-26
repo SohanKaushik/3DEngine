@@ -33,5 +33,8 @@ namespace render {
 		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
 		std::unique_ptr<core::RenderImage> rendr_image = std::make_unique<core::RenderImage>();
 		ui::Viewport* mViewport = nullptr;
+
+		std::unique_ptr<render::PickingFramebuffer> _selection_texture = std::make_unique<render::PickingFramebuffer>();
+
 	};
 }

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ui/viewport.h"
 #include "Editor/system.h"
-#include <Editor/maths/ray.h>
+#include <Engine/maths/ray.h>
 
 #include <window/window.h>
 
@@ -15,6 +15,8 @@ void ui::Viewport::Init() {
 	mShader[1].load("Resource Files/Shaders/grid.vert", "Resource Files/Shaders/grid.frag");
 	mShader[2].load("Resource Files/Shaders/DirectionalShadowMap.vert", "Resource Files/Shaders/DirectionalShadowMap.frag");
 	mShader[3].load("Resource Files/Shaders/plane.vert", "Resource Files/Shaders/plane.frag");
+
+	mEntityHandler = Editor::EntityHandler::GetInstance();
 
 	mFramebuffer->create_buffer(1000, 800);
 	mShadowFrameBuffer->create_buffer(2048, 2048);
@@ -40,7 +42,7 @@ void ui::Viewport::render() {
 
 	mFramebuffer->bind();
 
-	mEntityHandler->update(mShader[0]);
+	mEntityHandler->render(mShader[0]);
 
 	mShader[0].use();
 	mCamera->UpdateCameraMatrix(mShader[0]);
@@ -61,16 +63,18 @@ void ui::Viewport::render() {
 	mCamera->UpdateCameraMatrix(mShader[1]);
 
 
-	glm::vec3 o = glm::vec3(0, 0, 1);
-	glm::vec3 d = glm::vec3(0, 0, 1);
 
+	//debugs
 	if (Input::isKeyPressed(KeyCode::A)) {
 		std::cout << "Key is pressed" << std::endl;
 	}
 
-	std::cout << glm::to_string(Input::GetMousePosition())<< std::endl;
+	//std::cout << glm::to_string(Input::GetMousePosition())<< std::endl;
 
 	mFramebuffer->unbind();
+
+	// selector
+	//_selection->render();
 
 	// Optional: Render UI or additional elements here
 	this->RenderSceneUI();

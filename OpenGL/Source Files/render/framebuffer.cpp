@@ -125,40 +125,43 @@ unsigned int render::AntiAliasingFrameBuffer::get_texture()
 };
 
 
-//void render::CameraUniformFrameBuffer::create_buffer(const elems::CameraUniforms& uniforms)
-//{
-//	// Generating a uniform object framebuffer
-//	glGenBuffers(1, &cameraUBO);
-//	glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
-//
-//	// Allocate memory for the UBO (but don't fill it yet)
-//	glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraUniforms), nullptr, GL_DYNAMIC_DRAW);
-//
-//	// Unbind the buffer
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-//};
-//
-//
-//void render::CameraUniformFrameBuffer::update_buffer(const elems::CameraUniforms& uniforms)
-//{
-//	// Bind the existing UBO
-//	glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
-//
-//	// Update the buffer's contents
-//	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraUniforms), &uniforms);
-//
-//	// Unbind the buffer
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-//}
-//
-//
-//
-//void render::CameraUniformFrameBuffer::bind()
-//{
-//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO);
-//};
-//
-//void render::CameraUniformFrameBuffer::unbind()
-//{
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-//};
+void render::PickingFramebuffer::create_buffer(int width, int height)
+{
+	// Generating a picking object framebuffer
+	glGenFramebuffers(1, &picking_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
+
+
+	// Creating color texture
+	glGenTextures(1, &color_texture);
+	glBindTexture(GL_TEXTURE_2D, color_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	// Create depth renderbuffer
+	glGenRenderbuffers(1, &depth_rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, depth_rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cerr << "Picking framebuffer not complete!" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+};
+
+
+void render::PickingFramebuffer::bind()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+}
+
+
+void render::PickingFramebuffer::unbind()
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+};
+
+unsigned int render::PickingFramebuffer::getID() { return 1; }
+
+unsigned int render::PickingFramebuffer::get_texture() { return color_texture; }

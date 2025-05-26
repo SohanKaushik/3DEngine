@@ -46,9 +46,9 @@ namespace Editor {
             return components.find(std::type_index(typeid(T))) != components.end();
         }
 
-        int GetID() {
+      /*  int GetID() {
             return id;
-        }
+        }*/
 
     private:
         int id;

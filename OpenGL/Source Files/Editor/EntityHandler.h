@@ -45,14 +45,10 @@ namespace Editor {
             }*/
         }
 
-        void update(Shader& shader);
 
-        void RenderEntities(Shader& shader) {
-            for (const auto& entity : entities) {
-                m_tsystem->update(entities, shader); 
-                m_msytem->update(entities, shader);
-            }
-        }
+        // it render the scene for a given shader
+        void render(Shader& shader);
+
 
         auto GetSelectedEntity() const {
             if (ID - 1 >= 0 && ID - 1 < entities.size()) {
@@ -65,6 +61,10 @@ namespace Editor {
 
         auto GetSelectedEntityById(int id) {
             return entities[0];
+        }
+
+        int GetID() {
+            return ID;
         }
 
        void TerminateEntity() {
@@ -82,9 +82,10 @@ namespace Editor {
            }
        }
 
+    protected:
+        int ID = 0;  // To generate unique IDs for entities
 
     private:
-        int ID = 0;  // To generate unique IDs for entities
         std::vector<std::shared_ptr<Entity>> entities;
 
         std::unique_ptr<Editor::TransformSystem> m_tsystem = std::make_unique<Editor::TransformSystem>();

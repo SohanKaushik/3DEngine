@@ -73,6 +73,14 @@ void render::UIXContext::render() {
     render_inspector();
     //render_hierarchy();
     //render_assets_hierarchy();
+
+    
+    ImGui::Begin("Color Buffer");  // Pass pointer to allow closing the window with X button
+    ImGui::Text("pointer = %x", _selection_texture->get_texture());
+    ImGui::Text("size = 200 x 200");
+    ImGui::Image((ImTextureID)(intptr_t)_selection_texture->get_texture(), ImVec2(200, 200));
+    ImGui::End();
+    
 };
 
 void render::UIXContext::post_render() {
@@ -215,6 +223,19 @@ void render::UIXContext::render_toolbar()
             }
             ImGui::EndMenu();
         }
+
+        // Somewhere globally or static
+        static bool showPickingDebug = false;
+
+        // In your Debug menu code:
+        if (ImGui::BeginMenu("Debug")) {
+            if (ImGui::MenuItem("Picking Buffer", NULL, &showPickingDebug)) {
+                // toggles showPickingDebug automatically
+            }
+            ImGui::EndMenu();
+        }
+
+      
 
         ImGui::EndMainMenuBar();
     }

@@ -1,7 +1,6 @@
 #pragma once
 #include "pch.h"
 #include "elems/mesh.h"
-#include "ui/viewport.h"
 #include "Editor/EntityHandler.h"
 #include "Editor/core/render_image.h"
 
@@ -11,7 +10,7 @@ namespace render {
 
 	public:
 		
-		void init(GLFWwindow* window, ui::Viewport* viewport);
+		void init(GLFWwindow* window);
 		void pre_render();
 		void render();
 		void post_render();
@@ -30,9 +29,9 @@ namespace render {
 		void ShowAddMenu();
 
 	private:
-		std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
+		//std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance(); 
 		std::unique_ptr<core::RenderImage> rendr_image = std::make_unique<core::RenderImage>();
-		ui::Viewport* mViewport = nullptr;
+		//ui::Viewport* mViewport = nullptr;
 
 		std::unique_ptr<render::PickingFramebuffer> _selection_texture = std::make_unique<render::PickingFramebuffer>();
 

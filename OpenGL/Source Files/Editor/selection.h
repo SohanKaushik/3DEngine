@@ -27,15 +27,14 @@ namespace Editor {
 	public:
 		Selection() {
 
-			std::cout << "hello i am from selection" << std::endl;
-			//_buffer->create_buffer(500, 500);
-			//_shader.load("Source Files/Editor/shaders/picking.vert", "Source Files/Editor/shaders/picking.frag");
+			_buffer->create_buffer(500, 500);
+			_shader.load("Source Files/Editor/shaders/picking.vert", "Source Files/Editor/shaders/picking.frag");
 		}
 
 		void render() {
-
-			//Editor::EntityHandler::GetInstance()->render(_shader);
-			//_buffer->unbind();
+			_buffer->bind();
+			Editor::EntityHandler::render(_shader);
+			_buffer->unbind();
 		}
 
 	private:

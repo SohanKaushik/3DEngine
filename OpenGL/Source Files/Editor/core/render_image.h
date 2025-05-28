@@ -7,7 +7,7 @@ namespace core {
 
     class RenderImage {
     public:
-        RenderImage() : m_window(nullptr) {  }
+        RenderImage() = default;
         ~RenderImage() {
             std::cout << "Closed." << std::endl;
             if (m_window) {
@@ -74,7 +74,6 @@ namespace core {
 
     private:
         std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
-        std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
         GLFWwindow* m_window;
     };
 }

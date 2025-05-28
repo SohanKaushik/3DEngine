@@ -3,6 +3,7 @@
 #include "Editor/EditorCamera.h"
 
 namespace Editor {
+
 	Editor::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis)
 		: m_position(position), m_up(up), m_yaw(yaw), m_pitch(pitch),
 		m_moveSpeed(10.0f), m_senstivity(0.67f),

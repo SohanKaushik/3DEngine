@@ -38,7 +38,7 @@ glm::mat4 elems::Camera::GetViewMatrix() const
 {
 	return mCameraUniforms.view;
 };
-
+	
 glm::vec3  elems::Camera::GetCameraPosition() const {
 	return mCameraUniforms.pos;
 };

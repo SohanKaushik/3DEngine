@@ -9,6 +9,8 @@ using namespace elems;
 using namespace Editor;
 using namespace Engine::Inputs;
 
+
+
 void ui::Viewport::Init() {
 	// Load shaders
 	mShader[0].load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
@@ -16,18 +18,16 @@ void ui::Viewport::Init() {
 	mShader[2].load("Resource Files/Shaders/DirectionalShadowMap.vert", "Resource Files/Shaders/DirectionalShadowMap.frag");
 	mShader[3].load("Resource Files/Shaders/plane.vert", "Resource Files/Shaders/plane.frag");
 
-	mEntityHandler = Editor::EntityHandler::GetInstance();
 
 	mFramebuffer->create_buffer(1000, 800);
-	mShadowFrameBuffer->create_buffer(2048, 2048);
 
-	// Initialize camera and grid
 	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		-90.0f, 0.0f, 45.0f, 0.1, 1000.0f
 	);
 
+	//_selection = std::make_unique<Editor::Selection>();
 	mGrid->Init();
 
 
@@ -38,11 +38,16 @@ void ui::Viewport::Init() {
 
 void ui::Viewport::render() {
 
+
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
+
+	//_selection->render();
+
+	// -> START
 
 	mFramebuffer->bind();
 
-	mEntityHandler->render(mShader[0]);
+	Editor::EntityHandler::render(mShader[0]);
 
 	mShader[0].use();
 	mCamera->UpdateCameraMatrix(mShader[0]);
@@ -69,12 +74,8 @@ void ui::Viewport::render() {
 		std::cout << "Key is pressed" << std::endl;
 	}
 
-	//std::cout << glm::to_string(Input::GetMousePosition())<< std::endl;
-
+	// -> END
 	mFramebuffer->unbind();
-
-	// selector
-	//_selection->render();
 
 	// Optional: Render UI or additional elements here
 	this->RenderSceneUI();
@@ -150,7 +151,7 @@ void ui::Viewport::RenderSceneUI() {
 
 Editor::Entity& ui::Viewport::def_enit() {
 
-	auto entity = mEntityHandler->CreateEntity();
+	auto entity = Editor::EntityHandler::CreateEntity();
 	entity->AddComponent<TransformComponent>();
 	entity->AddComponent<MeshComponent>().SetMesh(elems::PrimitiveType::cube);
 	return *entity;

@@ -154,6 +154,10 @@ void render::PickingFramebuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+	glViewport(0, 0, 200, 200);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 }
 
 

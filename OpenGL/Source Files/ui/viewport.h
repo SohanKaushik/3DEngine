@@ -1,18 +1,18 @@
 #pragma once
 #include "pch.h"
 
-#include "elems/camera.h"
-#include "elems/light.h"
-#include "shader/shader.h"
 #include "ui/grid.h"
 #include "elems/Mesh.h"
+#include "elems/light.h"
+//#include "elems/camera.h"
 #include "elems/entity.h"
-#include "Editor/EditorCamera.h"
-#include "render/framebuffer.h"
-#include "render/ShadowMap.h"
+#include "shader/shader.h"
 
-#include "Editor/EntityHandler.h"
+#include "render/ShadowMap.h"
 #include <Editor/selection.h>
+#include "render/framebuffer.h"
+#include "Editor/EditorCamera.h"
+#include "Editor/EntityHandler.h"
 
 namespace ui {
 	
@@ -42,16 +42,11 @@ namespace ui {
 
 		std::unique_ptr<Shader[]> mShader = std::make_unique<Shader[]>(5);
 		std::unique_ptr<Editor::Camera> mCamera;
-	
-		std::shared_ptr<Editor::EntityHandler> mEntityHandler;// = Editor::EntityHandler::GetInstance();
+		
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
-		std::unique_ptr<render::AntiAliasingFrameBuffer> mMultiSampleFramebuffer = std::make_unique<render::AntiAliasingFrameBuffer>();
-
-		std::unique_ptr<render::ShadowMap> mShadowFrameBuffer = std::make_unique<render::ShadowMap>();
-		//std::unique_ptr<Editor::Selection> _selection = std::make_unique<Editor::Selection>();
-
+		//std::unique_ptr<Editor::Selection> _selection;
 
 	};
 }

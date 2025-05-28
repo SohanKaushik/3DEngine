@@ -48,6 +48,6 @@ private:
     bool firstMouse;
 
 private:
-    std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
+   // std::shared_ptr<Editor::EntityHandler> mEntityHandler = Editor::EntityHandler::GetInstance();
     void set_fullscreen(bool isFullSrn);
 };

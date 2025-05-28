@@ -33,7 +33,6 @@ namespace Editor {
 
 	public:
 
-		Camera() = default;
 		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis);
 
 		glm::vec3 GetCameraPosition() const;
@@ -46,7 +45,7 @@ namespace Editor {
 
 
 		void CalKeyboardMovement(glm::vec3 direction, float deltaTime);
-		void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
+		//void CalMouseRotation(float xOffset, float yOffset, bool contrainPitch);
 
 		void UpdateCameraMatrix(Shader& shader);
 

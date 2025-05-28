@@ -2,7 +2,7 @@
 #include "render/ui_context.h"
 #include <thread>
 
-void render::UIXContext::init(GLFWwindow* window, ui::Viewport* vp) {
+void render::UIXContext::init(GLFWwindow* window) {
 
     // ImGUI
     ImGui::CreateContext();
@@ -20,7 +20,7 @@ void render::UIXContext::init(GLFWwindow* window, ui::Viewport* vp) {
     // Set up ImGui style
     ImGui::StyleColorsDark();
 
-    mViewport = vp;
+    //mViewport = vp;
 };
 
 
@@ -77,7 +77,7 @@ void render::UIXContext::render() {
     
     ImGui::Begin("Color Buffer");  // Pass pointer to allow closing the window with X button
     ImGui::Text("pointer = %x", _selection_texture->get_texture());
-    ImGui::Text("size = 200 x 200");
+//ImGui::Text("size = %d x %d", _selection_texture->getWidth(), _selection_texture->getHeight());
     ImGui::Image((ImTextureID)(intptr_t)_selection_texture->get_texture(), ImVec2(200, 200));
     ImGui::End();
     
@@ -137,11 +137,11 @@ void render::UIXContext::render_toolbar()
 
         if (ImGui::BeginMenu("Render")) {
             if (ImGui::MenuItem("Render Image")) {
-                std::thread renderThread([&]() {
+               /* std::thread renderThread([&]() {
                     rendr_image->create_rendrwin();
                     rendr_image->loop(); 
                     });
-                renderThread.detach();
+                renderThread.detach();*/
             }
 
             if (ImGui::MenuItem("Null")) {
@@ -167,7 +167,7 @@ void render::UIXContext::render_toolbar()
             if (ImGui::BeginMenu("Mesh")) {
                 ImGui::PushID("Plane");
                 if (ImGui::MenuItem("Plane")) {
-                    auto plane = mEntityHandler->CreateEntity();
+                    auto plane = Editor::EntityHandler::CreateEntity();
                     plane->AddComponent<Editor::TransformComponent>();
                     plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::plane);
                 }
@@ -183,7 +183,7 @@ void render::UIXContext::render_toolbar()
 
                 ImGui::PushID("Cube");
                 if (ImGui::MenuItem("Cube")) {
-                    auto cube = mEntityHandler->CreateEntity();
+                    auto cube = Editor::EntityHandler::CreateEntity();
                     cube->AddComponent<Editor::TransformComponent>();
                     cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::cube);
                 }
@@ -191,7 +191,7 @@ void render::UIXContext::render_toolbar()
 
                 ImGui::PushID("Monkey");
                 if (ImGui::MenuItem("Monkey")) {
-                    auto monkey = mEntityHandler->CreateEntity();
+                    auto monkey = Editor::EntityHandler::CreateEntity();
                     monkey->AddComponent<Editor::TransformComponent>();
                     monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj"); 
                 }
@@ -205,7 +205,7 @@ void render::UIXContext::render_toolbar()
 
             if (ImGui::MenuItem("Camera")) {
                 //...
-                auto entity = mEntityHandler->GetSelectedEntity();
+                auto entity = Editor::EntityHandler::GetSelectedEntity();
 
                // std::cout << glm::to_string(entity->GetPosition()) << std::endl;
             };
@@ -289,7 +289,7 @@ void render::UIXContext::render_inspector()
 
     if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
     {
-        auto entity = mEntityHandler->GetSelectedEntity();
+        auto entity = Editor::EntityHandler::GetSelectedEntity();
         if (!entity) {
             ImGui::End();
             ImGui::PopStyleColor(3); 

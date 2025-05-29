@@ -201,6 +201,7 @@ void WindowManager::handleInputs() {
     }
 
     if (Input::isKeyPressedDown(KeyCode::X)) {
+        std::cout << "hehe" << std::endl;
         Editor::EntityHandler::TerminateEntity();
     }
 };

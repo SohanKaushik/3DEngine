@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "render/ui_context.h"
+#include <render/framebuffer_handler.h>
 #include <thread>
 
 void render::UIXContext::init(GLFWwindow* window) {
@@ -76,9 +77,10 @@ void render::UIXContext::render() {
 
     
     ImGui::Begin("Color Buffer");  // Pass pointer to allow closing the window with X button
-    ImGui::Text("pointer = %x", _selection_texture->get_texture());
-//ImGui::Text("size = %d x %d", _selection_texture->getWidth(), _selection_texture->getHeight());
+    ImGui::Text("pointer = %x", render::FrameBufferHandle::RetrieveFrameBuffer("_Picking")->getID());
+    //ImGui::Text("size = %d x %d", _selection_texture->getWidth(), _selection_texture->getHeight());
     ImGui::Image((ImTextureID)(intptr_t)_selection_texture->get_texture(), ImVec2(200, 200));
+    //std::cout << render::FrameBufferHandle::RetrieveFrameBuffer("_Picking")->getID();
     ImGui::End();
     
 };

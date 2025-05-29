@@ -27,7 +27,7 @@ void ui::Viewport::Init() {
 		-90.0f, 0.0f, 45.0f, 0.1, 1000.0f
 	);
 
-	//_selection = std::make_unique<Editor::Selection>();
+	_selection = std::make_unique<Editor::Selection>();
 	mGrid->Init();
 
 
@@ -41,7 +41,7 @@ void ui::Viewport::render() {
 
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
 
-	//_selection->render();
+	_selection->render();
 
 	// -> START
 

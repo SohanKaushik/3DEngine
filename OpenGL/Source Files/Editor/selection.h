@@ -5,6 +5,9 @@
 
 #include "EntityHandler.h"
 #include "render/framebuffer.h"
+#include <render/framebuffer_handler.h>
+
+using namespace render;
 
 namespace Editor {
 	class Selection {
@@ -26,19 +29,23 @@ namespace Editor {
 
 	public:
 		Selection() {
+			int _store = FrameBufferHandle::AddFrameBuffer(
+				std::unique_ptr<Framebuffer>(static_cast<Framebuffer*>(_buffer.release())),
+				render::FrameBufferHandle::FrameBufferType::Color, "_Picking", 500, 500);
 
-			_buffer->create_buffer(500, 500);
 			_shader.load("Source Files/Editor/shaders/picking.vert", "Source Files/Editor/shaders/picking.frag");
 		}
 
 		void render() {
-			_buffer->bind();
+			FrameBufferHandle::RetrieveFrameBuffer(_store)->bind();
 			Editor::EntityHandler::render(_shader);
-			_buffer->unbind();
+			FrameBufferHandle::RetrieveFrameBuffer(_store)->unbind();
 		}
-
+		
+		
 	private:
 		Shader _shader;
+		int _store;
 		std::unique_ptr<render::PickingFramebuffer> _buffer = std::make_unique<render::PickingFramebuffer>();
 	};
 }

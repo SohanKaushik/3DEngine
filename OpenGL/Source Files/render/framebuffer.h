@@ -19,7 +19,7 @@ namespace render {
 	};
 
 
-	class DefualtFrameBuffer : Framebuffer {
+	class DefualtFrameBuffer : public Framebuffer {
 
 	public:
 		void create_buffer(int width, int height) override;
@@ -34,7 +34,7 @@ namespace render {
 		int m_height, m_width = 0;
 	};
 
-	class AntiAliasingFrameBuffer : Framebuffer {
+	class AntiAliasingFrameBuffer : public Framebuffer {
 
 	public:
 		void create_buffer(int width, int height) override;
@@ -49,7 +49,7 @@ namespace render {
 		int aa_height, aa_widht;
 	};
 
-	class PickingFramebuffer : Framebuffer {
+	class PickingFramebuffer : public Framebuffer {
 
 	public:
 		void create_buffer(int width, int height) override;
@@ -62,19 +62,5 @@ namespace render {
 		unsigned int picking_fbo, color_texture, depth_rbo;
 		int _height, _width;
 	};
-	/*class CameraUniformFrameBuffer : Framebuffer {
-
-	public:
-
-		void create_buffer(const elems::CameraUniforms& uniforms);
-		void update_buffer(const elems::CameraUniforms& uniforms);
-		void bind() override;
-		void unbind() override;
-
-	private:
-
-		unsigned cameraUBO, m_texture, m_ubo;
-		int ubo_width, ubo_height;
-	};*/
 
 };

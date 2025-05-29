@@ -185,6 +185,8 @@
     </ClCompile>
     <ClCompile Include="Source Files\render\camera_uniforms.cpp" />
     <ClCompile Include="Source Files\render\framebuffer.cpp" />
+    <ClCompile Include="Source Files\render\framebuffer_handler.cpp" />
+    <ClCompile Include="Source Files\render\framebuffer_handler.h" />
     <ClCompile Include="Source Files\render\ShadowMap.cpp" />
     <ClCompile Include="Source Files\render\ui_context.cpp" />
     <ClCompile Include="Source Files\render\VertexIndexBuffer.cpp" />

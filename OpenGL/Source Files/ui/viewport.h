@@ -46,7 +46,7 @@ namespace ui {
 
 		// Frame-Buffers
 		std::unique_ptr<render::DefualtFrameBuffer> mFramebuffer = std::make_unique<render::DefualtFrameBuffer>();
-		//std::unique_ptr<Editor::Selection> _selection;
+		std::unique_ptr<Editor::Selection> _selection;
 
 	};
 }

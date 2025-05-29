@@ -27,7 +27,7 @@ bool Input::isKeyPressedDown(KeyCode key) {
 	int code = static_cast<int>(key);
 
 	if (keyStates[code] && !keyDownFlags[code]) {
-		keyDownFlags[code] = true;  // mark it as "already handled"
+		keyDownFlags[code] = true;  // mark it as "already pressed"
 		return true;
 	}
 	return false;
@@ -36,7 +36,9 @@ bool Input::isKeyPressedDown(KeyCode key) {
 // callbacks
 void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) keyStates[key] = true;
-	else if (action == GLFW_RELEASE) keyStates[key] = false;
+	else if (action == GLFW_RELEASE) {
+		keyStates[key] = false; keyDownFlags[key] = false;
+	}
 }
 
 void Engine::Inputs::Input::MouseCallback(GLFWwindow* window, int button, int action, int mods){

@@ -127,6 +127,9 @@ unsigned int render::AntiAliasingFrameBuffer::get_texture()
 
 void render::PickingFramebuffer::create_buffer(int width, int height)
 {
+	_width = width;
+	_height = height;
+
 	// Generating a picking object framebuffer
 	glGenFramebuffers(1, &picking_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
@@ -155,7 +158,7 @@ void render::PickingFramebuffer::bind()
 	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
-	glViewport(0, 0, 200, 200);
+	glViewport(0, 0, _width, _height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
@@ -163,9 +166,9 @@ void render::PickingFramebuffer::bind()
 
 void render::PickingFramebuffer::unbind()
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 };
 
-unsigned int render::PickingFramebuffer::getID() { return 1; }
+unsigned int render::PickingFramebuffer::getID() { return picking_fbo; }
 
 unsigned int render::PickingFramebuffer::get_texture() { return color_texture; }

@@ -17,7 +17,9 @@ private:
 	
 public:
 
-	Shader() = default;
+	Shader() {
+		mProgramID = 0;
+	}
 
 	void load(const char* vertexFile, const char* fragmentFile);
 

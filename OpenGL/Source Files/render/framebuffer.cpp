@@ -41,6 +41,8 @@ void render::DefualtFrameBuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, m_width, m_height);
+
+	glClearColor(0.247, 0.247, 0.247, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 }; 
 
@@ -125,43 +127,53 @@ unsigned int render::AntiAliasingFrameBuffer::get_texture()
 };
 
 
-void render::PickingFramebuffer::create_buffer(int width, int height)
-{
+void render::PickingFramebuffer::create_buffer(int width, int height) {
 	_width = width;
 	_height = height;
 
-	// Generating a picking object framebuffer
 	glGenFramebuffers(1, &picking_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
 
-
-	// Creating color texture
-	glGenTextures(1, &color_texture);
-	glBindTexture(GL_TEXTURE_2D, color_texture);
+	glGenTextures(1, &picking_texture);
+	glBindTexture(GL_TEXTURE_2D, picking_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, picking_texture, 0);
 
-	// Create depth renderbuffer
-	glGenRenderbuffers(1, &depth_rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, depth_rbo);
+	glGenRenderbuffers(1, &_depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cerr << "Picking framebuffer not complete!" << std::endl;
+		std::cerr << "Framebuffer not complete!" << std::endl;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-};
-
-
-void render::PickingFramebuffer::bind()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
-	glReadBuffer(GL_COLOR_ATTACHMENT0);
-
-	glViewport(0, 0, _width, _height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 }
+
+void render::PickingFramebuffer::bind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
+	glViewport(0, 0, _width, _height);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // optional debug color
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+
+//void render::PickingFramebuffer::bind()
+//{
+//	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
+//
+//	// Add this before clearing
+//	glClearColor(1.0f, 1.0f, 0.0f, 1.0f); // Red clear color
+//
+//	glReadBuffer(GL_COLOR_ATTACHMENT0);
+//	glViewport(0, 0, _width, _height);
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//}
 
 
 void render::PickingFramebuffer::unbind()
@@ -171,4 +183,6 @@ void render::PickingFramebuffer::unbind()
 
 unsigned int render::PickingFramebuffer::getID() { return picking_fbo; }
 
-unsigned int render::PickingFramebuffer::get_texture() { return color_texture; }
+unsigned int render::PickingFramebuffer::get_texture() { return picking_texture; }
+
+

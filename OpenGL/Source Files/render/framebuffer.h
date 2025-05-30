@@ -59,7 +59,7 @@ namespace render {
 		unsigned int getID() override;
 
 	private:
-		unsigned int picking_fbo, color_texture, depth_rbo;
+		unsigned int picking_fbo, picking_texture, _depthBuffer;
 		int _height, _width;
 	};
 

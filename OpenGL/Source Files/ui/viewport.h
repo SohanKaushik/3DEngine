@@ -2,17 +2,14 @@
 #include "pch.h"
 
 #include "ui/grid.h"
-#include "elems/Mesh.h"
-#include "elems/light.h"
-//#include "elems/camera.h"
-#include "elems/entity.h"
 #include "shader/shader.h"
 
-#include "render/ShadowMap.h"
-#include <Editor/selection.h>
 #include "render/framebuffer.h"
+
+#include <Editor/selection.h>
 #include "Editor/EditorCamera.h"
 #include "Editor/EntityHandler.h"
+
 
 namespace ui {
 	

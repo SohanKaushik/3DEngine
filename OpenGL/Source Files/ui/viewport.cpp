@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "ui/viewport.h"
-#include "Editor/system.h"
-#include <Engine/maths/ray.h>
 
-#include <window/window.h>
+#include <Engine/inputs/inputhandler.h>
+#include <elems/light.h>
 
 using namespace elems;
 using namespace Editor;
@@ -12,22 +11,27 @@ using namespace Engine::Inputs;
 
 
 void ui::Viewport::Init() {
+
 	// Load shaders
 	mShader[0].load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
 	mShader[1].load("Resource Files/Shaders/grid.vert", "Resource Files/Shaders/grid.frag");
 	mShader[2].load("Resource Files/Shaders/DirectionalShadowMap.vert", "Resource Files/Shaders/DirectionalShadowMap.frag");
 	mShader[3].load("Resource Files/Shaders/plane.vert", "Resource Files/Shaders/plane.frag");
+	mShader[4].load("Resource Files/Shaders/depth_test.vert", "Resource Files/Shaders/depth_test.frag");
 
 
-	mFramebuffer->create_buffer(1000, 800);
+	render::FrameBufferHandle::AddFrameBuffer(
+		std::move(mFramebuffer),
+		render::FrameBufferHandle::FrameBufferType::Default, "_default", 1000, 800);
+
+	_selection = std::make_unique<Editor::Selection>();
 
 	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
-		-90.0f, 0.0f, 45.0f, 0.1, 1000.0f
+		-90.0f, 0.0f, 45.0f, 0.1f, 1000.0f
 	);
 
-	_selection = std::make_unique<Editor::Selection>();
 	mGrid->Init();
 
 
@@ -38,18 +42,17 @@ void ui::Viewport::Init() {
 
 void ui::Viewport::render() {
 
+	// | Selection Pass | 
+	_selection->render();
 
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
 
-	_selection->render();
 
-	// -> START
-
-	mFramebuffer->bind();
-
+	// | FINAL PASS ||
+	mShader[0].use();
+	render::FrameBufferHandle::RetrieveFrameBuffer("_default")->bind();
 	Editor::EntityHandler::render(mShader[0]);
 
-	mShader[0].use();
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// Set up directional light
@@ -60,7 +63,6 @@ void ui::Viewport::render() {
 		lightDirection                // Direction
 	);
 	dirLight.SetLightUniform(mShader[0], "dirLight");
-
 
 
 	// Step 3: Render grid and UI
@@ -75,7 +77,7 @@ void ui::Viewport::render() {
 	}
 
 	// -> END
-	mFramebuffer->unbind();
+	render::FrameBufferHandle::RetrieveFrameBuffer("_default")->unbind();
 
 	// Optional: Render UI or additional elements here
 	this->RenderSceneUI();
@@ -129,7 +131,7 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_TitleBgCollapsed, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.5f, 0.5f));				
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.5f, 0.5f));
 
 	ImGui::Begin("Scene", nullptr, windowFlags);
 
@@ -137,11 +139,12 @@ void ui::Viewport::RenderSceneUI() {
 	m_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 	// Resize Image Texture too .......(needs to be done)
-	mCamera->set_aspect(m_size.x/ m_size.y);
+	mCamera->set_aspect(m_size.x / m_size.y);
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// add rendered texture to ImGUI scene window
-	unsigned int textureID = mFramebuffer->get_texture();
+	unsigned int textureID = render::FrameBufferHandle::RetrieveFrameBuffer("_default")->get_texture();
+
 	ImGui::Image(textureID, ImVec2{ m_size.x, m_size.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 	ImGui::End();
@@ -149,10 +152,10 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::PopStyleColor(3);
 }
 
-Editor::Entity& ui::Viewport::def_enit() {
+Entity& ui::Viewport::def_enit() {
 
 	auto entity = Editor::EntityHandler::CreateEntity();
 	entity->AddComponent<TransformComponent>();
 	entity->AddComponent<MeshComponent>().SetMesh(elems::PrimitiveType::cube);
 	return *entity;
-}
+}  

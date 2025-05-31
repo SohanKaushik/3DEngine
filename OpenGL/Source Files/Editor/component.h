@@ -113,7 +113,7 @@ namespace Editor {
 			mesh->load(path);
 		}
 		
-		void SetMaterial(const glm::vec3& color) {
+		void SetMaterial(glm::vec3 color) {
 			m_color = color;
 		}
 

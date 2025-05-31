@@ -169,6 +169,7 @@
     <ClCompile Include="Source Files\Editor\core\render_image.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.cpp" />
     <ClCompile Include="Source Files\Editor\EntityHandler.h" />
+    <ClCompile Include="Source Files\Editor\selection.cpp" />
     <ClCompile Include="Source Files\Editor\system.cpp" />
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />

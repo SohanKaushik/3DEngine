@@ -3,7 +3,7 @@
 
 namespace Editor {
 
-    int EntityHandler::ID = 0;
+    uint32_t EntityHandler::ID = 0;
     std::vector<std::shared_ptr<Entity>> EntityHandler::entities;
     std::unique_ptr<Editor::TransformSystem> EntityHandler::m_tsystem = std::make_unique<Editor::TransformSystem>();
     std::unique_ptr<Editor::MeshSystem> EntityHandler::m_msytem = std::make_unique<Editor::MeshSystem>();
@@ -23,7 +23,7 @@ namespace Editor {
         return nullptr;
     }
 
-    std::shared_ptr<Entity> EntityHandler::GetSelectedEntityById(int id) {
+    std::shared_ptr<Entity> EntityHandler::GetSelectedEntityById(uint32_t id) {
         if (id >= 0 && id < entities.size()) {
             return entities[id];
         }
@@ -49,4 +49,5 @@ namespace Editor {
         m_tsystem->update(entities, shader);
         m_msytem->update(entities, shader);
     }
+  
 }

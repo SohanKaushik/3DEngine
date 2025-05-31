@@ -39,7 +39,6 @@ public:
 public:
     static GLFWwindow* GetWindow();
     std::unique_ptr<ui::Viewport> mViewport = std::make_unique<ui::Viewport>();
-  //  std::unique_ptr<elems::Camera> mCamera = std::make_unique<elems::Camera>();
     std::unique_ptr<render::UIXContext> mUIx = std::make_unique<render::UIXContext>();
 
 

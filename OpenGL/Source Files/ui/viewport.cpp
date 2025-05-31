@@ -24,13 +24,13 @@ void ui::Viewport::Init() {
 		std::move(mFramebuffer),
 		render::FrameBufferHandle::FrameBufferType::Default, "_default", 1000, 800);
 
-	_selection = std::make_unique<Editor::Selection>();
 
 	mCamera = std::make_unique<Editor::Camera>(
 		glm::vec3(0.0f, 0.0f, -10.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		-90.0f, 0.0f, 45.0f, 0.1f, 1000.0f
 	);
+	_selection = std::make_unique<Editor::Selection>();
 
 	mGrid->Init();
 
@@ -43,7 +43,7 @@ void ui::Viewport::Init() {
 void ui::Viewport::render() {
 
 	// | Selection Pass | 
-	_selection->render();
+	_selection->render(mCamera.get());
 
 	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
 
@@ -51,9 +51,9 @@ void ui::Viewport::render() {
 	// | FINAL PASS ||
 	mShader[0].use();
 	render::FrameBufferHandle::RetrieveFrameBuffer("_default")->bind();
+	mCamera->UpdateCameraMatrix(mShader[0]);
 	Editor::EntityHandler::render(mShader[0]);
 
-	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// Set up directional light
 	DirectionalLight dirLight(

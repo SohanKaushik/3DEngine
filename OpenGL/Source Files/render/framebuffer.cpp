@@ -156,25 +156,11 @@ void render::PickingFramebuffer::create_buffer(int width, int height) {
 
 void render::PickingFramebuffer::bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
+
 	glViewport(0, 0, _width, _height);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // optional debug color
+	glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-
-
-//void render::PickingFramebuffer::bind()
-//{
-//	glBindFramebuffer(GL_FRAMEBUFFER, picking_fbo);
-//
-//	// Add this before clearing
-//	glClearColor(1.0f, 1.0f, 0.0f, 1.0f); // Red clear color
-//
-//	glReadBuffer(GL_COLOR_ATTACHMENT0);
-//	glViewport(0, 0, _width, _height);
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//}
-
 
 void render::PickingFramebuffer::unbind()
 {

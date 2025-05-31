@@ -13,13 +13,17 @@ namespace Engine {
 			private:
 				static std::unordered_map<int, bool> keyStates;
 				static std::unordered_map<int, bool> mouseStates;
+
 				static std::unordered_map<int, bool> keyDownFlags;
+				static std::unordered_map<int, bool> mouseDownFlags;
+
 
 			public:
 				static void initialize(GLFWwindow* window);
 				static bool isKeyPressed(KeyCode key);
 				static bool isKeyPressedDown(KeyCode key);
 				static bool isMousePressed(MouseCode button);
+				static bool isMousePressedDown(MouseCode button);
 
 			private:
 				static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

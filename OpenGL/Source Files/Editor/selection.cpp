@@ -14,7 +14,7 @@ namespace Editor {
 		);
 	}
 
-	uint32_t Selection::ColorToID(unsigned char r, unsigned char g, unsigned char b) {
+	uint32_t Selection::DecodeColorToID(unsigned char r, unsigned char g, unsigned char b) {
 		return r + (g << 8) + (b << 16);
 	}
 
@@ -29,32 +29,46 @@ namespace Editor {
 
 	void Selection::render(Editor::Camera* camera) {
 
-		_id = (uint32_t)EntityHandler::GetID();
 
 		_shader.use();
 		FrameBufferHandle::RetrieveFrameBuffer(_store)->bind();
+
+
 		camera->UpdateCameraMatrix(_shader);
+		for (uint32_t i = 0; i < EntityHandler::GetID(); i++) {
+			_shader.SetUniform1i("_id", i);
+			Editor::EntityHandler::render(_shader, i);
+		}
 
 
-	/*	for (int i = 0; i < _id; i++) {
-			glm::vec3 color = IDtoColor(i);
-		}*/
 
-			Editor::EntityHandler::render(_shader);
-			//renderbyID(_shader, _id);
 		FrameBufferHandle::RetrieveFrameBuffer(_store)->unbind();
 
-		_readpix();
+		if (Input::isMousePressedDown(MouseCode::Left)) {
+			std::cout << glm::to_string(_mouseloc) << std::endl;
+			_readpix();
+		}
 	}
 
 	void Selection::_readpix() {
 		_mouseloc = Input::GetMousePosition();
 
-		if (Input::isMousePressedDown(MouseCode::Left)) {
-			std::cout << glm::to_string(_mouseloc) << std::endl;
-		}
+		float scaleX = 200 / (float)646;
+		float scaleY = 200 / (float)500;
+
+		int fbX = glm::clamp(int(_mouseloc.x * scaleX), 0, 200 - 1);
+		int fbY = glm::clamp(int(_mouseloc.y * scaleY), 0, 200 - 1);
+
+
 		GLubyte pixel[4];
-		glReadPixels(_mouseloc.x, _mouseloc.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+		int flippedY = 200 - 1 - fbY;
+		glReadPixels(fbX, flippedY, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+
+		// Decode the color back into an ID
+		int pickedID = DecodeColorToID(pixel[0], pixel[1], pixel[2]);
+
+		std::cout << "Picked Entity ID: " << pickedID << std::endl;
+
 	}
 
 	// | STENCIL BUFFER |
@@ -62,14 +76,5 @@ namespace Editor {
 		glm::vec3 color = IDtoColor(_id);
 	}
 
-	void Selection::renderbyID(Shader& shader, uint32_t id)
-	{
-		auto entity = EntityHandler::GetSelectedEntityById(id);
-		auto mesh = entity->GetComponent<Editor::MeshComponent>();
 
-		mesh->SetMaterial(glm::vec3(1.0, 0.0, 0.0));  // hardcore values for debug purposes
-		glm::vec3& color = mesh->GetColor();
-
-		std::cout << glm::to_string(color);
-	}
 }

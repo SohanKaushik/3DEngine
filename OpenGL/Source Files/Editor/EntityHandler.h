@@ -11,11 +11,12 @@ namespace Editor {
     public:
         static std::shared_ptr<Entity> CreateEntity();
         static std::shared_ptr<Entity> GetSelectedEntity();
-        static std::shared_ptr<Entity> GetSelectedEntityById(uint32_t id);
+        static std::shared_ptr<Entity> GetEntityById(uint32_t id);
         static int GetID();
         static void TerminateEntity();
 
         static void render(Shader& shader);
+        static void render(Shader& shader, uint32_t id);
 
     private:
         static uint32_t ID;

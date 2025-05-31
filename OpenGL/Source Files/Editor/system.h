@@ -12,6 +12,7 @@ namespace Editor {
         ~System() = default;
     };
 
+
     class TransformSystem : System{
     public:
 

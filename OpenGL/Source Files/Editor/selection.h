@@ -17,8 +17,8 @@ namespace Editor {
 
 	private:
 		glm::vec3 IDtoColor(uint32_t id);
-		static uint32_t ColorToID(unsigned char r, unsigned char g, unsigned char b);
-		void renderbyID(Shader& shader, uint32_t id);
+		static uint32_t DecodeColorToID(unsigned char r, unsigned char g, unsigned char b);
+		void renderbyID(uint32_t id);
 
 		uint32_t _id = 0;
 		int _store = 0;

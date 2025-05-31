@@ -23,7 +23,7 @@ namespace Editor {
         return nullptr;
     }
 
-    std::shared_ptr<Entity> EntityHandler::GetSelectedEntityById(uint32_t id) {
+    std::shared_ptr<Entity> EntityHandler::GetEntityById(uint32_t id) {
         if (id >= 0 && id < entities.size()) {
             return entities[id];
         }
@@ -48,6 +48,26 @@ namespace Editor {
     void EntityHandler::render(Shader& shader) {
         m_tsystem->update(entities, shader);
         m_msytem->update(entities, shader);
+    }
+
+    void EntityHandler::render(Shader& shader, uint32_t id)
+    {
+        if (id >= entities.size()) return;
+
+        auto& entity = entities[id];
+        if (!entity->HasComponent<MeshComponent>()) {
+            std::cerr << "Entity [" << id << "] has no Mesh Component" << std::endl;
+        }
+
+        auto mesh_com = entity->GetComponent<Editor::MeshComponent>();
+        auto transform = entity->GetComponent<TransformComponent>();
+        auto* meshes = mesh_com->GetMesh();
+        if (meshes) {
+            shader.SetUniformMat4f("model", transform->GetModelUniforms());
+          //  shader.SetUniform3fv("color", mesh_com->GetColor());
+            meshes->draw();
+        }
+
     }
   
 }

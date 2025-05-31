@@ -12,13 +12,11 @@ namespace Editor {
 	public:
 		Selection();
 		void render(Editor::Camera* camera);
-		void _readpix();
+		void read();
 		void _writepix();
 
 	private:
-		glm::vec3 IDtoColor(uint32_t id);
 		static uint32_t DecodeColorToID(unsigned char r, unsigned char g, unsigned char b);
-		void renderbyID(uint32_t id);
 
 		uint32_t _id = 0;
 		int _store = 0;

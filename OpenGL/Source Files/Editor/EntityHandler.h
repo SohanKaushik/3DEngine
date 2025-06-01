@@ -10,6 +10,7 @@ namespace Editor {
     class EntityHandler {
     public:
         static std::shared_ptr<Entity> CreateEntity();
+        static void SetSelectedEntity(uint32_t id);
         static std::shared_ptr<Entity> GetSelectedEntity();
         static std::shared_ptr<Entity> GetEntityById(uint32_t id);
         static int GetID();
@@ -20,6 +21,8 @@ namespace Editor {
 
     private:
         static uint32_t ID;
+        static int _selectedID;
+
         static std::vector<std::shared_ptr<Entity>> entities;
 
         static std::unique_ptr<Editor::TransformSystem> m_tsystem;

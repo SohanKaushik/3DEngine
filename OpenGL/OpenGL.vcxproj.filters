@@ -1853,6 +1853,8 @@
     <None Include="dependencies\lib\assimp-vc143-mt.dll" />
     <None Include="Source Files\Editor\shaders\picking.frag" />
     <None Include="Source Files\Editor\shaders\picking.vert" />
+    <None Include="Source Files\Editor\shaders\outline.frag" />
+    <None Include="Source Files\Editor\shaders\outline.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />

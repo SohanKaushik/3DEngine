@@ -785,6 +785,8 @@
     <None Include="Resource Files\Shaders\plane.vert" />
     <None Include="Resource Files\Shaders\texture.frag" />
     <None Include="Resource Files\Shaders\texture.vert" />
+    <None Include="Source Files\Editor\shaders\outline.frag" />
+    <None Include="Source Files\Editor\shaders\outline.vert" />
     <None Include="Source Files\Editor\shaders\picking.frag" />
     <None Include="Source Files\Editor\shaders\picking.vert" />
   </ItemGroup>

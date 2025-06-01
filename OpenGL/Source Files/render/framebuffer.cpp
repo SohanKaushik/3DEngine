@@ -43,8 +43,8 @@ void render::DefualtFrameBuffer::bind()
 	glViewport(0, 0, m_width, m_height);
 
 	glClearColor(0.247, 0.247, 0.247, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-}; 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
 
 void render::DefualtFrameBuffer::unbind()
 {
@@ -103,7 +103,7 @@ void render::AntiAliasingFrameBuffer::bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, multisamplefbo);  // Bind the MSAA framebuffer
 	glViewport(0, 0, aa_widht, aa_height);
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear color and depth buffers if needed
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);  // Clear color and depth buffers if needed
 };
 
 
@@ -159,7 +159,7 @@ void render::PickingFramebuffer::bind() {
 
 	glViewport(0, 0, _width, _height);
 	glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
 }
 
 void render::PickingFramebuffer::unbind()

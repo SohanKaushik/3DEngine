@@ -10,7 +10,7 @@ void render::UIXContext::init(GLFWwindow* window) {
 
     // Initialize ImGui for GLFW and OpenGL3
     ImGui_ImplGlfw_InitForOpenGL(window, true);  // This should be called only once
-    ImGui_ImplOpenGL3_Init("#version 130");     
+    ImGui_ImplOpenGL3_Init("#version 130");
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;  // Enable viewports (optional)
@@ -54,7 +54,7 @@ void render::UIXContext::pre_render() {
     ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
 
 
-  
+
     // Create dock space for docking windows
     ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
     ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f));
@@ -68,24 +68,24 @@ void render::UIXContext::pre_render() {
 
 
 void render::UIXContext::render() {
- 
+
     render_toolbar();
     //ImGui::ShowDemoWindow();
     render_inspector();
     //render_hierarchy();
     //render_assets_hierarchy();
 
-    
+
     ImGui::Begin("Color Buffer");  // Pass pointer to allow closing the window with X button
     ImGui::Text("pointer = %x", render::FrameBufferHandle::RetrieveFrameBuffer("_Picking")->getID());
     //ImGui::Text("size = %d x %d", _selection_texture->getWidth(), _selection_texture->getHeight());
-    ImGui::Image((ImTextureID)(intptr_t)render::FrameBufferHandle::RetrieveFrameBuffer("_Picking")->get_texture(), ImVec2(200, 200), ImVec2(0,1), ImVec2(1,0));
+    ImGui::Image((ImTextureID)(intptr_t)render::FrameBufferHandle::RetrieveFrameBuffer("_Picking")->get_texture(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
     ImGui::End();
-    
+
 };
 
 void render::UIXContext::post_render() {
-  
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -115,7 +115,7 @@ void render::UIXContext::render_toolbar()
     style.ItemSpacing = ImVec2(15.0f, 5.0f); // Adjust the space between menu items
     style.FramePadding = ImVec2(5.0f, 5.0f); // Adjust the padding inside menu items
     //style.WindowPadding = ImVec2(5.0f, 5.0f); // Adjust the padding inside the menu bar
-    
+
 
     if (ImGui::BeginMainMenuBar()) {
 
@@ -138,11 +138,11 @@ void render::UIXContext::render_toolbar()
 
         if (ImGui::BeginMenu("Render")) {
             if (ImGui::MenuItem("Render Image")) {
-               /* std::thread renderThread([&]() {
-                    rendr_image->create_rendrwin();
-                    rendr_image->loop(); 
-                    });
-                renderThread.detach();*/
+                /* std::thread renderThread([&]() {
+                     rendr_image->create_rendrwin();
+                     rendr_image->loop();
+                     });
+                 renderThread.detach();*/
             }
 
             if (ImGui::MenuItem("Null")) {
@@ -176,9 +176,9 @@ void render::UIXContext::render_toolbar()
 
                 ImGui::PushID("Sphere");
                 if (ImGui::MenuItem("Sphere")) {
-                   /* auto plane = mEntityHandler->CreateEntity();
-                    plane->AddComponent<Editor::TransformComponent>();
-                    plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);*/
+                    /* auto plane = mEntityHandler->CreateEntity();
+                     plane->AddComponent<Editor::TransformComponent>();
+                     plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);*/
                 }
                 ImGui::PopID();
 
@@ -194,7 +194,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Monkey")) {
                     auto monkey = Editor::EntityHandler::CreateEntity();
                     monkey->AddComponent<Editor::TransformComponent>();
-                    monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj"); 
+                    monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj");
                 }
                 ImGui::PopID();
 
@@ -208,7 +208,7 @@ void render::UIXContext::render_toolbar()
                 //...
                 auto entity = Editor::EntityHandler::GetSelectedEntity();
 
-               // std::cout << glm::to_string(entity->GetPosition()) << std::endl;
+                // std::cout << glm::to_string(entity->GetPosition()) << std::endl;
             };
 
             ImGui::EndMenu();
@@ -236,7 +236,7 @@ void render::UIXContext::render_toolbar()
             ImGui::EndMenu();
         }
 
-      
+
 
         ImGui::EndMainMenuBar();
     }
@@ -270,7 +270,7 @@ void render::UIXContext::ShowFileMenu()
         ImGui::Separator();
         if (ImGui::MenuItem("Quit")) {
             std::cout << "...shutdown..." << std::endl;
-            exit(0); 
+            exit(0);
         }
 
         ImGui::EndMenu();
@@ -284,7 +284,7 @@ void render::UIXContext::ShowFileMenu()
 void render::UIXContext::render_inspector()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.08f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f)); 
+    ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
 
 
@@ -293,7 +293,7 @@ void render::UIXContext::render_inspector()
         auto entity = Editor::EntityHandler::GetSelectedEntity();
         if (!entity) {
             ImGui::End();
-            ImGui::PopStyleColor(3); 
+            ImGui::PopStyleColor(3);
             return;
         }
         auto transform = entity->GetComponent<Editor::TransformComponent>();
@@ -315,9 +315,9 @@ void render::UIXContext::render_inspector()
 
         // Rotation Controls (X, Y, Z)
         ImGui::Text("Rotation");
-        ImGui::DragFloat("x###rotation_x", &rotation.x, drag_senstivity, -360.0f, 360.0f); 
-        ImGui::DragFloat("y###rotation_y", &rotation.y, drag_senstivity, -360.0f, 360.0f); 
-        ImGui::DragFloat("z###rotation_z", &rotation.z, drag_senstivity, -360.0f, 360.0f); 
+        ImGui::DragFloat("x###rotation_x", &rotation.x, drag_senstivity, -360.0f, 360.0f);
+        ImGui::DragFloat("y###rotation_y", &rotation.y, drag_senstivity, -360.0f, 360.0f);
+        ImGui::DragFloat("z###rotation_z", &rotation.z, drag_senstivity, -360.0f, 360.0f);
 
         // Scale Controls (X, Y, Z)
         ImGui::Text("Scale");
@@ -339,7 +339,7 @@ void render::UIXContext::render_inspector()
         }
     }
     ImGui::End();
-    ImGui::PopStyleColor(3);  
+    ImGui::PopStyleColor(3);
 }
 
 

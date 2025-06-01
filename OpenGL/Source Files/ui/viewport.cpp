@@ -42,20 +42,41 @@ void ui::Viewport::Init() {
 
 void ui::Viewport::render() {
 
-	// | Selection Pass | 
+
+	// ------------------------------------------
+	// | SELECTION PASS |
+	// ------------------------------------------
 	_selection->render(mCamera.get());
+	// # Render entities into an offscreen framebuffer with unique colors assigned to each entity.
+	// # These unique colors act as IDs that can be read back using glReadPixels.
+	// # Later, the mouse position is used to read the color under the cursor,
+	//   allowing identification of the selected entity.
 
-	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
 
-
-	// | FINAL PASS ||
+	// ------------------------------------------
+	// | MAIN PASS |			
+	// ------------------------------------------
 	mShader[0].use();
 	render::FrameBufferHandle::RetrieveFrameBuffer("_default")->bind();
+
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);         
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  // Write 1 where object drawn
+	glStencilMask(0xFF);                        // Enable writing to stencil
+
 	mCamera->UpdateCameraMatrix(mShader[0]);
-	Editor::EntityHandler::render(mShader[0]);
+	Editor::EntityHandler::render(mShader[0]);  // normal draw
 
 
-	// Set up directional light
+
+
+	// ------------------------------------------
+	// | LIGhTING PASS |
+	// ------------------------------------------
+	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
 	DirectionalLight dirLight(
 		glm::vec3(0.2f),              // Ambient
 		glm::vec3(1.0f),              // Diffuse
@@ -64,23 +85,23 @@ void ui::Viewport::render() {
 	);
 	dirLight.SetLightUniform(mShader[0], "dirLight");
 
+	// ------------------------------------------
+	// | OUTLINE STENCIL PASS |
+	// ------------------------------------------
+	_selection->highlight(mCamera.get()); 
 
-	// Step 3: Render grid and UI
+
+	// ------------------------------------------
+	// | GRID PASS |
+	// ------------------------------------------
 	mGrid->render(mShader[1], mCamera->GetCameraPosition());
 	mCamera->UpdateCameraMatrix(mShader[1]);
 
 
-
-	//debugs
-	if (Input::isKeyPressed(KeyCode::A)) {
-		std::cout << "Key is pressed" << std::endl;
-	}
-
-	// -> END
+	// -> END OF FRAMEBUFFEER
 	render::FrameBufferHandle::RetrieveFrameBuffer("_default")->unbind();
 
-	// Optional: Render UI or additional elements here
-	this->RenderSceneUI();
+	this->RenderSceneUI(); 
 }
 
 
@@ -156,6 +177,6 @@ Entity& ui::Viewport::def_enit() {
 
 	auto entity = Editor::EntityHandler::CreateEntity();
 	entity->AddComponent<TransformComponent>();
-	entity->AddComponent<MeshComponent>().SetMesh(elems::PrimitiveType::cube);
+	entity->AddComponent<MeshComponent>().GetMesh()->load("Resource Files/models/monkey.obj");
 	return *entity;
 }  

@@ -44,6 +44,9 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
     }
     
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 
     //glfwSwapInterval(0);
     glDepthFunc(GL_LESS);         // Depth test function (default is GL_LESS)
@@ -71,7 +74,6 @@ bool WindowManager::Init(int width, int height , const std::string& appName)
 
     // Inputs Init
     Engine::Inputs::Input::initialize(m_window);
-   // input.Initialize(this->m_window);
 
     // UI context
     mUIx->init(this->m_window);
@@ -128,7 +130,7 @@ void WindowManager::pre_render()
 
     // Set the background color
     glClearColor(0.247, 0.247, 0.247, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     mUIx->pre_render();
 };

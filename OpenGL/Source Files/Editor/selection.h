@@ -9,19 +9,23 @@
 
 namespace Editor {
 	class Selection {
+
 	public:
 		Selection();
 		void render(Editor::Camera* camera);
-		void read();
-		void _writepix();
+		bool isSelected();
+		void highlight(Editor::Camera* camera);
 
 	private:
+
+		int _store = 0;
+		uint32_t _id = 0;
+		uint32_t pickedID = -1;
+
+		Shader _shader[2];
 		static uint32_t DecodeColorToID(unsigned char r, unsigned char g, unsigned char b);
 
-		uint32_t _id = 0;
-		int _store = 0;
-		Shader _shader;
-
+	private:
 		glm::vec2 _mouseloc = glm::vec2(0,0);
 		std::unique_ptr<render::PickingFramebuffer> _buffer;
 	};

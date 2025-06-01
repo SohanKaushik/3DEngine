@@ -4,21 +4,34 @@
 namespace Editor {
 
     uint32_t EntityHandler::ID = 0;
+    int EntityHandler::_selectedID = -1;
+
     std::vector<std::shared_ptr<Entity>> EntityHandler::entities;
     std::unique_ptr<Editor::TransformSystem> EntityHandler::m_tsystem = std::make_unique<Editor::TransformSystem>();
     std::unique_ptr<Editor::MeshSystem> EntityHandler::m_msytem = std::make_unique<Editor::MeshSystem>();
 
     std::shared_ptr<Entity> EntityHandler::CreateEntity() {
         int entityId = ID++;
+        _selectedID = entityId;
         auto entity = std::make_shared<Entity>(entityId);
         entities.emplace_back(entity);
         std::cout << "Entity: [" << entityId << "] : Added" << std::endl;
         return entity;
     }
 
+    void EntityHandler::SetSelectedEntity(uint32_t id)
+    {
+        if (id < entities.size()) {
+            _selectedID = id;
+            return;
+        }
+        _selectedID = -1;
+    }
+
+
     std::shared_ptr<Entity> EntityHandler::GetSelectedEntity() {
-        if (ID - 1 >= 0 && ID - 1 < entities.size()) {
-            return entities[ID - 1];
+        if (_selectedID >= 0 && _selectedID < entities.size()) {
+            return entities[_selectedID];
         }
         return nullptr;
     }

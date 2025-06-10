@@ -54,4 +54,38 @@ namespace Editor {
             }
         }
     };
+
+    class LightSystem : public System {
+    public:
+        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) {
+            for (auto& entity : entities) {
+                auto index = &entity - &entities[0];
+
+                
+                if (!entity->HasComponent<LightComponent>()) {
+                    continue;
+                }
+
+                auto lightcom = entity->GetComponent<LightComponent>();
+                auto* light = lightcom->GetLight();
+
+                if (light) {
+                    switch (light->GetType())
+                    {
+                      case elems::LightType::Directional:
+                           light->SetLightUniform(shader, "dirLight");
+                           break;
+
+                      case elems::LightType::Spot:
+                          light->SetLightUniform(shader, "SpotLight");
+                          break;
+
+                      case elems::LightType::Point:
+                          light->SetLightUniform(shader, "PointLight");
+                          break;
+                    }
+                }
+            }
+        }
+    };
 }

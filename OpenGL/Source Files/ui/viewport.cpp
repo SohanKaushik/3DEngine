@@ -2,7 +2,7 @@
 #include "ui/viewport.h"
 
 #include <Engine/inputs/inputhandler.h>
-#include <elems/light.h>
+#include <elems/light/light.h>
 
 using namespace elems;
 using namespace Editor;
@@ -76,14 +76,15 @@ void ui::Viewport::render() {
 	// ------------------------------------------
 	// | LIGhTING PASS |
 	// ------------------------------------------
-	glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
-	DirectionalLight dirLight(
-		glm::vec3(0.2f),              // Ambient
-		glm::vec3(1.0f),              // Diffuse
-		glm::vec3(0.0f),              // Specular
-		lightDirection                // Direction
-	);
-	dirLight.SetLightUniform(mShader[0], "dirLight");
+	EntityHandler::rlight(mShader[0]);
+	//glm::vec3 lightDirection = glm::normalize(glm::vec3(-1.0f, -3.0f, -1.0f)); // Adjust as needed 
+	//DirectionalLight dirLight(
+	//	glm::vec3(0.2f),              // Ambient
+	//	glm::vec3(1.0f),              // Diffuse
+	//	glm::vec3(0.0f),              // Specular
+	//	lightDirection                // Direction
+	//);
+	//dirLight.SetLightUniform(mShader[0], "dirLight");
 
 	// ------------------------------------------
 	// | OUTLINE STENCIL PASS |
@@ -143,7 +144,7 @@ void ui::Viewport::RenderSceneUI() {
 	// Check if the window is docked
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
 
-	// If the window is docked, hide the title bar (and its buttons)
+	//// If the window is docked, hide the title bar (and its buttons)
 	if (ImGui::IsWindowDocked()) {
 		windowFlags |= ImGuiWindowFlags_NoTitleBar;
 	}
@@ -154,13 +155,14 @@ void ui::Viewport::RenderSceneUI() {
 	ImGui::PushStyleColor(ImGuiCol_TitleBgCollapsed, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.5f, 0.5f));
 
-	ImGui::Begin("Scene", nullptr, windowFlags);
+	ImGui::Begin("Scene", nullptr);
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_size = { viewportPanelSize.x, viewportPanelSize.y };
 
 	// Resize Image Texture too .......(needs to be done)
 	mCamera->set_aspect(m_size.x / m_size.y);
+	//std::cout<< glm::to_string(m_size) << std::endl;
 	mCamera->UpdateCameraMatrix(mShader[0]);
 
 	// add rendered texture to ImGUI scene window

@@ -32,7 +32,7 @@ void render::UIXContext::pre_render() {
     ImGui::NewFrame();
 
     // Create the docking environment
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking |
+    ImGuiWindowFlags windowFlags = 
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoCollapse |
         ImGuiWindowFlags_NoResize |
@@ -69,9 +69,11 @@ void render::UIXContext::pre_render() {
 
 void render::UIXContext::render() {
 
-    render_toolbar();
+     render_toolbar();
     //ImGui::ShowDemoWindow();
     render_inspector();
+    lights();
+    materials();
     //render_hierarchy();
     //render_assets_hierarchy();
 
@@ -176,9 +178,9 @@ void render::UIXContext::render_toolbar()
 
                 ImGui::PushID("Sphere");
                 if (ImGui::MenuItem("Sphere")) {
-                    /* auto plane = mEntityHandler->CreateEntity();
-                     plane->AddComponent<Editor::TransformComponent>();
-                     plane->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::sphere);*/
+                    auto sphere = Editor::EntityHandler::CreateEntity();
+                    sphere->AddComponent<Editor::TransformComponent>();
+                    sphere->AddComponent<Editor::MeshComponent>().load("Resource Files/models/sphere.obj");
                 }
                 ImGui::PopID();
 
@@ -195,6 +197,26 @@ void render::UIXContext::render_toolbar()
                     auto monkey = Editor::EntityHandler::CreateEntity();
                     monkey->AddComponent<Editor::TransformComponent>();
                     monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj");
+                }
+                ImGui::PopID();
+
+                ImGui::PushID("Porsche");
+                if (ImGui::MenuItem("Porsche")) {
+                    auto porsche = Editor::EntityHandler::CreateEntity();
+                    porsche->AddComponent<Editor::TransformComponent>();
+                    porsche->AddComponent<Editor::MeshComponent>().load("Resource Files/models/porsche.obj");
+                }
+                ImGui::PopID();
+
+                ImGui::PushID("Light");
+                if (ImGui::MenuItem("Directional")) {
+                    auto dirLight = Editor::EntityHandler::CreateEntity();
+                    dirLight->AddComponent<Editor::TransformComponent>();
+
+                    // would add gizmo later
+                    dirLight->AddComponent<Editor::MeshComponent>().load("Resource Files/models/sphere.obj");
+                    dirLight->GetComponent<Editor::TransformComponent>()->SetScale(glm::vec3(0.15, 0.15, 0.15));
+                    dirLight->AddComponent<Editor::LightComponent>().SetDirectionalLight();
                 }
                 ImGui::PopID();
 
@@ -288,7 +310,7 @@ void render::UIXContext::render_inspector()
     ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.16f, 0.16f, 1.0f));
 
 
-    if (ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoDocking))
+    if (ImGui::Begin("Inspector", nullptr))
     {
         auto entity = Editor::EntityHandler::GetSelectedEntity();
         if (!entity) {
@@ -325,20 +347,12 @@ void render::UIXContext::render_inspector()
         ImGui::DragFloat("y###scale_y", &scale.y, drag_senstivity * 0.2f, 0.0f, 100.0f);
         ImGui::DragFloat("z###scale_z", &scale.z, drag_senstivity * 0.2f, 0.0f, 100.0f);
 
-        // Display a small color box
-        ImGui::Text("Color");
-        if (ImGui::ColorButton("##color_button", ImVec4(color.r, color.g, color.b, 1.0f), ImGuiColorEditFlags_NoTooltip, ImVec2(150, 15))) {
-            // When clicked, show the color picker
-            ImGui::OpenPopup("Color Picker");
-        }
+       
 
-        // Display the color picker if the box was clicked
-        if (ImGui::BeginPopup("Color Picker")) {
-            ImGui::ColorPicker3("##picker", glm::value_ptr(color));
-            ImGui::EndPopup();
-        }
+      ImGui::End();
+
     }
-    ImGui::End();
+
     ImGui::PopStyleColor(3);
 }
 
@@ -379,5 +393,78 @@ void render::UIXContext::render_assets_hierarchy()
     }
 
     // End the window
+    ImGui::End();
+}
+void render::UIXContext::lights()
+{
+    auto entity = Editor::EntityHandler::GetSelectedEntity();
+    if (!entity || !entity->HasComponent<Editor::LightComponent>()) {
+        return;
+    }
+
+    ImGui::Begin("Lights");
+
+    auto lightcom = Editor::EntityHandler::GetSelectedEntity()->GetComponent<Editor::LightComponent>();
+    auto* light = lightcom->GetLight();
+
+    if (ImGui::BeginTabBar("LightTabs"))
+    {
+        if (ImGui::BeginTabItem("Sun"))
+        {
+            glm::vec3& color = lightcom->GetLightData().albedo;
+            float& strength = lightcom->GetLightData().strength;
+            //float& angle = lightcom->GetLight().
+
+            ImGui::ColorEdit3("Color", glm::value_ptr(color));
+            ImGui::DragFloat("Strength", &strength, 0.1f, 0.0f, 10.0f);
+            //ImGui::DragFloat("Angle", &angle, 0.1f, 0.0f, 90.0f);
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Point"))
+        {
+            // Point light controls here
+            ImGui::Text("Point Light Settings");
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Spot"))
+        {
+            // Spot light controls here
+            ImGui::Text("Spot Light Settings");
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
+
+    ImGui::End();
+}
+
+void render::UIXContext::materials()
+{
+    ImGui::Begin("Materials");
+    auto entity = Editor::EntityHandler::GetSelectedEntity();
+    if (!entity) {
+        ImGui::End();
+       // ImGui::PopStyleColor();
+        return;
+    }
+    auto mesh = entity->GetComponent<Editor::MeshComponent>();
+    glm::vec3& color = mesh->GetColor();
+
+    // Display a small color box
+    ImGui::Text("Color");
+    if (ImGui::ColorButton("##color_button", ImVec4(color.r, color.g, color.b, 1.0f), ImGuiColorEditFlags_NoTooltip, ImVec2(150, 15))) {
+        // When clicked, show the color picker
+        ImGui::OpenPopup("Color Picker");
+    }
+
+    // Display the color picker if the box was clicked
+    if (ImGui::BeginPopup("Color Picker")) {
+        ImGui::ColorPicker3("##picker", glm::value_ptr(color));
+        ImGui::EndPopup();
+    }
     ImGui::End();
 }

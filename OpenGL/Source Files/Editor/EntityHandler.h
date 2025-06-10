@@ -19,6 +19,8 @@ namespace Editor {
         static void render(Shader& shader);
         static void render(Shader& shader, uint32_t id);
 
+        static void rlight(Shader& shader);
+
     private:
         static uint32_t ID;
         static int _selectedID;
@@ -27,6 +29,7 @@ namespace Editor {
 
         static std::unique_ptr<Editor::TransformSystem> m_tsystem;
         static std::unique_ptr<Editor::MeshSystem> m_msytem;
+        static std::unique_ptr<Editor::LightSystem> _lightsystem;
     };
 
 }

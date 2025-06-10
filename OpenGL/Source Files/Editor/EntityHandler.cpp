@@ -9,6 +9,7 @@ namespace Editor {
     std::vector<std::shared_ptr<Entity>> EntityHandler::entities;
     std::unique_ptr<Editor::TransformSystem> EntityHandler::m_tsystem = std::make_unique<Editor::TransformSystem>();
     std::unique_ptr<Editor::MeshSystem> EntityHandler::m_msytem = std::make_unique<Editor::MeshSystem>();
+    std::unique_ptr<Editor::LightSystem> EntityHandler::_lightsystem = std::make_unique<Editor::LightSystem>();
 
     std::shared_ptr<Entity> EntityHandler::CreateEntity() {
         int entityId = ID++;
@@ -48,13 +49,16 @@ namespace Editor {
     }
 
     void EntityHandler::TerminateEntity() {
-        if (ID > 0 && ID <= entities.size()) {
-            std::cout << "Entity: [" << ID - 1 << "] : Removed" << std::endl;
-            entities.erase(entities.begin() + (ID - 1));
+        if (_selectedID >= 0 && _selectedID < entities.size()) {
+            std::cout << "Entity: [" << _selectedID << "] : Removed" << std::endl;
+            entities.erase(entities.begin() + _selectedID);
             --ID;
+
+            // Optionally clear selection
+            _selectedID = -1;
         }
         else {
-            std::cerr << "Error: Invalid entity ID." << std::endl;
+            std::cerr << "Error: Invalid entity index." << std::endl;
         }
     }
 
@@ -81,6 +85,11 @@ namespace Editor {
             meshes->draw();
         }
 
+    }
+
+    void EntityHandler::rlight(Shader& shader)
+    {
+        _lightsystem->update(entities, shader);
     }
   
 }

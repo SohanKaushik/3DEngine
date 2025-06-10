@@ -21,7 +21,7 @@ namespace Editor {
 		float m_near;
 		float m_far;
 
-		float m_aspectRatio = 1.0f;
+		float m_aspectRatio = 0.85;
 
 
 	public:

@@ -21,6 +21,8 @@ namespace render {
 		void render_inspector();
 		void render_hierarchy();
 		void render_assets_hierarchy();
+		void lights();
+		void materials();
 
 	private:
 

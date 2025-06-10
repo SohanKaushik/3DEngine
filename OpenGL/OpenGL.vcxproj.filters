@@ -60,7 +60,7 @@
     <ClCompile Include="Source Files\elems\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\elems\light.cpp">
+    <ClCompile Include="Source Files\elems\light\light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\include\imgui\backends\imgui_impl_glfw.cpp">
@@ -1031,7 +1031,7 @@
     <ClInclude Include="Source Files\elems\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\elems\light.h">
+    <ClInclude Include="Source Files\elems\light\light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\include\imgui\backends\imgui_impl_glfw.h">
@@ -1371,6 +1371,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\Editor\selection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\elems\light\lightparams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\elems\materia.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1855,6 +1861,10 @@
     <None Include="Source Files\Editor\shaders\picking.vert" />
     <None Include="Source Files\Editor\shaders\outline.frag" />
     <None Include="Source Files\Editor\shaders\outline.vert" />
+    <None Include="Resource Files\models\porsche.mtl" />
+    <None Include="Resource Files\models\monkey.mtl" />
+    <None Include="Resource Files\Shaders\lighting\pbr\brdf.frag" />
+    <None Include="Resource Files\Shaders\lighting\pbr\brdf.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\stb\stb_image.h" />
@@ -1871,6 +1881,10 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Resource Files\models\monkey.obj" />
+    <Media Include="Resource Files\models\sphere.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Resource Files\models\monkey.obj" />
+    <CopyFileToFolders Include="Resource Files\models\porsche.obj" />
   </ItemGroup>
 </Project>

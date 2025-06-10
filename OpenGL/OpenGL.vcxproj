@@ -174,7 +174,7 @@
     <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.h" />
-    <ClCompile Include="Source Files\elems\light.cpp" />
+    <ClCompile Include="Source Files\elems\light\light.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
     <ClCompile Include="Source Files\Engine\inputs\inputhandler.cpp" />
@@ -591,10 +591,12 @@
     <ClInclude Include="Source Files\Editor\entity.h" />
     <ClInclude Include="Source Files\Editor\ErrorHandler.h" />
     <ClInclude Include="Source Files\Editor\selection.h" />
+    <ClInclude Include="Source Files\elems\light\lightparams.h" />
+    <ClInclude Include="Source Files\elems\materia.h" />
     <ClInclude Include="Source Files\Engine\maths\ray.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
     <ClInclude Include="Source Files\elems\camera.h" />
-    <ClInclude Include="Source Files\elems\light.h" />
+    <ClInclude Include="Source Files\elems\light\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />
     <ClInclude Include="Source Files\Engine\inputs\inputhandler.h" />
@@ -771,6 +773,8 @@
     <None Include="dependencies\include\glm\gtx\wrap.inl" />
     <None Include="dependencies\lib\assimp-vc143-mt.dll" />
     <None Include="OpenGL.aps" />
+    <None Include="Resource Files\models\monkey.mtl" />
+    <None Include="Resource Files\models\porsche.mtl" />
     <None Include="Resource Files\Shaders\default.frag" />
     <None Include="Resource Files\Shaders\default.vert" />
     <None Include="Resource Files\Shaders\DirectionalShadowMap.frag" />
@@ -781,6 +785,8 @@
     <None Include="Resource Files\Shaders\image_render.vert" />
     <None Include="Resource Files\Shaders\light.frag" />
     <None Include="Resource Files\Shaders\light.vert" />
+    <None Include="Resource Files\Shaders\lighting\pbr\brdf.frag" />
+    <None Include="Resource Files\Shaders\lighting\pbr\brdf.vert" />
     <None Include="Resource Files\Shaders\plane.frag" />
     <None Include="Resource Files\Shaders\plane.vert" />
     <None Include="Resource Files\Shaders\texture.frag" />
@@ -799,9 +805,19 @@
     <Image Include="Resource Files\Textures\image.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Resource Files\models\monkey.obj">
+    <Media Include="Resource Files\models\sphere.obj">
       <FileType>Document</FileType>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Resource Files\models\monkey.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Resource Files\models\porsche.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

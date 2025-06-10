@@ -19,7 +19,6 @@ out vec3 FragPos;    // Fragment position in world space
 out vec3 Normal;     // Normal vector in world space
 out vec3 aColor;     // Output color for the fragment shader
 
-// Shadows
 uniform mat4 lightSpaceMatrix;
 out vec4 FragPosDirLightSpace; 
 

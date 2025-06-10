@@ -6,7 +6,7 @@
 
 Editor::Application::Application(const std::string& app_name)
 {
-    mWindow->Init(646, 500, app_name);
+    mWindow->Init(835, 603, app_name);
 };
 
 

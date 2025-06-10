@@ -8,6 +8,8 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <elems/light/light.h>
+#include <elems/materia.h>
 
 namespace Editor {
 
@@ -95,12 +97,13 @@ namespace Editor {
 	class MeshComponent : public Component {
 	private: 
 		std::unique_ptr<elems::Mesh> mesh; 
+		elems::MaterialData material;
 		glm::vec3 m_color;
 
 	public:
 		MeshComponent() {
 			mesh = std::make_unique<elems::Mesh>();  // this just makes an container and not actually output any mesh
-			m_color = glm::vec3(1.0f);
+			material.albedo = glm::vec3(1.0f);
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}
 
@@ -114,7 +117,7 @@ namespace Editor {
 		}
 		
 		void SetMaterial(glm::vec3 color) {
-			m_color = color;
+			material.albedo = color;
 		}
 
 		auto& GetColor() {
@@ -131,16 +134,49 @@ namespace Editor {
 	};
 
 
-	class CameraComponent {
-	public:
-		CameraComponent() = default;
+	class MatieralComponent {
 
-		std::shared_ptr<Camera> GetCamera() const {
-			return m_camera;
+
+	public:
+		MatieralComponent() = default;
+
+		void SetMaterial() {
+
+		}
+
+		void GetMaterial() {
+
 		}
 
 	private:
-		std::shared_ptr<Editor::Camera> m_camera;  
+		std::unique_ptr<elems::Material> material;
+	};
+
+	class LightComponent : public Component {
+	private:
+		elems::LightParams params;
+		std::unique_ptr<elems::Light> light;
+
+	public:
+		LightComponent() = default;
+
+
+
+		void SetDirectionalLight() {
+			light = std::make_unique<elems::DirectionalLight>(&params);
+		}
+
+		void SetPointLight() {
+			//light = std::make_unique<elems::PointLight>(ldata);
+		}
+
+		void SetSpotLight() {
+			//light = std::make_unique<elems::SpotLight>(ldata);
+		}
+
+
+		auto& GetLightData() { return params; }
+		auto* GetLight() {return light.get();}
 	};
 
 };

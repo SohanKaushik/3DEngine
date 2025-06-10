@@ -26,17 +26,16 @@ namespace Editor {
 	}
 	
 	bool Selection::isSelected() {
-		_mouseloc = Input::GetMousePosition();
 
-		float scaleX = 200 / (float)646;
-		float scaleY = 200 / (float)500;
+		float scaleX = 200 / (float)457;
+		float scaleY = 200 / (float)602;
 
 		float offsety = 5;
 		float offsetx = 25;
 
 		GLubyte pixel[4];
-		int x = static_cast<int>(_mouseloc.x * scaleX) + offsetx;
-		int y = static_cast<int>(_mouseloc.y * scaleY) + offsety;
+		int x = static_cast<int>(_mouseloc.x * scaleX);
+		int y = static_cast<int>(_mouseloc.y * scaleY);
 
 		int flippedY = 200 - 1 - y;
 		glReadPixels(x, flippedY - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
@@ -44,6 +43,7 @@ namespace Editor {
 		// Decode the color back into an ID
 		pickedID = DecodeColorToID(pixel[0], pixel[1], pixel[2]);
 		if (pickedID == -1) {
+			std::cout << _mouseloc.x << std::endl;
 			return false;
 		}
 		return true;
@@ -51,6 +51,7 @@ namespace Editor {
 
 	void Selection::render(Editor::Camera* camera) {
 
+		_mouseloc = Input::GetMousePosition();
 
 		_shader[0].use();
 		FrameBufferHandle::RetrieveFrameBuffer(_store)->bind();
@@ -63,7 +64,7 @@ namespace Editor {
 		}
 
 
-		if (Input::isMousePressedDown(MouseCode::Left)) {
+		if (Input::isMousePressedDown(MouseCode::Left) && _mouseloc.x < 443) {
 			if (!isSelected()) {
 				EntityHandler::SetSelectedEntity(-1);
 				return;

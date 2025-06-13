@@ -9,48 +9,41 @@ namespace Editor {
 
     class System {
     public:
-        ~System() = default;
+        virtual ~System() = default;
     };
 
-
-    class TransformSystem : System{
+    class RenderSystem : public System {
     public:
-
-        void update(std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) {
-            for (auto& entity : entities) {
-                 auto index = &entity - &entities[0] + 1;
-
-
-                 if (!entity->HasComponent<TransformComponent>()) {
-                     std::cerr << "Entity [" << index << "] has no Transform Component" << std::endl;
-                     continue;
-                  }
-                   
-                auto transform = entity->GetComponent<TransformComponent>();
-                shader.SetUniformMat4f("model", transform->GetModelUniforms());
-            }
-        }
-    };
-
-    class MeshSystem : public System {
-    public:
-        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader) {
+        void update(const std::vector<std::shared_ptr<Editor::Entity>>& entities, Shader& shader, Camera& camera) {
             for (auto& entity : entities) {
                 auto index = &entity - &entities[0];
 
-                if (!entity->HasComponent<MeshComponent>()) {
-                    std::cerr << "Entity [" << index << "] has no Mesh Component" << std::endl;
+                if (!entity->HasComponent<TransformComponent>() ||
+                    !entity->HasComponent<MeshComponent>() ||
+                    !entity->HasComponent<MaterialComponent>()) {
+                    std::cerr << "Entity [" << index << "] missing required components.\n";
                     continue;
-               }
+                }
 
-                auto mesh_com = entity->GetComponent<Editor::MeshComponent>();
-                auto transform = entity->GetComponent<TransformComponent>();
-                auto* meshes = mesh_com->GetMesh();
+
+                // components
+                auto transformc = entity->GetComponent<TransformComponent>();
+                auto meshc = entity->GetComponent<Editor::MeshComponent>();
+                auto* materialc = entity->GetComponent<MaterialComponent>();
+
+                // to get
+                auto* meshes = meshc->GetMesh();
+                Shader& shader1 = materialc->GetShader();
+
                 if (meshes) {
-                    shader.SetUniformMat4f("model", transform->GetModelUniforms());
-                    shader.SetUniform3fv("color", mesh_com->GetColor());
+                    shader1.use();
+                    camera.UpdateCameraMatrix(shader1);
+                    shader1.SetUniformMat4f("model", transformc->GetModelUniforms());
+                    materialc->GetMaterial()->apply();
                     meshes->draw();
                 }
+
+            
             }
         }
     };

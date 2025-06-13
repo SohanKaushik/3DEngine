@@ -17,6 +17,7 @@ namespace Editor {
 		glm::vec3 m_position = glm::vec3(0.0f, 0.0f, -1.0f);  // Camera starts at (0, 0, -1)
 
 
+	private:
 		float m_fov;
 		float m_near;
 		float m_far;
@@ -33,6 +34,7 @@ namespace Editor {
 
 	public:
 
+		Camera() = default;
 		Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float fov, float nearDis, float farDis);
 
 		glm::vec3 GetCameraPosition() const;

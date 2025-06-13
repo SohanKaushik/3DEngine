@@ -1,39 +1,63 @@
 #pragma once
 
 #include "pch.h"
-#include "shader/Shader.h"
+#include <shader/shader.h>
+#include "material_data.h"
 
 namespace elems {
 
-    struct MaterialData {
-        glm::vec3 albedo = glm::vec3(1.0f);
-        glm::vec3 ambient = glm::vec3(1.0f);
-        glm::vec3 specular = glm::vec3(1.0f);
-        float shininess = 32.0f;
+    class IMaterial {
+    public:
+        virtual void apply() = 0;
+        virtual Shader& GetShader() = 0;
+        virtual ~IMaterial() = default;
     };
 
-    class Material {
+    template<typename ShaderModel>
+    class Material : public IMaterial {
     private:
-        MaterialData* _material = nullptr;
+        ShaderModel shadermodel;
 
     public:
         Material() = default;
 
-        Material(MaterialData* matt)
-            : _material(matt){
+        void apply() override {
+            shadermodel.apply();
         }
 
-        void apply(Shader& shader) const {
-            if (!_material) return;
-
-            shader.SetUniform3fv("color", _material->albedo);
-            shader.SetUniform3fv("ambient", _material->ambient);
-            shader.SetUniform3fv("specular", _material->specular);
-            shader.SetUniform1f("shininess", _material->shininess);
+        Shader& GetShader() override {
+            return shadermodel.GetShader();
         }
 
-        MaterialData* GetMaterial() { return _material; }
-        const MaterialData* GetMaterial() const { return _material; }
-
+        ShaderModel& GetModel() {
+            return shadermodel;
+        }
     };
+
+    class Lambert {
+    public:
+        elems::LambertParams _lambert;
+        Lambert() {
+            _lambert.shader.load("Resource Files/Shaders/default.vert", "Resource Files/Shaders/default.frag");
+        }
+
+        void apply() {
+            _lambert.shader.use();  
+            _lambert.shader.SetUniform3fv("albedo", _lambert.albedo);
+            _lambert.shader.SetUniform1f("ambient", _lambert.ambient);
+        }
+
+        Shader& GetShader() {
+            return _lambert.shader;
+        }
+    };
+
+
+    class Phong {
+    public:
+        void apply() {
+            std::cout << "Applying Phong shading\n";
+        }
+    };
+
 }

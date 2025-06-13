@@ -7,8 +7,7 @@ namespace Editor {
     int EntityHandler::_selectedID = -1;
 
     std::vector<std::shared_ptr<Entity>> EntityHandler::entities;
-    std::unique_ptr<Editor::TransformSystem> EntityHandler::m_tsystem = std::make_unique<Editor::TransformSystem>();
-    std::unique_ptr<Editor::MeshSystem> EntityHandler::m_msytem = std::make_unique<Editor::MeshSystem>();
+    std::unique_ptr<Editor::RenderSystem> EntityHandler::_rendersys = std::make_unique<Editor::RenderSystem>();
     std::unique_ptr<Editor::LightSystem> EntityHandler::_lightsystem = std::make_unique<Editor::LightSystem>();
 
     std::shared_ptr<Entity> EntityHandler::CreateEntity() {
@@ -62,9 +61,8 @@ namespace Editor {
         }
     }
 
-    void EntityHandler::render(Shader& shader) {
-        m_tsystem->update(entities, shader);
-        m_msytem->update(entities, shader);
+    void EntityHandler::render(Shader& shader, Camera& camera) {
+        _rendersys->update(entities, shader, camera);
     }
 
     void EntityHandler::render(Shader& shader, uint32_t id)
@@ -81,7 +79,6 @@ namespace Editor {
         auto* meshes = mesh_com->GetMesh();
         if (meshes) {
             shader.SetUniformMat4f("model", transform->GetModelUniforms());
-          //  shader.SetUniform3fv("color", mesh_com->GetColor());
             meshes->draw();
         }
 

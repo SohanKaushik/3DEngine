@@ -67,8 +67,8 @@ void ui::Viewport::render() {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  // Write 1 where object drawn
 	glStencilMask(0xFF);                        // Enable writing to stencil
 
-	mCamera->UpdateCameraMatrix(mShader[0]);
-	Editor::EntityHandler::render(mShader[0]);  // normal draw
+	//mCamera->UpdateCameraMatrix(mShader[0]);
+	Editor::EntityHandler::render(mShader[0], *mCamera);  // normal draw
 
 
 
@@ -180,5 +180,6 @@ Entity& ui::Viewport::def_enit() {
 	auto entity = Editor::EntityHandler::CreateEntity();
 	entity->AddComponent<TransformComponent>();
 	entity->AddComponent<MeshComponent>().GetMesh()->load("Resource Files/models/monkey.obj");
+	entity->AddComponent<MaterialComponent>();
 	return *entity;
 }  

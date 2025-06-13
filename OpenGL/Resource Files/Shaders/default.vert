@@ -5,7 +5,6 @@ layout(location = 1) in vec3 aNormal;      // VertexHolder normal attribute
 layout(location = 2) in vec2 aTexture;
 
 // Uniforms                    
-uniform vec3 color;              // Color passed as a uniform
 uniform vec3 planeColor;
 
 
@@ -14,13 +13,8 @@ uniform mat4 view;               // View matrix
 uniform mat4 projection;         // Projection matrix
 
 
-// Outputs to the fragment shader
 out vec3 FragPos;    // Fragment position in world space
-out vec3 Normal;     // Normal vector in world space
-out vec3 aColor;     // Output color for the fragment shader
-
-uniform mat4 lightSpaceMatrix;
-out vec4 FragPosDirLightSpace; 
+out vec3 Normal;   
 
 out vec2 TexCoord;
 
@@ -31,10 +25,8 @@ void main()
     // Pass data to the fragment shader
     FragPos = vec3(model * vec4(aPos, 1.0));                          // Transform VertexHolder to world space
     Normal = mat3(transpose(inverse(model))) * aNormal;               // Transform normal to world space
-    aColor = color;  
     TexCoord = aTexture;
 
-    FragPosDirLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0f);
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
  

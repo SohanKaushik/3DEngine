@@ -13,7 +13,7 @@ namespace elems {
 
     void DirectionalLight::SetLightUniform(Shader& shader, const std::string& uniformName) {
 
-        shader.SetUniform3fv(uniformName + ".direction", glm::normalize(_data->angle));
+        shader.SetUniform3fv(uniformName + ".angle", glm::normalize(_data->angle));
         shader.SetUniform3fv(uniformName + ".color", _data->albedo);
         shader.SetUniform1f(uniformName + ".intensity", _data->strength);
 

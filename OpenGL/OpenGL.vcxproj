@@ -171,10 +171,10 @@
     <ClCompile Include="Source Files\Editor\EntityHandler.h" />
     <ClCompile Include="Source Files\Editor\selection.cpp" />
     <ClCompile Include="Source Files\Editor\system.cpp" />
-    <ClCompile Include="Source Files\elems\camera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.cpp" />
     <ClCompile Include="Source Files\Editor\EditorCamera.h" />
     <ClCompile Include="Source Files\elems\light\light.cpp" />
+    <ClCompile Include="Source Files\elems\materia.cpp" />
     <ClCompile Include="Source Files\elems\mesh.cpp" />
     <ClCompile Include="Source Files\elems\Primitive.cpp" />
     <ClCompile Include="Source Files\Engine\inputs\inputhandler.cpp" />
@@ -593,9 +593,9 @@
     <ClInclude Include="Source Files\Editor\selection.h" />
     <ClInclude Include="Source Files\elems\light\lightparams.h" />
     <ClInclude Include="Source Files\elems\materia.h" />
+    <ClInclude Include="Source Files\elems\material_data.h" />
     <ClInclude Include="Source Files\Engine\maths\ray.h" />
     <ClInclude Include="Source Files\Editor\system.h" />
-    <ClInclude Include="Source Files\elems\camera.h" />
     <ClInclude Include="Source Files\elems\light\light.h" />
     <ClInclude Include="Source Files\elems\mesh.h" />
     <ClInclude Include="Source Files\elems\Primitive.h" />

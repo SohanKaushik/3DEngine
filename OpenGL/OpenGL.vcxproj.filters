@@ -54,9 +54,6 @@
     <ClCompile Include="Source Files\elems\Primitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\elems\camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\elems\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Editor\selection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\elems\materia.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1025,9 +1025,6 @@
     <ClInclude Include="Source Files\elems\Primitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source Files\elems\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source Files\elems\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1377,6 +1374,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source Files\elems\materia.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\elems\material_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

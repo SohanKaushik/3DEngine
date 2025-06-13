@@ -97,13 +97,10 @@ namespace Editor {
 	class MeshComponent : public Component {
 	private: 
 		std::unique_ptr<elems::Mesh> mesh; 
-		elems::MaterialData material;
-		glm::vec3 m_color;
 
 	public:
 		MeshComponent() {
 			mesh = std::make_unique<elems::Mesh>();  // this just makes an container and not actually output any mesh
-			material.albedo = glm::vec3(1.0f);
 			//shader = std::make_shared<elems::Shader>("path/to/shader.vert", "path/to/shader.frag");  // Load shader (path is an example)
 		}
 
@@ -114,14 +111,6 @@ namespace Editor {
 		
 		void load(const std::string& path) {
 			mesh->load(path);
-		}
-		
-		void SetMaterial(glm::vec3 color) {
-			material.albedo = color;
-		}
-
-		auto& GetColor() {
-			return m_color;
 		}
 
 		auto GetMesh() { 
@@ -134,23 +123,30 @@ namespace Editor {
 	};
 
 
-	class MatieralComponent {
-
-
-	public:
-		MatieralComponent() = default;
-
-		void SetMaterial() {
-
-		}
-
-		void GetMaterial() {
-
-		}
-
+	class MaterialComponent : public Component{
 	private:
-		std::unique_ptr<elems::Material> material;
+		std::unique_ptr<elems::IMaterial> material;
+	public:
+		MaterialComponent() {
+			material = std::make_unique<elems::Material<elems::Lambert>>();
+		}
+
+		template<typename ShaderModel>
+		void AddMaterial() {
+			material = std::make_unique<elems::Material<ShaderModel>>();
+		}
+
+		auto* GetMaterial() const {
+			assert(material && "MaterialComponent has no material!");
+			return material.get();
+		}
+
+		Shader& GetShader(){
+			assert(material && "MaterialComponent has no material!");
+			return material->GetShader();
+		}
 	};
+
 
 	class LightComponent : public Component {
 	private:

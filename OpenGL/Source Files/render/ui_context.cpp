@@ -188,6 +188,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Cube")) {
                     auto cube = Editor::EntityHandler::CreateEntity();
                     cube->AddComponent<Editor::TransformComponent>();
+                    cube->AddComponent<Editor::MaterialComponent>();
                     cube->AddComponent<Editor::MeshComponent>().SetMesh(elems::PrimitiveType::cube);
                 }
                 ImGui::PopID();
@@ -196,6 +197,7 @@ void render::UIXContext::render_toolbar()
                 if (ImGui::MenuItem("Monkey")) {
                     auto monkey = Editor::EntityHandler::CreateEntity();
                     monkey->AddComponent<Editor::TransformComponent>();
+                    monkey->AddComponent<Editor::MaterialComponent>();
                     monkey->AddComponent<Editor::MeshComponent>().load("Resource Files/models/monkey.obj");
                 }
                 ImGui::PopID();
@@ -211,12 +213,12 @@ void render::UIXContext::render_toolbar()
                 ImGui::PushID("Light");
                 if (ImGui::MenuItem("Directional")) {
                     auto dirLight = Editor::EntityHandler::CreateEntity();
-                    dirLight->AddComponent<Editor::TransformComponent>();
+                    //dirLight->AddComponent<Editor::TransformComponent>();
 
-                    // would add gizmo later
-                    dirLight->AddComponent<Editor::MeshComponent>().load("Resource Files/models/sphere.obj");
-                    dirLight->GetComponent<Editor::TransformComponent>()->SetScale(glm::vec3(0.15, 0.15, 0.15));
-                    dirLight->AddComponent<Editor::LightComponent>().SetDirectionalLight();
+                    //// would add gizmo later
+                    //dirLight->GetComponent<Editor::TransformComponent>()->SetScale(glm::vec3(0.15, 0.15, 0.15));
+                    //dirLight->AddComponent<Editor::MeshComponent>().load("Resource Files/models/sphere.obj");
+                    //dirLight->AddComponent<Editor::LightComponent>().SetDirectionalLight();
                 }
                 ImGui::PopID();
 
@@ -323,7 +325,7 @@ void render::UIXContext::render_inspector()
         glm::vec3& position = transform->GetPosition();
         glm::vec3& scale = transform->GetScale();
         glm::vec3& rotation = transform->GetRotation();
-        glm::vec3& color = mesh->GetColor();
+        glm::vec3 color = glm::vec3(1.0f);
 
         float drag_senstivity = 0.5f;
 
@@ -448,11 +450,37 @@ void render::UIXContext::materials()
     auto entity = Editor::EntityHandler::GetSelectedEntity();
     if (!entity) {
         ImGui::End();
-       // ImGui::PopStyleColor();
         return;
     }
-    auto mesh = entity->GetComponent<Editor::MeshComponent>();
-    glm::vec3& color = mesh->GetColor();
+    auto component = entity->GetComponent<Editor::MaterialComponent>();
+    auto* material = component->GetMaterial();
+
+    // downcasting from IMaterial to Material<Shader>
+    auto* shader = dynamic_cast<elems::Material<elems::Lambert>*>(material);
+
+    // accessing color 
+    glm::vec3& color = shader->GetModel()._lambert.albedo;
+
+
+    static int selectedOption = 0;
+    const char* options[] = { "Lambert", "Phong", "Blinn Phong" };
+
+    if (ImGui::BeginCombo("Type", options[selectedOption]))
+    {
+        for (int i = 0; i < IM_ARRAYSIZE(options); i++)
+        {
+            bool isSelected = (selectedOption == i);
+            if (ImGui::Selectable(options[i], isSelected))
+            {
+                selectedOption = i;
+            }
+            if (isSelected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
 
     // Display a small color box
     ImGui::Text("Color");

@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Editor/EditorCamera.h"
+#include "EditorCamera.h"
 
 namespace Editor {
 

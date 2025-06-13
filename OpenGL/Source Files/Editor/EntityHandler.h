@@ -16,7 +16,7 @@ namespace Editor {
         static int GetID();
         static void TerminateEntity();
 
-        static void render(Shader& shader);
+        static void render(Shader& shader, Camera& camera);
         static void render(Shader& shader, uint32_t id);
 
         static void rlight(Shader& shader);
@@ -27,8 +27,7 @@ namespace Editor {
 
         static std::vector<std::shared_ptr<Entity>> entities;
 
-        static std::unique_ptr<Editor::TransformSystem> m_tsystem;
-        static std::unique_ptr<Editor::MeshSystem> m_msytem;
+        static std::unique_ptr<Editor::RenderSystem> _rendersys;
         static std::unique_ptr<Editor::LightSystem> _lightsystem;
     };
 

@@ -7,7 +7,7 @@
 #include "render/framebuffer.h"
 
 #include <Editor/selection.h>
-#include "Editor/EditorCamera.h"
+#include <Editor/EditorCamera.h>
 #include "Editor/EntityHandler.h"
 
 
